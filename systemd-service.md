@@ -17,6 +17,33 @@ ExecStart=/usr/bin/env php /path/to/server.php
 [Install]
 WantedBy=multi-user.target
 ```
+
+```ini
+[Unit]
+Description=My PHP Daemon Service
+#May your script needs MySQL or other services to run, eg. MySQL Memcached
+Requires=mysqld.service memcached.service 
+After=mysqld.service memcached.service
+
+[Service]
+User=root
+Type=simple
+TimeoutSec=0
+PIDFile=/var/run/myphpdaemon.pid
+ExecStart=/usr/bin/php -f /srv/www/myphpdaemon.php arg1 arg2> /dev/null 2>/dev/null
+#ExecStop=/bin/kill -HUP $MAINPID #It's the default you can change whats happens on stop command
+#ExecReload=/bin/kill -HUP $MAINPID
+KillMode=process
+
+Restart=on-failure
+RestartSec=42s
+
+StandardOutput=null #If you don't want to make toms of logs you can set it null if you sent a file or some other options it will send all php output to this one.
+StandardError=/var/log/myphpdaemon.log
+[Install]
+WantedBy=default.target
+```
+
 `ExecStart` ist der Service
 
 ## Starting in the right order
