@@ -11,7 +11,7 @@ Research to get automated Ubuntu services
 * Isolation: no
 * Rating: Deploy ain't easy, especially on errors
 
-**systemd service**
+**[systemd service](systemd-service.md)**
 
 systemd service running `java -jar ...`
 * Isolation: yes
