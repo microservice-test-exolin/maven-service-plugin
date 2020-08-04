@@ -1,4 +1,4 @@
-package org.exolin.msp.service;
+package org.exolin.msp.service.sa;
 
 import java.io.IOException;
 import java.nio.file.Path;

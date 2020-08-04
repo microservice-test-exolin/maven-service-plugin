@@ -1,19 +1,16 @@
 package org.exolin.msp.service;
 
-
 import java.io.File;
 import java.io.IOException;
-import java.net.URL;
-import java.nio.file.DirectoryStream;
 import java.nio.file.Files;
 import java.nio.file.NoSuchFileException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.nio.file.StandardCopyOption;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugins.annotations.LifecyclePhase;
-
 import org.apache.maven.plugins.annotations.Mojo;
+import org.exolin.msp.service.sa.PseudoAbstraction;
+import org.exolin.msp.service.sa.SystemAbstraction;
 
 /**
  * Goal which touches a timestamp file.
@@ -24,37 +21,46 @@ public class DeployMojo extends BaseMojo
     @Override
     public void execute() throws MojoExecutionException
     {
-        URL resource = DeployMojo.class.getResource("/install-base.sh");
-        if(resource == null)
-            throw new MojoExecutionException("Script not found");
-        
-        serviceFile = new File("target", "service");
-        startSh = new File("target", "start.sh");
+        Path destStartSh = ServiceInfo.getBaseDirectory(serviceUser, serviceName).resolve(ServiceInfo.START_SH);
         
         try{
+            File serviceFile = new File(pluginDir(), serviceName+".service");
+            File startSh = new File(pluginDir(), "start.sh");
+
             getLog().info("Create service file");
-            createServiceFile(serviceFile);
+            createServiceFile(serviceFile, serviceDescription, serviceUser, destStartSh);
             
             getLog().info("Create start script");
-            createStartSh(startSh);
+            createStartSh(startSh, serviceName, serviceUser);
             
-            deploy(new PseudoAbstraction(getLog()), serviceName, jar.toPath(), serviceUser, startSh.toPath());
+            SystemAbstraction sys = new PseudoAbstraction(getLog());
+            Path simDir = Paths.get("target/simulator");
+            
+            deploy(sys, simDir, serviceName, jar.toPath(), libDir.toPath(), serviceUser, startSh.toPath());
+        
+            setupServiceFile(sys, simDir, serviceName, serviceFile.toPath());
         }catch(IOException ex){
             throw new MojoExecutionException("Couldn't deploy", ex);
         }
     }
     
-    private void deploy(SystemAbstraction sys, String name, Path jar, String user, Path startScript) throws IOException
+    /**
+     * 
+     * @param sys
+     * @param name
+     * @param jar
+     * @param serviceUser User under which the service is executed
+     * @param startScript Script used to start service
+     * @throws IOException 
+     */
+    private void deploy(SystemAbstraction sys, Path simDir, String name, Path jar, Path libDir, String serviceUser, Path startScript) throws IOException
     {
         if(!Files.exists(jar))
             throw new NoSuchFileException("No jar: "+jar);
         
-        Path simDir = Paths.get("target/simulator");
         Files.createDirectories(simDir.resolve("etc/systemd/system"));
         
-        Path localServiceFile = serviceFile.toPath();
-        Path serviceDestFile = simDir.resolve("etc/systemd/system/"+name+".service");
-        Path serviceDir = simDir.resolve("home/"+user+"/services/"+name);
+        Path serviceDir = simDir.resolve("home/"+serviceUser+"/services/"+name);
         Path serviceBinDir = serviceDir.resolve("bin");
         Path serviceLogDir = serviceDir.resolve("log");
         Path jarDest = serviceBinDir.resolve(name+".jar");
@@ -63,19 +69,24 @@ public class DeployMojo extends BaseMojo
         //service $NAME stop || echo Service was not running
 
         //Setup directories
-        createDirectories(serviceBinDir);
-        createDirectories(serviceLogDir);
+        FileUtils.createDirectories(getLog(), serviceBinDir);
+        FileUtils.createDirectories(getLog(), serviceLogDir);
         //system("sudo", "chown", "-R", user, serviceDir.toFile().getAbsolutePath());
         sys.setOwner(serviceDir, serviceUser);
         
         //Copy JAR and dependencies
-        copy(jar, jarDest);
-        copyDirectoryContent(Paths.get("target", "lib"), serviceBinDir);
-        copy(startScript, serviceBinDir.resolve(startScript.getFileName()));
+        FileUtils.copy(getLog(), jar, jarDest);
+        FileUtils.copyDirectoryContent(getLog(), libDir, serviceBinDir);
+        FileUtils.copy(getLog(), startScript, serviceDir.resolve(ServiceInfo.START_SH));
         getLog().info("Copied jar file to "+jarDest);
-
+    }
+    
+    private void setupServiceFile(SystemAbstraction sys, Path simDir, String name, Path localServiceFile) throws IOException
+    {
+        Path serviceDestFile = simDir.resolve("etc/systemd/system/"+name+".service");
+        
         //Install service file
-        copy(localServiceFile, serviceDestFile);
+        FileUtils.copy(getLog(), localServiceFile, serviceDestFile);
         getLog().info("Copied service file to "+serviceDestFile);
         sys.reloadDeamon();
 
@@ -83,45 +94,5 @@ public class DeployMojo extends BaseMojo
 
         sys.restart(name);
         sys.getStatus(name);
-    }
-
-    private void _copy(Path src, Path dest) throws IOException
-    {
-        try{
-            Files.copy(src, dest, StandardCopyOption.REPLACE_EXISTING);
-        }catch(IOException e){
-            throw new IOException("Failed to copy "+src+" to "+dest+": "+e, e);
-        }
-    }
-
-    private void copy(Path src, Path dest) throws IOException
-    {
-        try{
-            getLog().info("Copy "+src+" to "+dest);
-            _copy(src, dest);
-        }catch(IOException e){
-            throw new IOException("Failed to copy "+src+" to "+dest+": "+e, e);
-        }
-    }
-    
-    private void copyDirectoryContent(Path src, Path dest) throws IOException
-    {
-        getLog().info("Copy "+src+"/* to "+dest);
-        
-        try(DirectoryStream<Path> dir = Files.newDirectoryStream(src))
-        {
-            for(Path f: dir)
-            {
-                getLog().info("  Copy "+src.relativize(f));
-                
-                _copy(f, dest.resolve(f.getFileName()));
-            }
-        }
-    }
-
-    private void createDirectories(Path dir) throws IOException
-    {
-        getLog().info("Create directory "+dir);
-        Files.createDirectories(dir);
     }
 }

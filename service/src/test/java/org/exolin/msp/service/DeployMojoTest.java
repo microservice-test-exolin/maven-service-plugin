@@ -8,9 +8,8 @@ import org.junit.Rule;
 import static org.junit.Assert.*;
 import org.junit.Test;
 import java.io.File;
-import org.junit.Ignore;
 
-public class MyMojoTest
+public class DeployMojoTest
 {
     @Rule
     public MojoRule rule = new MojoRule()
@@ -30,24 +29,22 @@ public class MyMojoTest
      * @throws Exception if any
      */
     @Test
-    @Ignore
     public void testSomething() throws Exception
     {
-        File pom = new File( "target/test-classes/project-to-test/" );
-        assertNotNull( pom );
-        assertTrue( pom.exists() );
+        File pom = new File("../test-service").getCanonicalFile();
+        assertNotNull(pom);
+        assertTrue(pom.exists());
+        
+        DeployMojo deploy = (DeployMojo)rule.lookupConfiguredMojo(pom, "deploy");
+        assertNotNull(deploy);
+        deploy.execute();
 
-        VerifyMojo myMojo = ( VerifyMojo ) rule.lookupConfiguredMojo( pom, "touch" );
-        assertNotNull( myMojo );
-        myMojo.execute();
+        /*File outputDirectory = (File)rule.getVariableValueFromObject(deploy, "outputDirectory");
+        assertNotNull(outputDirectory);
+        assertTrue(outputDirectory.exists());
 
-        File outputDirectory = ( File ) rule.getVariableValueFromObject( myMojo, "outputDirectory" );
-        assertNotNull( outputDirectory );
-        assertTrue( outputDirectory.exists() );
-
-        File touch = new File( outputDirectory, "touch.txt" );
-        assertTrue( touch.exists() );
-
+        File touch = new File(outputDirectory, "touch.txt");
+        assertTrue(touch.exists());*/
     }
 
     /** Do not need the MojoRule. */
@@ -55,7 +52,6 @@ public class MyMojoTest
     @Test
     public void testSomethingWhichDoesNotNeedTheMojoAndProbablyShouldBeExtractedIntoANewClassOfItsOwn()
     {
-        assertTrue( true );
+        assertTrue(true);
     }
 }
-

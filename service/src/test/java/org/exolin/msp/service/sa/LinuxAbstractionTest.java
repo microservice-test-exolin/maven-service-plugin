@@ -1,9 +1,11 @@
-package org.exolin.msp.service;
+package org.exolin.msp.service.sa;
 
+import java.io.IOException;
 import org.junit.Test;
 import static org.junit.Assert.*;
 
 /**
+ * Tests für {@link LinuxAbstraction}.
  *
  * @author tomgk
  */
@@ -48,5 +50,12 @@ public class LinuxAbstractionTest
         }catch(UnsupportedOperationException e){
             assertEquals("Can't parse:\nxyz", e.getMessage());
         }
+    }
+    
+    @Test
+    public void testSystem2() throws IOException
+    {
+        String str = a.system2("cmd", "/C", "echo", "abc");
+        assertEquals("abc"+System.getProperty("line.separator"), str);
     }
 }

@@ -1,4 +1,4 @@
-package org.exolin.msp.service;
+package org.exolin.msp.service.sa;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -67,7 +67,7 @@ public class LinuxAbstraction implements SystemAbstraction
         }
     }
     
-    private String system2(String...cmd) throws IOException
+    protected String system2(String...cmd) throws IOException
     {
         try{
             Process p = new ProcessBuilder(cmd).start();
@@ -78,7 +78,7 @@ public class LinuxAbstraction implements SystemAbstraction
             InputStream in = p.getInputStream();
             ByteArrayOutputStream out = new ByteArrayOutputStream();
             while((r = in.read(b)) != -1)
-                out.write(b);
+                out.write(b, 0, r);
             
             if(p.waitFor() != 0)
                 throw new IOException("Failed to execute "+String.join(" ", cmd));
