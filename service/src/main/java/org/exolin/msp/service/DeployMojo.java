@@ -5,7 +5,6 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.NoSuchFileException;
 import java.nio.file.Path;
-import java.nio.file.Paths;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugins.annotations.LifecyclePhase;
 import org.apache.maven.plugins.annotations.Mojo;
@@ -31,10 +30,10 @@ public class DeployMojo extends BaseMojo
             createServiceFile(serviceFile, serviceDescription, serviceUser, destStartSh);
             
             getLog().info("Create start script");
-            createStartSh(startSh, serviceName, serviceUser);
+            createStartSh(startSh, serviceName, serviceUser, jar.getName());
             
             SystemAbstraction sys = new PseudoAbstraction(getLog());
-            Path simDir = Paths.get("target/simulator");
+            Path simDir = targetDir.toPath().resolve("simulator");
             
             deploy(sys, simDir, serviceName, jar.toPath(), libDir.toPath(), serviceUser, startSh.toPath());
         
@@ -63,7 +62,7 @@ public class DeployMojo extends BaseMojo
         Path serviceDir = simDir.resolve("home/"+serviceUser+"/services/"+name);
         Path serviceBinDir = serviceDir.resolve("bin");
         Path serviceLogDir = serviceDir.resolve("log");
-        Path jarDest = serviceBinDir.resolve(name+".jar");
+        Path jarDest = serviceBinDir.resolve(jar.getFileName());
 
         getLog().info("Stopping service...");
         //service $NAME stop || echo Service was not running

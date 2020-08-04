@@ -22,6 +22,9 @@ public abstract class BaseMojo extends AbstractMojo
     @Parameter(defaultValue = "${project.build.directory}/${project.build.finalName}.${project.packaging}", property = "jar", required = true )
     protected File jar;
     
+    @Parameter(defaultValue = "${project.build.directory}", required = true )
+    protected File targetDir;
+    
     @Parameter(defaultValue = "${project.build.directory}/lib", property = "jar", required = true )
     protected File libDir;
     
@@ -62,7 +65,7 @@ public abstract class BaseMojo extends AbstractMojo
         w.println("Restart=always");
         w.println("RestartSec=1");
         w.println("User="+serviceUser);
-        w.println("ExecStart=/bin/bash "+startSh.toFile());
+        w.println("ExecStart=/bin/bash "+startSh.toFile().toString().replace("\\", "/"));  //TODO: replace \ with / is uhh given that this is ultimatily not used on windows
         w.println();
         w.println("[Install]");
         w.println("WantedBy=multi-user.target");
@@ -80,7 +83,7 @@ public abstract class BaseMojo extends AbstractMojo
         w.append(" -D").append(name).append("=").append(value);
     }
     
-    protected static void createStartSh(File file, String serviceName, String serviceUser) throws IOException
+    protected static void createStartSh(File file, String serviceName, String serviceUser, String jarName) throws IOException
     {
         try(FileWriter o = new FileWriter(file); BufferedWriter w = new BufferedWriter(o))
         {
@@ -99,7 +102,7 @@ public abstract class BaseMojo extends AbstractMojo
             w.write("/usr/bin/java");
             writeSysProp(w, "system.baseDirectory", "$DIR");
             w.write(" -jar ");
-            /**/w.write("$DIR/bin/$NAME.jar");
+           /**/w.append("$DIR/bin/").append(jarName);
             w.write(" >> $DIR/log/$NAME.log ");
             w.write("2>> $DIR/log/$NAME.error.log");
             w.newLine();
