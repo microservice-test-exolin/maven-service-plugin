@@ -58,7 +58,7 @@ public class LinuxAbstractionTest
         boolean win = System.getProperty("os.name").startsWith("Windows");
         
         String str = a.system2(
-                win ? "cmd" : "bash",
+                win ? "cmd" : "/bin/bash",
                 win ? "/C"  : "-c",
                 "\"echo abc\""
         );
