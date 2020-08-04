@@ -55,7 +55,13 @@ public class LinuxAbstractionTest
     @Test
     public void testSystem2() throws IOException
     {
-        String str = a.system2("cmd", "/C", "echo", "abc");
+        boolean win = System.getProperty("os.name").startsWith("Windows");
+        
+        String str = a.system2(
+                win ? "cmd" : "bash",
+                win ? "/C"  : "-c",
+                "\"echo abc\""
+        );
         assertEquals("abc"+System.getProperty("line.separator"), str);
     }
 }
