@@ -23,6 +23,11 @@ public class DeployMojo extends BaseMojo
         Path destStartSh = ServiceInfo.getBaseDirectory(serviceUser, serviceName).resolve(ServiceInfo.START_SH);
         
         try{
+            if(!libDir.exists())
+                throw new NoSuchFileException(libDir.toString(), null, "lib directory not present");
+            if(!jar.exists())
+                throw new NoSuchFileException(jar.toString(), null, "JAR not found");
+            
             File serviceFile = new File(pluginDir(), serviceName+".service");
             File startSh = new File(pluginDir(), "start.sh");
 
