@@ -87,7 +87,7 @@ public class LinuxAbstraction implements SystemAbstraction
                 while((r = err.read(b)) != -1)
                     errout.write(b, 0, r);
                 
-                throw new IOException("Failed to execute "+String.join(" ", cmd)+": "+errout.toString());
+                throw new IOException("Failed to execute "+String.join(" ", cmd)+": "+errout.toString()+out.toString());
             }
             
             return new String(out.toByteArray());
