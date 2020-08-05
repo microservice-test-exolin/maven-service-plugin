@@ -58,7 +58,7 @@ public class LinuxAbstractionTest
         boolean win = System.getProperty("os.name").startsWith("Windows");
         
         String[] winCmd = {"cmd", "/C", "\"echo abc\""};
-        String[] linCmd = {"/bin/echo abc"};
+        String[] linCmd = {"/bin/echo", "abc"};
         
         String str = a.system2(win ? winCmd : linCmd);
         assertEquals("abc"+System.getProperty("line.separator"), str);
