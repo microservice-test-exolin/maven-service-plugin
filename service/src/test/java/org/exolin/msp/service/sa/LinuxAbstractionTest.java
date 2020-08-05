@@ -1,6 +1,7 @@
 package org.exolin.msp.service.sa;
 
 import java.io.IOException;
+import org.apache.maven.plugin.testing.SilentLog;
 import org.junit.Test;
 import static org.junit.Assert.*;
 
@@ -11,7 +12,7 @@ import static org.junit.Assert.*;
  */
 public class LinuxAbstractionTest
 {
-    private final LinuxAbstraction a = new LinuxAbstraction();
+    private final LinuxAbstraction a = new LinuxAbstraction(new SilentLog());
     
     @Test
     public void testGetStatus_Okay() throws Exception

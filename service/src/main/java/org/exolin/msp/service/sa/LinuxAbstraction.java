@@ -10,6 +10,7 @@ import java.nio.file.LinkOption;
 import java.nio.file.Path;
 import java.nio.file.attribute.PosixFileAttributeView;
 import java.nio.file.attribute.UserPrincipalLookupService;
+import org.apache.maven.plugin.logging.Log;
 
 /**
  *
@@ -17,9 +18,18 @@ import java.nio.file.attribute.UserPrincipalLookupService;
  */
 public class LinuxAbstraction implements SystemAbstraction
 {
+    private final Log log;
+
+    public LinuxAbstraction(Log log)
+    {
+        this.log = log;
+    }
+    
     @Override
     public void setOwner(Path serviceDir, String serviceUser) throws IOException
     {
+        log.info("Setting owner for "+serviceDir+" to "+serviceUser);
+        
         UserPrincipalLookupService lookupService = FileSystems.getDefault()
             .getUserPrincipalLookupService();
         Files.getFileAttributeView(serviceDir, PosixFileAttributeView.class, LinkOption.NOFOLLOW_LINKS).setOwner(lookupService.lookupPrincipalByName(serviceUser));
@@ -56,6 +66,8 @@ public class LinuxAbstraction implements SystemAbstraction
     
     private void system(String...cmd) throws IOException
     {
+        log.info("$>"+String.join(" ", cmd));
+        
         try{
             //getLog().info("> Pseudo "+String.join(" ", cmd));
             if(new ProcessBuilder(cmd).start().waitFor() != 0)
@@ -69,6 +81,8 @@ public class LinuxAbstraction implements SystemAbstraction
     
     protected String system2(String...cmd) throws IOException
     {
+        log.info("$>"+String.join(" ", cmd));
+        
         try{
             Process p = new ProcessBuilder(cmd).start();
             

@@ -21,7 +21,7 @@ public class DeployMojo extends BaseMojo
     @Override
     public void execute() throws MojoExecutionException
     {
-        execute(Paths.get("/"), new LinuxAbstraction());
+        execute(Paths.get("/"), new LinuxAbstraction(getLog()));
     }
     
     public void execute(Path simDir, SystemAbstraction sys) throws MojoExecutionException
