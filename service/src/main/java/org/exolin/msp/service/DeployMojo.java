@@ -5,11 +5,11 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.NoSuchFileException;
 import java.nio.file.Path;
-import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugins.annotations.LifecyclePhase;
-import org.apache.maven.plugins.annotations.Mojo;
 import org.exolin.msp.service.sa.PseudoAbstraction;
 import org.exolin.msp.service.sa.SystemAbstraction;
+import org.apache.maven.plugins.annotations.Mojo;
+import org.apache.maven.plugin.MojoExecutionException;
 
 /**
  * Goal which touches a timestamp file.
@@ -27,10 +27,10 @@ public class DeployMojo extends BaseMojo
             File startSh = new File(pluginDir(), "start.sh");
 
             getLog().info("Create service file");
-            createServiceFile(serviceFile, serviceDescription, serviceUser, destStartSh);
+            Generator.createServiceFile(serviceFile, serviceDescription, serviceUser, destStartSh);
             
             getLog().info("Create start script");
-            createStartSh(startSh, serviceName, serviceUser, jar.getName());
+            Generator.createStartSh(startSh, serviceName, serviceUser, jar.getName());
             
             SystemAbstraction sys = new PseudoAbstraction(getLog());
             Path simDir = targetDir.toPath().resolve("simulator");

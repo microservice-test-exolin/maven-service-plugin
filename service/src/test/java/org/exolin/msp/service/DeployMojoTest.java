@@ -8,9 +8,25 @@ import org.junit.Rule;
 import static org.junit.Assert.*;
 import org.junit.Test;
 import java.io.File;
+import java.io.IOException;
+import java.nio.file.DirectoryStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
+import org.apache.maven.execution.DefaultMavenExecutionRequest;
+import org.apache.maven.execution.MavenExecutionRequest;
+import org.apache.maven.model.IssueManagement;
+import org.apache.maven.plugin.testing.stubs.MavenProjectStub;
+import org.apache.maven.project.MavenProject;
+import org.apache.maven.project.ProjectBuilder;
+import org.apache.maven.project.ProjectBuildingRequest;
 import org.ini4j.Ini;
+import org.junit.After;
+import org.junit.Before;
 
 public class DeployMojoTest
 {
@@ -27,22 +43,42 @@ public class DeployMojoTest
         {
         }
     };
+    
+    private File pom;
+    private Path simDir;
+    
+    @Before
+    public void setup() throws IOException
+    {
+        pom = new File("../test-service/pom.xml").getCanonicalFile();
+        simDir = pom.toPath().resolveSibling("target/simulator");
+    }
+    
+    @After
+    public void tearDown() throws IOException
+    {
+        if(Files.exists(simDir))
+        {
+            List<Path> files = Files.walk(simDir).collect(Collectors.toList());
+            Collections.reverse(files);
 
+            for(Path p: files)
+                Files.delete(p);
+        }
+    }
+    
     /**
      * @throws Exception if any
      */
     @Test
     public void testSomething() throws Exception
     {
-        File pom = new File("../test-service").getCanonicalFile();
-        assertNotNull(pom);
         assertTrue(pom.exists());
         
-        DeployMojo deploy = (DeployMojo)rule.lookupConfiguredMojo(pom, "deploy");
+        DeployMojo deploy = (DeployMojo)rule.lookupConfiguredMojo(pom.getParentFile(), "deploy");
         assertNotNull(deploy);
         deploy.execute();
         
-        Path simDir = pom.toPath().resolve("target/simulator");
         assertExists(simDir.resolve("home/exolin/services/test-service"));
         assertExists(simDir.resolve("home/exolin/services/test-service/start.sh"));
         assertExists(simDir.resolve("home/exolin/services/test-service/bin/test-service-1.0-SNAPSHOT.jar"));
@@ -59,12 +95,16 @@ public class DeployMojoTest
         assertEquals("1", a.get("Service", "RestartSec"));
         assertEquals("simple", a.get("Service", "Type"));
         
-        /*File outputDirectory = (File)rule.getVariableValueFromObject(deploy, "outputDirectory");
-        assertNotNull(outputDirectory);
-        assertTrue(outputDirectory.exists());
-
-        File touch = new File(outputDirectory, "touch.txt");
-        assertTrue(touch.exists());*/
+        assertEquals(Arrays.asList(
+                "set -e",
+                "NAME=test-service",
+                "DIR=/home/exolin/services/$NAME",
+                "cd $DIR/bin",
+                "/usr/bin/java -Dsystem.baseDirectory=$DIR -jar $DIR/bin/test-service-1.0-SNAPSHOT.jar >> $DIR/log/$NAME.log 2>> $DIR/log/$NAME.error.log",
+                "echo Started $NAME"
+        ), Files.readAllLines(simDir.resolve("home/exolin/services/test-service/start.sh")));
+        
+        assertEquals("jar", rule.getVariableValueFromObject(deploy, "packaging"));
     }
     
     private void assertExists(Path path)
