@@ -5,6 +5,7 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.NoSuchFileException;
 import java.nio.file.Path;
+import java.nio.file.Paths;
 import org.apache.maven.plugins.annotations.LifecyclePhase;
 import org.exolin.msp.service.sa.PseudoAbstraction;
 import org.exolin.msp.service.sa.SystemAbstraction;
@@ -19,6 +20,11 @@ public class DeployMojo extends BaseMojo
 {
     @Override
     public void execute() throws MojoExecutionException
+    {
+        execute(Paths.get("/"));
+    }
+    
+    public void execute(Path simDir) throws MojoExecutionException
     {
         Path destStartSh = ServiceInfo.getBaseDirectory(serviceUser, serviceName).resolve(ServiceInfo.START_SH);
         
@@ -38,7 +44,6 @@ public class DeployMojo extends BaseMojo
             Generator.createStartSh(startSh, serviceName, serviceUser, jar.getName());
             
             SystemAbstraction sys = new PseudoAbstraction(getLog());
-            Path simDir = targetDir.toPath().resolve("simulator");
             
             deploy(sys, simDir, serviceName, jar.toPath(), libDir.toPath(), serviceUser, startSh.toPath());
         

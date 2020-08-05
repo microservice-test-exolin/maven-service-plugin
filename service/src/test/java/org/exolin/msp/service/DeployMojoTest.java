@@ -68,7 +68,7 @@ public class DeployMojoTest
         
         DeployMojo deploy = (DeployMojo)rule.lookupConfiguredMojo(pom.getParentFile(), "deploy");
         assertNotNull(deploy);
-        deploy.execute();
+        deploy.execute(simDir);
         
         assertExists(simDir.resolve("home/exolin/services/test-service"));
         assertExists(simDir.resolve("home/exolin/services/test-service/start.sh"));
