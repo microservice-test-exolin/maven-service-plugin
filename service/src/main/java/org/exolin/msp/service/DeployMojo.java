@@ -7,10 +7,10 @@ import java.nio.file.NoSuchFileException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import org.apache.maven.plugins.annotations.LifecyclePhase;
-import org.exolin.msp.service.sa.PseudoAbstraction;
 import org.exolin.msp.service.sa.SystemAbstraction;
 import org.apache.maven.plugins.annotations.Mojo;
 import org.apache.maven.plugin.MojoExecutionException;
+import org.exolin.msp.service.sa.LinuxAbstraction;
 
 /**
  * Goal which touches a timestamp file.
@@ -21,10 +21,10 @@ public class DeployMojo extends BaseMojo
     @Override
     public void execute() throws MojoExecutionException
     {
-        execute(Paths.get("/"));
+        execute(Paths.get("/"), new LinuxAbstraction());
     }
     
-    public void execute(Path simDir) throws MojoExecutionException
+    public void execute(Path simDir, SystemAbstraction sys) throws MojoExecutionException
     {
         Path destStartSh = ServiceInfo.getBaseDirectory(serviceUser, serviceName).resolve(ServiceInfo.START_SH);
         
@@ -42,8 +42,6 @@ public class DeployMojo extends BaseMojo
             
             getLog().info("Create start script");
             Generator.createStartSh(startSh, serviceName, serviceUser, jar.getName());
-            
-            SystemAbstraction sys = new PseudoAbstraction(getLog());
             
             deploy(sys, simDir, serviceName, jar.toPath(), libDir.toPath(), serviceUser, startSh.toPath());
         

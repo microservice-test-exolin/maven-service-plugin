@@ -15,6 +15,7 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
+import org.exolin.msp.service.sa.PseudoAbstraction;
 import org.ini4j.Ini;
 import org.junit.After;
 import org.junit.Before;
@@ -68,7 +69,7 @@ public class DeployMojoTest
         
         DeployMojo deploy = (DeployMojo)rule.lookupConfiguredMojo(pom.getParentFile(), "deploy");
         assertNotNull(deploy);
-        deploy.execute(simDir);
+        deploy.execute(simDir, new PseudoAbstraction(deploy.getLog()));
         
         assertExists(simDir.resolve("home/exolin/services/test-service"));
         assertExists(simDir.resolve("home/exolin/services/test-service/start.sh"));
