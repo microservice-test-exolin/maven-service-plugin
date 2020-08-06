@@ -5,6 +5,11 @@
 <!-- markdown-link-check-enable -->
 
 ## [maven deployment plugin](service)
+* deployment:
+  * setup directory structure 
+  * copy binaries 
+  * creating service file
+  * create start script
 
 ## service management web app
 Itself a service, providing a web interface for controlling services:
