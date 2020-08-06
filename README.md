@@ -5,7 +5,11 @@
 <!-- markdown-link-check-enable -->
 
 ## [maven deployment plugin](service)
-* deployment (goal `deploy`):
+
+### goal `deploy`
+Deployment
+
+Does the following:
   * setup directory structure 
   * copy binaries 
   * creating service file
