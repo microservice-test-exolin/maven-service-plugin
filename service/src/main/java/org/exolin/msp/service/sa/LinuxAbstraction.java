@@ -44,13 +44,13 @@ public class LinuxAbstraction implements SystemAbstraction
     @Override
     public void restart(String name) throws IOException
     {
-        system("service", name, "restart");
+        system("systemctl", "restart", name);
     }
 
     @Override
     public void getStatus(String name) throws IOException
     {
-        if(!parse(system2("service", name, "status")))
+        if(!parse(system2("service", "status", name)))
             throw new IllegalStateException("Not started");
     }
     
