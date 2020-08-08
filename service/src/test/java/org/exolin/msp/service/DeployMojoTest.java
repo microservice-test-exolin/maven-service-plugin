@@ -10,11 +10,13 @@ import org.junit.Test;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
+import java.nio.file.NoSuchFileException;
 import java.nio.file.Path;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
+import org.apache.maven.plugin.MojoExecutionException;
 import org.exolin.msp.service.sa.PseudoAbstraction;
 import org.ini4j.Ini;
 import org.junit.After;
@@ -65,7 +67,7 @@ public class DeployMojoTest
      * @throws Exception if any
      */
     @Test
-    public void testSomething() throws Exception
+    public void testDeploy() throws Exception
     {
         assertTrue(pom.exists());
         
@@ -113,6 +115,22 @@ public class DeployMojoTest
     private void assertExists(Path path)
     {
         assertTrue(path.toAbsolutePath().toString()+" not existing", Files.exists(path));
+    }
+    
+    @Test
+    public void testDeployWithMissingServiceDir() throws Exception
+    {
+        Files.delete(simDir.resolve("etc/systemd/system"));
+        
+        DeployMojo deploy = (DeployMojo)rule.lookupConfiguredMojo(pom.getParentFile(), "deploy");
+        assertNotNull(deploy);
+        try{
+            deploy.execute(simDir, new PseudoAbstraction(deploy.getLog()));
+        }catch(MojoExecutionException e){
+            assertNotNull(e.getCause());
+            assertEquals(NoSuchFileException.class, e.getCause().getClass());
+            assertEquals("missing etc/systemd/system", ((NoSuchFileException)e.getCause()).getReason());
+        }
     }
 
     /** Do not need the MojoRule. */
