@@ -41,7 +41,7 @@ public class DeployMojo extends BaseMojo
             Generator.createServiceFile(serviceFile, serviceDescription, serviceUser, destStartSh);
             
             getLog().info("Create start script");
-            Generator.createStartSh(startSh, serviceName, serviceUser, jar.getName());
+            Generator.createStartSh(startSh, serviceName, serviceUser, jar.getName(), useConfigDirectory);
             
             deploy(sys, simDir, serviceName, jar.toPath(), libDir.toPath(), serviceUser, startSh.toPath());
         
@@ -69,6 +69,7 @@ public class DeployMojo extends BaseMojo
         
         Path serviceDir = simDir.resolve("home/"+serviceUser+"/services/"+name);
         Path serviceBinDir = serviceDir.resolve("bin");
+        Path serviceCfgDir = serviceDir.resolve("cfg");
         Path serviceLogDir = serviceDir.resolve("log");
         Path jarDest = serviceBinDir.resolve(jar.getFileName());
 
@@ -77,6 +78,10 @@ public class DeployMojo extends BaseMojo
 
         //Setup directories
         FileUtils.createDirectories(getLog(), serviceBinDir);
+        
+        if(useConfigDirectory)
+            FileUtils.createDirectories(getLog(), serviceCfgDir);
+        
         FileUtils.createDirectories(getLog(), serviceLogDir);
         //system("sudo", "chown", "-R", user, serviceDir.toFile().getAbsolutePath());
         sys.setOwner(serviceDir, serviceUser);

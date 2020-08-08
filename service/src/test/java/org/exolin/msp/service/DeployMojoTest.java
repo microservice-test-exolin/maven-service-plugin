@@ -97,7 +97,11 @@ public class DeployMojoTest
                 "NAME=test-service",
                 "DIR=/home/exolin/services/$NAME",
                 "cd $DIR/bin",
-                "/usr/bin/java -Dsystem.baseDirectory=$DIR -jar $DIR/bin/test-service-1.0-SNAPSHOT.jar >> $DIR/log/$NAME.log 2>> $DIR/log/$NAME.error.log",
+                "/usr/bin/java "
+                        + "-Dsystem.baseDirectory=$DIR "
+                        + "-Dsystem.logDirectory=$DIR/log "
+                        + "-Dsystem.configDirectory=$DIR/cfg"
+                        + " -jar $DIR/bin/test-service-1.0-SNAPSHOT.jar >> $DIR/log/$NAME.log 2>> $DIR/log/$NAME.error.log",
                 "echo Started $NAME"
         ), x);
         

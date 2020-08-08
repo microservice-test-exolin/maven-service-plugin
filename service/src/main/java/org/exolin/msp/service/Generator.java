@@ -47,7 +47,7 @@ public class Generator
         w.append(" -D").append(name).append("=").append(value);
     }
     
-    public static void createStartSh(File file, String serviceName, String serviceUser, String jarName) throws IOException
+    public static void createStartSh(File file, String serviceName, String serviceUser, String jarName, boolean useConfigDirectory) throws IOException
     {
         try(FileWriter o = new FileWriter(file); BufferedWriter w = new BufferedWriter(o))
         {
@@ -68,6 +68,11 @@ public class Generator
 
             w.write("/usr/bin/java");
             writeSysProp(w, "system.baseDirectory", "$DIR");
+            writeSysProp(w, "system.logDirectory", "$DIR/log");
+            
+            if(useConfigDirectory)
+                writeSysProp(w, "system.configDirectory", "$DIR/cfg");
+            
             w.write(" -jar ");
            /**/w.append("$DIR/bin/").append(jarName);
             w.write(" >> $DIR/log/$NAME.log ");
