@@ -50,7 +50,7 @@ public class LinuxAbstraction implements SystemAbstraction
     @Override
     public void getStatus(String name) throws IOException
     {
-        if(!parse(system2("service", "status", name)))
+        if(!parse(system2("systemctl", "status", name)))
             throw new IllegalStateException("Not started");
     }
     
