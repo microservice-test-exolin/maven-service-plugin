@@ -65,7 +65,7 @@ public class DeployMojo extends BaseMojo
         if(!Files.exists(jar))
             throw new NoSuchFileException(jar.toString(), null, "missing JAR");
         if(!Files.exists(simDir.resolve("etc/systemd/system")))
-            throw new NoSuchFileException(jar.toString());
+            throw new NoSuchFileException(simDir.resolve("etc/systemd/system").toString(), null, "missing etc/systemd/system");
         
         Path serviceDir = simDir.resolve("home/"+serviceUser+"/services/"+name);
         Path serviceBinDir = serviceDir.resolve("bin");
