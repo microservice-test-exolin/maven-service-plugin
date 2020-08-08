@@ -8,5 +8,6 @@
     <modules>
         <module>test-service</module>
         <module>service</module>
+        <module>system-lib</module>
     </modules>
 </project>
