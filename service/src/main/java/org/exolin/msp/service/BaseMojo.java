@@ -35,7 +35,7 @@ public abstract class BaseMojo extends AbstractMojo
     @Parameter(defaultValue = "${project.description}", property = "serviceDescription", required = true)
     protected String serviceDescription;
     
-    @Parameter(defaultValue = "${service.useConfigDirectory}", property = "useConfigDirectory", required = true)
+    @Parameter(defaultValue = "${service.useConfigDirectory}", property = "useConfigDirectory", required = false)
     protected boolean useConfigDirectory;
     
     protected File pluginDir() throws IOException
