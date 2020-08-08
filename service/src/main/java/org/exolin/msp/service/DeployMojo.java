@@ -63,9 +63,9 @@ public class DeployMojo extends BaseMojo
     private void deploy(SystemAbstraction sys, Path simDir, String name, Path jar, Path libDir, String serviceUser, Path startScript) throws IOException
     {
         if(!Files.exists(jar))
-            throw new NoSuchFileException("No jar: "+jar);
-        
-        Files.createDirectories(simDir.resolve("etc/systemd/system"));
+            throw new NoSuchFileException(jar.toString(), null, "missing JAR");
+        if(!Files.exists(simDir.resolve("etc/systemd/system")))
+            throw new NoSuchFileException(jar.toString());
         
         Path serviceDir = simDir.resolve("home/"+serviceUser+"/services/"+name);
         Path serviceBinDir = serviceDir.resolve("bin");

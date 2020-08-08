@@ -44,6 +44,8 @@ public class DeployMojoTest
     {
         pom = new File("../test-service/pom.xml").getCanonicalFile();
         simDir = pom.toPath().resolveSibling("target/simulator");
+        
+        Files.createDirectories(simDir.resolve("etc/systemd/system"));
     }
     
     @After
