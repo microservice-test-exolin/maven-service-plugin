@@ -28,6 +28,14 @@ public class ListServicesServlet extends HttpServlet
     {
         this.services = services;
     }
+    
+    private static class FailedService extends RuntimeException
+    {
+        public FailedService(String message)
+        {
+            super(message);
+        }
+    }
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException
@@ -72,7 +80,7 @@ public class ListServicesServlet extends HttpServlet
                         out.append(statusType.toString());
                         
                         if(statusType != StatusType.FAILED)
-                            exceptions.put(service.getName(), new RuntimeException(status.getInfo()));
+                            exceptions.put(service.getName(), new FailedService(status.getInfo()));
                     }catch(UnsupportedOperationException e){
                         exceptions.put(service.getName(), e);
                         out.append("Couldn't be determined");
@@ -108,7 +116,10 @@ public class ListServicesServlet extends HttpServlet
                     out.append(e.getKey());
                     out.append("</td>");
                     out.append("<td><pre>");
-                    e.getValue().printStackTrace(out);
+                    if(e.getValue() instanceof FailedService)
+                        out.append(e.getValue().getMessage());
+                    else
+                        e.getValue().printStackTrace(out);
                     out.append("</pre></td>");
                     out.append("</tr>");
                 }
