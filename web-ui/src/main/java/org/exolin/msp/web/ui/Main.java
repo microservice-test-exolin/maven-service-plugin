@@ -14,8 +14,10 @@ import org.exolin.msp.core.Log;
 import org.exolin.msp.core.PseudoAbstraction;
 import org.exolin.msp.core.SystemAbstraction;
 import org.exolin.msp.web.ui.servlet.DeployServlet;
+import org.exolin.msp.web.ui.servlet.IndexServlet;
 import org.exolin.msp.web.ui.servlet.ListServicesServlet;
 import org.exolin.msp.web.ui.servlet.LogServlet;
+import org.exolin.msp.web.ui.servlet.ProcessServlet;
 import org.exolin.msp.web.ui.servlet.StatusServlet;
 import org.exolin.msp.web.ui.stub.StubService;
 import org.exolin.msp.web.ui.stub.StubServices;
@@ -82,9 +84,11 @@ public class Main
         
         ServletHandler servletHandler = new ServletHandler();
         servletHandler.addServletWithMapping(StatusServlet.class, "/status");
+        servletHandler.addServletWithMapping(IndexServlet.class, "/");
         servletHandler.addServletWithMapping(ListServicesServlet.class, "/services").setServlet(new ListServicesServlet(services));
         servletHandler.addServletWithMapping(ListServicesServlet.class, "/deploy").setServlet(new DeployServlet(services, pm));
         servletHandler.addServletWithMapping(ListServicesServlet.class, "/logs").setServlet(new LogServlet(services));
+        servletHandler.addServletWithMapping(ListServicesServlet.class, "/processes").setServlet(new ProcessServlet(pm));
         
         server.setHandler(servletHandler);
         

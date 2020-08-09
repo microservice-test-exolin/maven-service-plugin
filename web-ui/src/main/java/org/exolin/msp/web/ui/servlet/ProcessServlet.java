@@ -3,6 +3,7 @@ package org.exolin.msp.web.ui.servlet;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
@@ -55,7 +56,12 @@ public class ProcessServlet extends HttpServlet
             out.append("<th>Runtime</th>");
             out.append("</tr>");
             
-            for(ProcessManager.ProcessInfo service: pm.getProcesses())
+            List<ProcessManager.ProcessInfo> processes = pm.getProcesses();
+            
+            if(processes.isEmpty())
+                out.append("<tr><td style=\"text-align: center\" colspan=\"3\"><em>No running processes</em></td></tr>");
+            
+            for(ProcessManager.ProcessInfo service: processes)
             {
                 out.append("<tr>");
                 out.append("<td>").append(service.getTitle()).append("</td>");
