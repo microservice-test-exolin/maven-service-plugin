@@ -18,4 +18,5 @@ public interface Service
     public void restart() throws IOException;
     
     public void build(List<String> log) throws IOException, InterruptedException;
+    public void deploy(List<String> log) throws IOException, InterruptedException;
 }

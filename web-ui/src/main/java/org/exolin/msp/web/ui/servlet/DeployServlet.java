@@ -118,7 +118,19 @@ public class DeployServlet extends HttpServlet
                 resp.getWriter().append(String.join("\n", log));
                 return;
             }
-            //case "deploy": service.start(); break;
+            case "deploy":
+            {
+                List<String> log = new ArrayList<>();
+                try{
+                    service.deploy(log);
+                }catch(IOException|InterruptedException e){
+                    e.printStackTrace(resp.getWriter());
+                    return;
+                }
+                
+                resp.getWriter().append(String.join("\n", log));
+                return;
+            }
             default:
                 resp.sendError(HttpServletResponse.SC_BAD_REQUEST, "Unknown action "+action);
                 return;

@@ -48,4 +48,19 @@ public class LinuxService extends StubService
         String out = LinuxAbstraction.read(p);
         log.addAll(Arrays.asList(out.split("\n")));
     }
+    
+    @Override
+    public void deploy(List<String> log) throws IOException, InterruptedException
+    {
+        Path dir = getOriginalPath();
+        
+        Process p = new ProcessBuilder("/bin/bash", "-c", "/root/repos/deploy.sh")
+                .directory(dir.toFile())
+                .redirectInput(ProcessBuilder.Redirect.INHERIT)
+                .redirectError(ProcessBuilder.Redirect.INHERIT)
+                .start();
+        
+        String out = LinuxAbstraction.read(p);
+        log.addAll(Arrays.asList(out.split("\n")));
+    }
 }
