@@ -80,16 +80,14 @@ public class DeployServlet extends HttpServlet
         String serviceName = req.getParameter("service");
         if(serviceName == null)
         {
-            //resp.setStatus(HttpServletResponse.SC_BAD_REQUEST);
-            resp.getWriter().write("Missing parameter service");
+            resp.sendError(HttpServletResponse.SC_BAD_REQUEST, "Missing parameter service");
             return;
         }
         
         String action = req.getParameter("action");
         if(action == null)
         {
-            //resp.setStatus(HttpServletResponse.SC_BAD_REQUEST);
-            resp.getWriter().write("Missing parameter action");
+            resp.sendError(HttpServletResponse.SC_BAD_REQUEST, "Missing parameter action");
             return;
         }
         
@@ -122,7 +120,7 @@ public class DeployServlet extends HttpServlet
             }
             //case "deploy": service.start(); break;
             default:
-                resp.sendError(HttpServletResponse.SC_BAD_REQUEST);
+                resp.sendError(HttpServletResponse.SC_BAD_REQUEST, "Unknown action "+action);
                 return;
         }
         
