@@ -31,7 +31,7 @@ public class StubService implements Service
         try{
             return sys.isRunning(name) ? "Running" : "Stopped";
         }catch(IOException ex){
-            return "Couldn't be determined";
+            return "Couldn't be determined ("+ex+")";
         }
     }
 
