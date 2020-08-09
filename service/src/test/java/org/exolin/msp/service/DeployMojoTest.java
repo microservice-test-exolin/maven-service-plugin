@@ -18,9 +18,11 @@ import java.util.List;
 import java.util.stream.Collectors;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.exolin.msp.service.sa.PseudoAbstraction;
+import static org.hamcrest.CoreMatchers.is;
 import org.ini4j.Ini;
 import org.junit.After;
 import org.junit.Before;
+import org.junit.rules.ErrorCollector;
 
 public class DeployMojoTest
 {
@@ -117,6 +119,9 @@ public class DeployMojoTest
         assertTrue(path.toAbsolutePath().toString()+" not existing", Files.exists(path));
     }
     
+    @Rule
+    public ErrorCollector collector;
+    
     @Test
     public void testDeployWithMissingServiceDir() throws Exception
     {
@@ -128,8 +133,8 @@ public class DeployMojoTest
             deploy.execute(simDir, new PseudoAbstraction(deploy.getLog()));
         }catch(MojoExecutionException e){
             assertNotNull(e.getCause());
-            assertEquals(NoSuchFileException.class, e.getCause().getClass());
-            assertEquals("missing etc/systemd/system", ((NoSuchFileException)e.getCause()).getReason());
+            collector.checkThat(e.getCause().getClass(), is((Object)NoSuchFileException.class));
+            collector.checkThat(((NoSuchFileException)e.getCause()).getReason(), is("missing etc/systemd/system"));
         }
     }
 
