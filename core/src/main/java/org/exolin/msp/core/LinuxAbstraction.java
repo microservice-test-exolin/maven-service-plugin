@@ -1,4 +1,4 @@
-package org.exolin.msp.service.sa;
+package org.exolin.msp.core;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -10,7 +10,6 @@ import java.nio.file.LinkOption;
 import java.nio.file.Path;
 import java.nio.file.attribute.PosixFileAttributeView;
 import java.nio.file.attribute.UserPrincipalLookupService;
-import org.apache.maven.plugin.logging.Log;
 
 /**
  *
@@ -30,8 +29,7 @@ public class LinuxAbstraction implements SystemAbstraction
     {
         log.info("Setting owner for "+path+" to "+user);
         
-        UserPrincipalLookupService lookupService = FileSystems.getDefault()
-            .getUserPrincipalLookupService();
+        UserPrincipalLookupService lookupService = FileSystems.getDefault().getUserPrincipalLookupService();
         Files.getFileAttributeView(path, PosixFileAttributeView.class, LinkOption.NOFOLLOW_LINKS).setOwner(lookupService.lookupPrincipalByName(user));
     }
 
@@ -42,16 +40,27 @@ public class LinuxAbstraction implements SystemAbstraction
     }
 
     @Override
+    public void start(String name) throws IOException
+    {
+        system("systemctl", "start", name);
+    }
+
+    @Override
+    public void stop(String name) throws IOException
+    {
+        system("systemctl", "stop", name);
+    }
+
+    @Override
     public void restart(String name) throws IOException
     {
         system("systemctl", "restart", name);
     }
 
     @Override
-    public void getStatus(String name) throws IOException
+    public boolean isRunning(String name) throws IOException
     {
-        if(!parse(system2("systemctl", "status", name)))
-            throw new IllegalStateException("Not started");
+        return parse(system2("systemctl", "status", name));
     }
     
     boolean parse(String stdout)

@@ -1,14 +1,17 @@
 package org.exolin.msp.web.ui;
 
-import org.exolin.msp.web.ui.servlet.ListServicesServlet;
-import org.exolin.msp.web.ui.servlet.StatusServlet;
-import org.exolin.msp.web.ui.stub.StubServices;
-import org.exolin.msp.web.ui.stub.StubService;
 import java.util.Arrays;
 import org.eclipse.jetty.server.Connector;
 import org.eclipse.jetty.server.Server;
 import org.eclipse.jetty.server.ServerConnector;
 import org.eclipse.jetty.servlet.ServletHandler;
+import org.exolin.msp.core.Log;
+import org.exolin.msp.core.PseudoAbstraction;
+import org.exolin.msp.core.SystemAbstraction;
+import org.exolin.msp.web.ui.servlet.ListServicesServlet;
+import org.exolin.msp.web.ui.servlet.StatusServlet;
+import org.exolin.msp.web.ui.stub.StubService;
+import org.exolin.msp.web.ui.stub.StubServices;
 
 /**
  *
@@ -23,10 +26,22 @@ public class Main
         connector.setPort(8090);
         server.setConnectors(new Connector[]{connector});
         
+        SystemAbstraction sys = new PseudoAbstraction(new Log(){
+            @Override
+            public void warn(String string)
+            {
+            }
+
+            @Override
+            public void info(String string)
+            {
+            }
+        });
+        
         Services services = new StubServices(Arrays.asList(
-                new StubService("mittens-discord"),
-                new StubService("milkboi-discord"),
-                new StubService("milkboi-telegram")
+                new StubService("mittens-discord", sys),
+                new StubService("milkboi-discord", sys),
+                new StubService("milkboi-telegram", sys)
         ));
         
         ServletHandler servletHandler = new ServletHandler();

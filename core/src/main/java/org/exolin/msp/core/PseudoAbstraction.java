@@ -1,8 +1,9 @@
-package org.exolin.msp.service.sa;
+package org.exolin.msp.core;
 
 import java.io.IOException;
 import java.nio.file.Path;
-import org.apache.maven.plugin.logging.Log;
+import java.util.HashSet;
+import java.util.Set;
 
 /**
  *
@@ -11,6 +12,7 @@ import org.apache.maven.plugin.logging.Log;
 public class PseudoAbstraction implements SystemAbstraction
 {
     private final Log log;
+    private final Set<String> running = new HashSet<>();
 
     public PseudoAbstraction(Log log)
     {
@@ -33,11 +35,27 @@ public class PseudoAbstraction implements SystemAbstraction
     public void restart(String name) throws IOException
     {
         log.warn("Pseudo > Restart "+name);
+        running.add(name);
     }
 
     @Override
-    public void getStatus(String name) throws IOException
+    public boolean isRunning(String name) throws IOException
     {
         log.warn("Pseudo > Check status for "+name);
+        return running.contains(name);
+    }
+
+    @Override
+    public void start(String name) throws IOException
+    {
+        log.warn("Pseudo > Start "+name);
+        running.add(name);
+    }
+
+    @Override
+    public void stop(String name) throws IOException
+    {
+        log.warn("Pseudo > Stop "+name);
+        running.remove(name);
     }
 }

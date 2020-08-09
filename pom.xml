@@ -10,5 +10,6 @@
         <module>service</module>
         <module>system-lib</module>
         <module>web-ui</module>
+        <module>core</module>
     </modules>
 </project>

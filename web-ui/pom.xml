@@ -27,6 +27,11 @@
             <artifactId>jetty-servlet</artifactId>
             <version>9.4.3.v20170317</version>
         </dependency>
+        <dependency>
+            <groupId>${project.groupId}</groupId>
+            <artifactId>core</artifactId>
+            <version>${project.version}</version>
+        </dependency>
     </dependencies>
     <build>
         <plugins>

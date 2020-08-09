@@ -7,10 +7,10 @@ import java.nio.file.NoSuchFileException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import org.apache.maven.plugins.annotations.LifecyclePhase;
-import org.exolin.msp.service.sa.SystemAbstraction;
+import org.exolin.msp.core.SystemAbstraction;
 import org.apache.maven.plugins.annotations.Mojo;
 import org.apache.maven.plugin.MojoExecutionException;
-import org.exolin.msp.service.sa.LinuxAbstraction;
+import org.exolin.msp.core.LinuxAbstraction;
 
 /**
  * Goal which touches a timestamp file.
@@ -21,7 +21,7 @@ public class DeployMojo extends BaseMojo
     @Override
     public void execute() throws MojoExecutionException
     {
-        execute(Paths.get("/"), new LinuxAbstraction(getLog()));
+        execute(Paths.get("/"), new LinuxAbstraction(new LogAdapter(getLog())));
     }
     
     public void execute(Path simDir, SystemAbstraction sys) throws MojoExecutionException
@@ -106,6 +106,7 @@ public class DeployMojo extends BaseMojo
         getLog().info("Installed");
 
         sys.restart(name);
-        sys.getStatus(name);
+        if(!sys.isRunning(name))
+            throw new IllegalStateException("Not running: "+name);
     }
 }

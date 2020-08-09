@@ -1,5 +1,7 @@
 package org.exolin.msp.web.ui.stub;
 
+import java.io.IOException;
+import org.exolin.msp.core.SystemAbstraction;
 import org.exolin.msp.web.ui.Service;
 
 /**
@@ -9,14 +11,14 @@ import org.exolin.msp.web.ui.Service;
 public class StubService implements Service
 {
     private final String name;
-    private String status;
+    private final SystemAbstraction sys;
 
-    public StubService(String name)
+    public StubService(String name, SystemAbstraction sys)
     {
         this.name = name;
-        this.status = "Running";
+        this.sys = sys;
     }
-    
+
     @Override
     public String getName()
     {
@@ -26,24 +28,28 @@ public class StubService implements Service
     @Override
     public String getStatus()
     {
-        return status;
+        try{
+            return sys.isRunning(name) ? "Running" : "Stopped";
+        }catch(IOException ex){
+            return "Couldn't be determined";
+        }
     }
 
     @Override
-    public void start()
+    public void start() throws IOException
     {
-        status = "Running";
+        sys.start(name);
     }
 
     @Override
-    public void stop()
+    public void stop() throws IOException
     {
-        status = "Stopped";
+        sys.stop(name);
     }
 
     @Override
-    public void restart()
+    public void restart() throws IOException
     {
-        status = "Running";
+        sys.restart(name);
     }
 }

@@ -17,7 +17,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 import org.apache.maven.plugin.MojoExecutionException;
-import org.exolin.msp.service.sa.PseudoAbstraction;
+import org.exolin.msp.core.PseudoAbstraction;
 import org.ini4j.Ini;
 import org.junit.After;
 import org.junit.Before;
@@ -73,7 +73,7 @@ public class DeployMojoTest
         
         DeployMojo deploy = (DeployMojo)rule.lookupConfiguredMojo(pom.getParentFile(), "deploy");
         assertNotNull(deploy);
-        deploy.execute(simDir, new PseudoAbstraction(deploy.getLog()));
+        deploy.execute(simDir, new PseudoAbstraction(new LogAdapter(deploy.getLog())));
         
         assertExists(simDir.resolve("home/exolin/services/test-service"));
         assertExists(simDir.resolve("home/exolin/services/test-service/start.sh"));
@@ -125,7 +125,7 @@ public class DeployMojoTest
         DeployMojo deploy = (DeployMojo)rule.lookupConfiguredMojo(pom.getParentFile(), "deploy");
         assertNotNull(deploy);
         try{
-            deploy.execute(simDir, new PseudoAbstraction(deploy.getLog()));
+            deploy.execute(simDir, new PseudoAbstraction(new LogAdapter(deploy.getLog())));
         }catch(MojoExecutionException e){
             assertNotNull(e.getCause());
             assertEquals(NoSuchFileException.class, e.getCause().getClass());

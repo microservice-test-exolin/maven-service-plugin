@@ -1,9 +1,8 @@
-package org.exolin.msp.service.sa;
+package org.exolin.msp.core;
 
 import java.io.IOException;
-import org.apache.maven.plugin.testing.SilentLog;
-import org.junit.Test;
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.*;
+import org.junit.jupiter.api.Test;
 
 /**
  * Tests für {@link LinuxAbstraction}.
@@ -12,7 +11,13 @@ import static org.junit.Assert.*;
  */
 public class LinuxAbstractionTest
 {
-    private final LinuxAbstraction a = new LinuxAbstraction(new SilentLog());
+    private final LinuxAbstraction a = new LinuxAbstraction(new Log(){
+        @Override
+        public void warn(String string){}
+        
+        @Override
+        public void info(String string){}
+    });
     
     @Test
     public void testGetStatus_Okay() throws Exception
