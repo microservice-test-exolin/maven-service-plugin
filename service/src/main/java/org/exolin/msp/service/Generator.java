@@ -55,12 +55,6 @@ public class Generator
     public static void createStartSh(File file, String serviceName, String serviceUser, String jarName, boolean useConfigDirectory) throws IOException
     {
         Path path = file.toPath();
-        if(path.getFileSystem().supportedFileAttributeViews().contains("posix"))
-        {
-            Set<PosixFilePermission> ownerWritable = PosixFilePermissions.fromString("rw-r--r--");
-            FileAttribute<?> permissions = PosixFilePermissions.asFileAttribute(ownerWritable);
-            Files.createFile(path, permissions);
-        }
         
         try(BufferedWriter w = Files.newBufferedWriter(file.toPath()))
         {
@@ -95,5 +89,8 @@ public class Generator
             w.write("echo Started $NAME");
             w.newLine();
         }
+        
+        if(path.getFileSystem().supportedFileAttributeViews().contains("posix"))
+            Files.setPosixFilePermissions(path, PosixFilePermissions.fromString("rw-r--r--"));
     }
 }
