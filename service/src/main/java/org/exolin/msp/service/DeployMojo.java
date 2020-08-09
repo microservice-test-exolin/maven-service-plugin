@@ -2,6 +2,7 @@ package org.exolin.msp.service;
 
 import java.io.File;
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.NoSuchFileException;
 import java.nio.file.Path;
@@ -87,6 +88,10 @@ public class DeployMojo extends BaseMojo
         files.createDirectories(serviceLogDir);
         //system("sudo", "chown", "-R", user, serviceDir.toFile().getAbsolutePath());
         sys.setOwner(serviceDir, serviceUser);
+        
+        Path originalPath = serviceDir.resolve("original.path");
+        Files.write(originalPath, jar.getParent().toAbsolutePath().toString().getBytes(StandardCharsets.UTF_8));
+        sys.setOwner(originalPath, serviceUser);
         
         //Copy JAR and dependencies
         files.copy(jar, jarDest);

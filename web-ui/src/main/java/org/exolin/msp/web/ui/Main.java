@@ -1,7 +1,9 @@
 package org.exolin.msp.web.ui;
 
 import java.nio.file.Paths;
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 import org.eclipse.jetty.server.Connector;
 import org.eclipse.jetty.server.Server;
 import org.eclipse.jetty.server.ServerConnector;
@@ -10,6 +12,7 @@ import org.exolin.msp.core.LinuxAbstraction;
 import org.exolin.msp.core.Log;
 import org.exolin.msp.core.PseudoAbstraction;
 import org.exolin.msp.core.SystemAbstraction;
+import org.exolin.msp.web.ui.servlet.DeployServlet;
 import org.exolin.msp.web.ui.servlet.ListServicesServlet;
 import org.exolin.msp.web.ui.servlet.StatusServlet;
 import org.exolin.msp.web.ui.stub.StubService;
@@ -22,6 +25,13 @@ import org.exolin.msp.web.ui.stub.StubServices;
 public class Main
 {
     public static void main(String[] args) throws Exception
+    {
+        List<String> log = new ArrayList<>();
+        LinuxService.build(Paths.get("W:\\discord-telegram-bots\\mittens-discord"), log);
+        System.out.println(String.join("\n", log));
+    }
+    
+    private void a() throws Exception
     {
         Log log = new Log(){
                 @Override
@@ -66,6 +76,7 @@ public class Main
         ServletHandler servletHandler = new ServletHandler();
         servletHandler.addServletWithMapping(StatusServlet.class, "/status");
         servletHandler.addServletWithMapping(ListServicesServlet.class, "/services").setServlet(new ListServicesServlet(services));
+        servletHandler.addServletWithMapping(ListServicesServlet.class, "/deploy").setServlet(new DeployServlet(services));
         
         server.setHandler(servletHandler);
         

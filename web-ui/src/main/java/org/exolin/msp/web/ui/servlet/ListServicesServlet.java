@@ -3,9 +3,7 @@ package org.exolin.msp.web.ui.servlet;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.io.Writer;
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
@@ -138,7 +136,7 @@ public class ListServicesServlet extends HttpServlet
         }
     }
     
-    private void write(Writer out, String action, String title) throws IOException
+    static void write(Writer out, String action, String title) throws IOException
     {
         out.append("<button name=\"action\" value=\""+action+"\" class=\"btn btn-secondary\">").append(title).append("</button> ");
     }

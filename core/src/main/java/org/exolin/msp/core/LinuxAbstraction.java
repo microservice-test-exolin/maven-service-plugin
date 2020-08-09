@@ -85,30 +85,40 @@ public class LinuxAbstraction implements SystemAbstraction
         try{
             Process p = new ProcessBuilder(cmd).start();
             
-            byte[] b = new byte[1024*8];
-            int r;
-            
-            InputStream in = p.getInputStream();
-            ByteArrayOutputStream out = new ByteArrayOutputStream();
-            while((r = in.read(b)) != -1)
-                out.write(b, 0, r);
-            
-            p.waitFor();
-            /*if(false)//p.waitFor() != 0)
-            {
-                InputStream err = p.getInputStream();
-                ByteArrayOutputStream errout = new ByteArrayOutputStream();
-                while((r = err.read(b)) != -1)
-                    errout.write(b, 0, r);
-                
-                throw new IOException(String.join(" ", cmd)+" exited with "+p.exitValue()+": "+errout.toString()+out.toString());
-            }*/
-            
-            return new String(out.toByteArray());
+            return read(p);
         }catch(InterruptedException e){
             InterruptedIOException ex = new InterruptedIOException(e.toString());
             ex.initCause(e);
             throw ex;
         }
+    }
+    
+    public static String read(Process p) throws IOException, InterruptedException
+    {
+        byte[] b = new byte[1024*8];
+        int r;
+
+        InputStream in = p.getInputStream();
+        ByteArrayOutputStream out = new ByteArrayOutputStream();
+        while((r = in.read(b)) != -1)
+            out.write(b, 0, r);
+        
+        InputStream err = p.getInputStream();
+        ByteArrayOutputStream errout = new ByteArrayOutputStream();
+        while((r = err.read(b)) != -1)
+            errout.write(b, 0, r);
+
+        p.waitFor();
+        /*if(false)//p.waitFor() != 0)
+        {
+            InputStream err = p.getInputStream();
+            ByteArrayOutputStream errout = new ByteArrayOutputStream();
+            while((r = err.read(b)) != -1)
+                errout.write(b, 0, r);
+
+            throw new IOException(String.join(" ", cmd)+" exited with "+p.exitValue()+": "+errout.toString()+out.toString());
+        }*/
+
+        return new String(out.toByteArray());
     }
 }
