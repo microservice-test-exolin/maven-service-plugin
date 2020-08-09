@@ -39,10 +39,10 @@ public class PseudoAbstraction implements SystemAbstraction
     }
 
     @Override
-    public boolean isRunning(String name) throws IOException
+    public StatusInfo getStatus(String name) throws IOException
     {
         log.warn("Pseudo > Check status for "+name);
-        return running.contains(name);
+        return new SimpleStatusInfo(running.contains(name));
     }
 
     @Override

@@ -1,6 +1,7 @@
 package org.exolin.msp.web.ui;
 
 import java.io.IOException;
+import org.exolin.msp.core.StatusInfo;
 
 /**
  *
@@ -9,7 +10,7 @@ import java.io.IOException;
 public interface Service
 {
     public String getName();
-    public String getStatus();
+    public StatusInfo getStatus() throws IOException;
     
     public void start() throws IOException;
     public void stop() throws IOException;

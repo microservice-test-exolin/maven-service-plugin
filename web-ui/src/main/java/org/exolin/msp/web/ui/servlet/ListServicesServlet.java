@@ -1,11 +1,15 @@
 package org.exolin.msp.web.ui.servlet;
 
 import java.io.IOException;
+import java.io.PrintWriter;
 import java.io.Writer;
+import java.util.ArrayList;
+import java.util.List;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import org.exolin.msp.core.StatusInfo;
 import org.exolin.msp.web.ui.Service;
 import org.exolin.msp.web.ui.Services;
 
@@ -27,8 +31,10 @@ public class ListServicesServlet extends HttpServlet
     {
         resp.setContentType("text/html;charset=UTF-8");
         
-        try(Writer out = resp.getWriter())
+        try(PrintWriter out = resp.getWriter())
         {
+            List<Exception> exceptions = new ArrayList<>();
+            
             out.append("<html>");
             out.append("<head>");
             out.append("<title>Services</title>");
@@ -53,7 +59,21 @@ public class ListServicesServlet extends HttpServlet
             {
                 out.append("<tr>");
                 out.append("<td>").append(service.getName()).append("</td>");
-                out.append("<td>").append(service.getStatus()).append("</td>");
+                
+                out.append("<td>");
+                try{
+                    StatusInfo status = service.getStatus();
+                    try{
+                        out.append(status.isRunning() ? "Running" : "Stop");
+                    }catch(UnsupportedOperationException e){
+                        exceptions.add(e);
+                        out.append("Couldn't be determined");
+                    }
+                }catch(IOException e){
+                    exceptions.add(e);
+                    out.append("Couldn't be determined");
+                }
+                out.append("</td>");
                 
                 out.append("<td>");
                 out.append("<form action=\"#\" method=\"POST\">");
@@ -68,6 +88,18 @@ public class ListServicesServlet extends HttpServlet
             }
             
             out.append("</table>");
+            
+            out.append("<table>");
+            for(Exception e: exceptions)
+            {
+                out.append("<tr>");
+                out.append("<td><pre>");
+                e.printStackTrace(out);
+                out.append("</pre></td>");
+                out.append("</tr>");
+            }
+            out.append("</table>");
+            
             out.append("</div>");
             
             out.append("</body>");

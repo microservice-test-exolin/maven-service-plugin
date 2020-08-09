@@ -58,19 +58,9 @@ public class LinuxAbstraction implements SystemAbstraction
     }
 
     @Override
-    public boolean isRunning(String name) throws IOException
+    public StatusInfo getStatus(String name) throws IOException
     {
-        return parse(system2("systemctl", "status", name));
-    }
-    
-    boolean parse(String stdout)
-    {
-        if(stdout.contains("   Active: active"))
-            return true;
-        else if(stdout.contains("   Active: failed "))
-            return false;
-        else
-            throw new UnsupportedOperationException("Can't parse:\n"+stdout);
+        return new LinuxStatusInfo(system2("systemctl", "status", name));
     }
     
     private void system(String...cmd) throws IOException

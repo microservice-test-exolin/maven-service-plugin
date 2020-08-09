@@ -106,7 +106,7 @@ public class DeployMojo extends BaseMojo
         getLog().info("Installed");
 
         sys.restart(name);
-        if(!sys.isRunning(name))
+        if(!sys.getStatus(name).isRunning())
             throw new IllegalStateException("Not running: "+name);
     }
 }

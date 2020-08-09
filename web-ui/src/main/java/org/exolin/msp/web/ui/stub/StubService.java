@@ -1,6 +1,7 @@
 package org.exolin.msp.web.ui.stub;
 
 import java.io.IOException;
+import org.exolin.msp.core.StatusInfo;
 import org.exolin.msp.core.SystemAbstraction;
 import org.exolin.msp.web.ui.Service;
 
@@ -26,13 +27,9 @@ public class StubService implements Service
     }
 
     @Override
-    public String getStatus()
+    public StatusInfo getStatus() throws IOException
     {
-        try{
-            return sys.isRunning(name) ? "Running" : "Stopped";
-        }catch(IOException ex){
-            return "Couldn't be determined ("+ex+")";
-        }
+        return sys.getStatus(name);
     }
 
     @Override
