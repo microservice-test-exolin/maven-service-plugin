@@ -90,7 +90,7 @@ public class DeployMojo extends BaseMojo
         sys.setOwner(serviceDir, serviceUser);
         
         Path originalPath = serviceDir.resolve("original.path");
-        Files.write(originalPath, jar.getParent().toAbsolutePath().toString().getBytes(StandardCharsets.UTF_8));
+        Files.write(originalPath, jar.getParent().getParent().toAbsolutePath().toString().getBytes(StandardCharsets.UTF_8));
         sys.setOwner(originalPath, serviceUser);
         
         //Copy JAR and dependencies
