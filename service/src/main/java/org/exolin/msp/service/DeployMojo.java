@@ -26,6 +26,7 @@ public class DeployMojo extends BaseMojo
     
     public void execute(Path simDir, SystemAbstraction sys) throws MojoExecutionException
     {
+        FileUtils files = new FileUtils(getLog(), serviceUser, sys);
         Path destStartSh = ServiceInfo.getBaseDirectory(serviceUser, serviceName).resolve(ServiceInfo.START_SH);
         
         try{
@@ -43,9 +44,9 @@ public class DeployMojo extends BaseMojo
             getLog().info("Create start script");
             Generator.createStartSh(startSh, serviceName, serviceUser, jar.getName(), useConfigDirectory);
             
-            deploy(sys, simDir, serviceName, jar.toPath(), libDir.toPath(), serviceUser, startSh.toPath());
+            deploy(sys, files, simDir, serviceName, jar.toPath(), libDir.toPath(), serviceUser, startSh.toPath());
         
-            setupServiceFile(sys, simDir, serviceName, serviceFile.toPath());
+            setupServiceFile(sys, files, simDir, serviceName, serviceFile.toPath());
         }catch(IOException ex){
             throw new MojoExecutionException("Couldn't deploy", ex);
         }
@@ -60,7 +61,7 @@ public class DeployMojo extends BaseMojo
      * @param startScript Script used to start service
      * @throws IOException 
      */
-    private void deploy(SystemAbstraction sys, Path simDir, String name, Path jar, Path libDir, String serviceUser, Path startScript) throws IOException
+    private void deploy(SystemAbstraction sys, FileUtils files, Path simDir, String name, Path jar, Path libDir, String serviceUser, Path startScript) throws IOException
     {
         if(!Files.exists(jar))
             throw new NoSuchFileException(jar.toString(), null, "missing JAR");
@@ -77,28 +78,28 @@ public class DeployMojo extends BaseMojo
         //service $NAME stop || echo Service was not running
 
         //Setup directories
-        FileUtils.createDirectories(getLog(), serviceBinDir);
+        files.createDirectories(serviceBinDir);
         
         if(useConfigDirectory)
-            FileUtils.createDirectories(getLog(), serviceCfgDir);
+            files.createDirectories(serviceCfgDir);
         
-        FileUtils.createDirectories(getLog(), serviceLogDir);
+        files.createDirectories(serviceLogDir);
         //system("sudo", "chown", "-R", user, serviceDir.toFile().getAbsolutePath());
         sys.setOwner(serviceDir, serviceUser);
         
         //Copy JAR and dependencies
-        FileUtils.copy(getLog(), jar, jarDest);
-        FileUtils.copyDirectoryContent(getLog(), libDir, serviceBinDir);
-        FileUtils.copy(getLog(), startScript, serviceDir.resolve(ServiceInfo.START_SH));
+        files.copy(jar, jarDest);
+        files.copyDirectoryContent(libDir, serviceBinDir);
+        files.copy(startScript, serviceDir.resolve(ServiceInfo.START_SH));
         getLog().info("Copied jar file to "+jarDest);
     }
     
-    private void setupServiceFile(SystemAbstraction sys, Path simDir, String name, Path localServiceFile) throws IOException
+    private void setupServiceFile(SystemAbstraction sys, FileUtils files, Path simDir, String name, Path localServiceFile) throws IOException
     {
         Path serviceDestFile = simDir.resolve("etc/systemd/system/"+name+".service");
         
         //Install service file
-        FileUtils.copy(getLog(), localServiceFile, serviceDestFile);
+        files.copy(localServiceFile, serviceDestFile);
         getLog().info("Copied service file to "+serviceDestFile);
         sys.reloadDeamon();
 

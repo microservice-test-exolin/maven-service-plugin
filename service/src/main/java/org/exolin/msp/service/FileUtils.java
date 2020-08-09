@@ -6,6 +6,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.StandardCopyOption;
 import org.apache.maven.plugin.logging.Log;
+import org.exolin.msp.service.sa.SystemAbstraction;
 
 /**
  *
@@ -13,21 +14,29 @@ import org.apache.maven.plugin.logging.Log;
  */
 public class FileUtils
 {
-    private static void _copy(Path src, Path dest) throws IOException
+    private final Log log;
+    private final String user;
+    private final SystemAbstraction sys;
+
+    public FileUtils(Log log, String user, SystemAbstraction sys)
+    {
+        this.log = log;
+        this.user = user;
+        this.sys = sys;
+    }
+
+    private void _copy(Path src, Path dest) throws IOException
     {
         try{
             Files.copy(src, dest, StandardCopyOption.REPLACE_EXISTING);
         }catch(IOException e){
             throw new IOException("Failed to copy "+src+" to "+dest+": "+e, e);
         }
+        
+        sys.setOwner(dest, user);
     }
-
-    /*public static void copyIntoDirectory(Log log, Path src, Path destDirectory) throws IOException
-    {
-        copy(log, src, destDirectory.resolve(src.getFileName()));
-    }*/
     
-    public static void copy(Log log, Path src, Path dest) throws IOException
+    public void copy(Path src, Path dest) throws IOException
     {
         try{
             log.info("Copy "+src+" to "+dest);
@@ -37,7 +46,7 @@ public class FileUtils
         }
     }
     
-    public static void copyDirectoryContent(Log log, Path src, Path dest) throws IOException
+    public void copyDirectoryContent(Path src, Path dest) throws IOException
     {
         log.info("Copy "+src+"/* to "+dest);
         
@@ -52,9 +61,10 @@ public class FileUtils
         }
     }
 
-    public static void createDirectories(Log log, Path dir) throws IOException
+    public void createDirectories(Path dir) throws IOException
     {
         log.info("Create directory "+dir);
         Files.createDirectories(dir);
+        sys.setOwner(dir, user);
     }
 }

@@ -26,13 +26,13 @@ public class LinuxAbstraction implements SystemAbstraction
     }
     
     @Override
-    public void setOwner(Path serviceDir, String serviceUser) throws IOException
+    public void setOwner(Path path, String user) throws IOException
     {
-        log.info("Setting owner for "+serviceDir+" to "+serviceUser);
+        log.info("Setting owner for "+path+" to "+user);
         
         UserPrincipalLookupService lookupService = FileSystems.getDefault()
             .getUserPrincipalLookupService();
-        Files.getFileAttributeView(serviceDir, PosixFileAttributeView.class, LinkOption.NOFOLLOW_LINKS).setOwner(lookupService.lookupPrincipalByName(serviceUser));
+        Files.getFileAttributeView(path, PosixFileAttributeView.class, LinkOption.NOFOLLOW_LINKS).setOwner(lookupService.lookupPrincipalByName(user));
     }
 
     @Override
