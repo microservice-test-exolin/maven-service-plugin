@@ -4,7 +4,9 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.io.Writer;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -33,7 +35,7 @@ public class ListServicesServlet extends HttpServlet
         
         try(PrintWriter out = resp.getWriter())
         {
-            List<Exception> exceptions = new ArrayList<>();
+            Map<String, Exception> exceptions = new HashMap<>();
             
             out.append("<html>");
             out.append("<head>");
@@ -66,11 +68,11 @@ public class ListServicesServlet extends HttpServlet
                     try{
                         out.append(status.isRunning() ? "Running" : "Stop");
                     }catch(UnsupportedOperationException e){
-                        exceptions.add(e);
+                        exceptions.put(service.getName(), e);
                         out.append("Couldn't be determined");
                     }
                 }catch(IOException e){
-                    exceptions.add(e);
+                    exceptions.put(service.getName(), e);
                     out.append("Couldn't be determined");
                 }
                 out.append("</td>");
@@ -89,16 +91,23 @@ public class ListServicesServlet extends HttpServlet
             
             out.append("</table>");
             
-            out.append("<table>");
-            for(Exception e: exceptions)
+            if(!exceptions.isEmpty())
             {
-                out.append("<tr>");
-                out.append("<td><pre>");
-                e.printStackTrace(out);
-                out.append("</pre></td>");
-                out.append("</tr>");
+                out.append("<h2>Errors</h2>");
+                out.append("<table>");
+                for(Map.Entry<String, Exception> e: exceptions.entrySet())
+                {
+                    out.append("<tr>");
+                    out.append("<td>");
+                    out.append(e.getKey());
+                    out.append("</td>");
+                    out.append("<td><pre>");
+                    e.getValue().printStackTrace(out);
+                    out.append("</pre></td>");
+                    out.append("</tr>");
+                }
+                out.append("</table>");
             }
-            out.append("</table>");
             
             out.append("</div>");
             
