@@ -60,11 +60,13 @@ public class ProcessManager
 
     public synchronized List<ProcessInfo> getProcesses()
     {
+        clean();
         return new ArrayList<>(processes);
     }
 
     public synchronized List<ProcessInfo> getProcessesHistory()
     {
+        clean();
         return new ArrayList<>(processesHistory);
     }
     
