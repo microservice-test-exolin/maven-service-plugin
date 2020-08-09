@@ -6,6 +6,7 @@ import org.eclipse.jetty.server.Connector;
 import org.eclipse.jetty.server.Server;
 import org.eclipse.jetty.server.ServerConnector;
 import org.eclipse.jetty.servlet.ServletHandler;
+import org.exolin.msp.core.LinuxAbstraction;
 import org.exolin.msp.core.Log;
 import org.exolin.msp.core.PseudoAbstraction;
 import org.exolin.msp.core.SystemAbstraction;
@@ -22,29 +23,45 @@ public class Main
 {
     public static void main(String[] args) throws Exception
     {
+        Log log = new Log(){
+                @Override
+                public void warn(String string)
+                {
+                    System.out.println("[WARN] "+string);
+                }
+
+                @Override
+                public void info(String string)
+                {
+                    System.out.println("[INFO] "+string);
+                }
+            };
+        
+        boolean testEnv = false;
+        
         Server server = new Server();
         ServerConnector connector = new ServerConnector(server);
         connector.setPort(8090);
         server.setConnectors(new Connector[]{connector});
         
-        SystemAbstraction sys = new PseudoAbstraction(new Log(){
-            @Override
-            public void warn(String string)
-            {
-            }
+        SystemAbstraction sys;
+        Services services;
+        if(testEnv)
+        {
+            sys = new PseudoAbstraction(log);
 
-            @Override
-            public void info(String string)
-            {
-            }
-        });
-        
-        /*Services services = new StubServices(Arrays.asList(
-                new StubService("mittens-discord", sys),
-                new StubService("milkboi-discord", sys),
-                new StubService("milkboi-telegram", sys)
-        ));*/
-        Services services = new LinuxServices(Paths.get("/home/exolin/services"), sys);
+            services = new StubServices(Arrays.asList(
+                    new StubService("mittens-discord", sys),
+                    new StubService("milkboi-discord", sys),
+                    new StubService("milkboi-telegram", sys)
+            ));
+        }
+        else
+        {
+            sys = new LinuxAbstraction(log);
+            
+            services = new LinuxServices(Paths.get("/home/exolin/services"), sys);
+        }
         
         ServletHandler servletHandler = new ServletHandler();
         servletHandler.addServletWithMapping(StatusServlet.class, "/status");
