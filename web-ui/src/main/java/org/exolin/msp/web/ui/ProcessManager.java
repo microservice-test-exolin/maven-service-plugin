@@ -1,7 +1,7 @@
 package org.exolin.msp.web.ui;
 
 import java.util.ArrayList;
-import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 
 /**
@@ -42,11 +42,15 @@ public class ProcessManager
         
         public long getRuntime()
         {
+            if(!process.isAlive())
+                return -1;
+            
             return System.currentTimeMillis() - startTime;
         }
     }
     
     private final List<ProcessInfo> processes = new ArrayList<>();
+    private final List<ProcessInfo> processesHistory = new ArrayList<>();
     
     public synchronized void register(Process process, List<String> cmd, String title, long startTime)
     {
@@ -54,14 +58,27 @@ public class ProcessManager
         processes.add(new ProcessInfo(process, cmd, title, startTime));
     }
 
-    public List<ProcessInfo> getProcesses()
+    public synchronized List<ProcessInfo> getProcesses()
     {
-        return processes;
+        return new ArrayList<>(processes);
+    }
+
+    public synchronized List<ProcessInfo> getProcessesHistory()
+    {
+        return new ArrayList<>(processesHistory);
     }
     
     private void clean()
     {
-        processes.removeIf(p -> !p.getProcess().isAlive());
+        for (Iterator<ProcessInfo> it = processes.iterator(); it.hasNext();)
+        {
+            ProcessInfo o = it.next();
+            if(!o.getProcess().isAlive())
+            {
+                it.remove();
+                processesHistory.add(o);
+            }
+        }
     }
 
     void killAll()

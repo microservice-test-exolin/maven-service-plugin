@@ -47,35 +47,45 @@ public class ProcessServlet extends HttpServlet
             
             out.append("<h1>Processes</h1>");
             
-            
-            out.append("<table class=\"table\">");
-            
-            out.append("<tr>");
-            out.append("<th>Name</th>");
-            out.append("<th>Commandline</th>");
-            out.append("<th>Runtime</th>");
-            out.append("</tr>");
-            
-            List<ProcessManager.ProcessInfo> processes = pm.getProcesses();
-            
-            if(processes.isEmpty())
-                out.append("<tr><td style=\"text-align: center\" colspan=\"3\"><em>No running processes</em></td></tr>");
-            
-            for(ProcessManager.ProcessInfo service: processes)
+            list(out, pm.getProcesses());
+            List<ProcessManager.ProcessInfo> processesHistory = pm.getProcessesHistory();
+            if(!processesHistory.isEmpty())
             {
-                out.append("<tr>");
-                out.append("<td>").append(service.getTitle()).append("</td>");
-                out.append("<td>").append(String.join(" ", service.getCmd())).append("</td>");
-                out.append("<td>").append(service.getRuntime()+" s").append("</td>");
-                out.append("</tr>");
+                out.append("<h2>History</h2>");
+                list(out, processesHistory);
             }
-            
-            out.append("</table>");
             
             out.append("</div>");
             
             out.append("</body>");
             out.append("</html>");
         }
+    }
+    
+    private void list(PrintWriter out, List<ProcessManager.ProcessInfo> processes)
+    {
+        out.append("<table class=\"table\">");
+
+        out.append("<tr>");
+        out.append("<th>Name</th>");
+        out.append("<th>Commandline</th>");
+        out.append("<th>Runtime</th>");
+        out.append("</tr>");
+
+        if(processes.isEmpty())
+            out.append("<tr><td style=\"text-align: center\" colspan=\"3\"><em>No running processes</em></td></tr>");
+
+        for(ProcessManager.ProcessInfo service: processes)
+        {
+            long runtime = service.getRuntime();
+            
+            out.append("<tr>");
+            out.append("<td>").append(service.getTitle()).append("</td>");
+            out.append("<td>").append(String.join(" ", service.getCmd())).append("</td>");
+            out.append("<td>").append(runtime != -1 ? runtime+" s" : "<em>N/A</em>").append("</td>");
+            out.append("</tr>");
+        }
+
+        out.append("</table>");
     }
 }
