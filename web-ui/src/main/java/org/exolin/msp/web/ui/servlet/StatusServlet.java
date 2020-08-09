@@ -5,6 +5,7 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import org.exolin.msp.web.ui.Constants;
 
 /**
  *
@@ -17,6 +18,6 @@ public class StatusServlet extends HttpServlet
     {
         response.setContentType("application/json");
         response.setStatus(HttpServletResponse.SC_OK);
-        response.getWriter().println("{ \"status\": \"ok\"}");
+        response.getWriter().println("{ \"status\": \"ok\", \"version\": \""+Constants.VERSION+"\"}");
     }
 }
