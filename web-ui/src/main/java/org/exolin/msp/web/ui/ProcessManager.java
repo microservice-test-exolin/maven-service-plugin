@@ -12,17 +12,24 @@ public class ProcessManager
 {
     public static class ProcessInfo
     {
+        private final String service;
         private final Process process;
         private final List<String> cmd;
         private final String title;
         private final long startTime;
 
-        public ProcessInfo(Process process, List<String> cmd, String title, long startTime)
+        public ProcessInfo(String service, Process process, List<String> cmd, String title, long startTime)
         {
+            this.service = service;
             this.process = process;
             this.cmd = cmd;
             this.title = title;
             this.startTime = startTime;
+        }
+
+        public String getService()
+        {
+            return service;
         }
 
         public Process getProcess()
@@ -52,10 +59,10 @@ public class ProcessManager
     private final List<ProcessInfo> processes = new ArrayList<>();
     private final List<ProcessInfo> processesHistory = new ArrayList<>();
     
-    public synchronized void register(Process process, List<String> cmd, String title, long startTime)
+    public synchronized void register(String service, Process process, List<String> cmd, String title, long startTime)
     {
         clean();
-        processes.add(new ProcessInfo(process, cmd, title, startTime));
+        processes.add(new ProcessInfo(service, process, cmd, title, startTime));
     }
 
     public synchronized List<ProcessInfo> getProcesses()

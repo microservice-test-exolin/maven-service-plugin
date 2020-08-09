@@ -87,7 +87,7 @@ public class LinuxService extends StubService
                 .redirectError(ProcessBuilder.Redirect.to(getBuildErr().toFile()))
                 .start();
         
-        pm.register(p, Arrays.asList(cmd), "Building "+getName(), startTime);
+        pm.register(getName(), p, Arrays.asList(cmd), "Building "+getName(), startTime);
     }
     
     @Override
@@ -105,6 +105,6 @@ public class LinuxService extends StubService
                 .redirectError(ProcessBuilder.Redirect.to(getDeployErr().toFile()))
                 .start();
         
-        pm.register(p, Arrays.asList(cmd), "Deploying "+getName(), startTime);
+        pm.register(getName(), p, Arrays.asList(cmd), "Deploying "+getName(), startTime);
     }
 }

@@ -2,18 +2,12 @@ package org.exolin.msp.web.ui.servlet;
 
 import java.io.IOException;
 import java.io.PrintWriter;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import org.exolin.msp.core.StatusInfo;
-import org.exolin.msp.core.StatusType;
 import org.exolin.msp.web.ui.ProcessManager;
-import org.exolin.msp.web.ui.Service;
-import static org.exolin.msp.web.ui.servlet.ListServicesServlet.write;
 
 /**
  *
@@ -67,21 +61,23 @@ public class ProcessServlet extends HttpServlet
         out.append("<table class=\"table\">");
 
         out.append("<tr>");
+        out.append("<th>Service</th>");
         out.append("<th>Name</th>");
         out.append("<th>Commandline</th>");
         out.append("<th>Runtime</th>");
         out.append("</tr>");
 
         if(processes.isEmpty())
-            out.append("<tr><td style=\"text-align: center\" colspan=\"3\"><em>No running processes</em></td></tr>");
+            out.append("<tr><td style=\"text-align: center\" colspan=\"4\"><em>No running processes</em></td></tr>");
 
-        for(ProcessManager.ProcessInfo service: processes)
+        for(ProcessManager.ProcessInfo process: processes)
         {
-            long runtime = service.getRuntime();
+            long runtime = process.getRuntime();
             
             out.append("<tr>");
-            out.append("<td>").append(service.getTitle()).append("</td>");
-            out.append("<td>").append(String.join(" ", service.getCmd())).append("</td>");
+            out.append("<td><a href=\"").append(ListServicesServlet.getUrl(process.getService())).append("\">").append(process.getService()).append("</a></td>");
+            out.append("<td>").append(process.getTitle()).append("</td>");
+            out.append("<td>").append(String.join(" ", process.getCmd())).append("</td>");
             out.append("<td>").append(runtime != -1 ? runtime+" s" : "<em>N/A</em>").append("</td>");
             out.append("</tr>");
         }
