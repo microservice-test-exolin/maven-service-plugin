@@ -104,7 +104,7 @@ public class LinuxAbstraction implements SystemAbstraction
                 out.write(b, 0, r);
             
             p.waitFor();
-            if(false)//p.waitFor() != 0)
+            /*if(false)//p.waitFor() != 0)
             {
                 InputStream err = p.getInputStream();
                 ByteArrayOutputStream errout = new ByteArrayOutputStream();
@@ -112,7 +112,7 @@ public class LinuxAbstraction implements SystemAbstraction
                     errout.write(b, 0, r);
                 
                 throw new IOException(String.join(" ", cmd)+" exited with "+p.exitValue()+": "+errout.toString()+out.toString());
-            }
+            }*/
             
             return new String(out.toByteArray());
         }catch(InterruptedException e){
