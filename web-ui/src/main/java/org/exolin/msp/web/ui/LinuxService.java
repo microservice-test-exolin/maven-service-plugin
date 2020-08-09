@@ -39,7 +39,7 @@ public class LinuxService extends StubService
     
     public static void build(Path dir, List<String> log) throws IOException, InterruptedException
     {
-        Process p = new ProcessBuilder("/bin/hash", "-c", "git pull && mvn package")
+        Process p = new ProcessBuilder("/bin/bash", "-c", "git pull && mvn package")
                 .directory(dir.toFile())
                 .redirectInput(ProcessBuilder.Redirect.INHERIT)
                 .redirectError(ProcessBuilder.Redirect.INHERIT)

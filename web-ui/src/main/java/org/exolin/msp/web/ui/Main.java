@@ -26,13 +26,6 @@ public class Main
 {
     public static void main(String[] args) throws Exception
     {
-        List<String> log = new ArrayList<>();
-        LinuxService.build(Paths.get("W:\\discord-telegram-bots\\mittens-discord"), log);
-        System.out.println(String.join("\n", log));
-    }
-    
-    private void a() throws Exception
-    {
         Log log = new Log(){
                 @Override
                 public void warn(String string)
