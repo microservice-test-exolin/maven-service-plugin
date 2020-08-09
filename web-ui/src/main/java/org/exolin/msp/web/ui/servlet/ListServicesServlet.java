@@ -97,7 +97,12 @@ public class ListServicesServlet extends HttpServlet
             return;
         }
         
-        Service service = services.getServices(serviceName);
+        Service service;
+        try{
+            service = services.getService(serviceName);
+        }catch(IOException e){
+            throw new ServletException(e);
+        }
         if(service == null)
         {
             resp.sendError(HttpServletResponse.SC_NOT_FOUND, "Service "+serviceName+" not found");

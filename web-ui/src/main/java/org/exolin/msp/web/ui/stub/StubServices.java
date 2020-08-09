@@ -24,7 +24,7 @@ public class StubServices implements Services
     }
 
     @Override
-    public Service getServices(String serviceName)
+    public Service getService(String serviceName)
     {
         return services.stream()
                 .filter(s -> s.getName().equals(serviceName))

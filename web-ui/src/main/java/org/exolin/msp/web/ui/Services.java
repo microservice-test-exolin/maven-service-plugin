@@ -1,5 +1,6 @@
 package org.exolin.msp.web.ui;
 
+import java.io.IOException;
 import java.util.List;
 
 /**
@@ -8,7 +9,7 @@ import java.util.List;
  */
 public interface Services
 {
-    List<Service> getServices();
+    List<Service> getServices() throws IOException;
 
-    public Service getServices(String serviceName);
+    public Service getService(String serviceName) throws IOException;
 }

@@ -1,5 +1,6 @@
 package org.exolin.msp.web.ui;
 
+import java.nio.file.Paths;
 import java.util.Arrays;
 import org.eclipse.jetty.server.Connector;
 import org.eclipse.jetty.server.Server;
@@ -38,11 +39,12 @@ public class Main
             }
         });
         
-        Services services = new StubServices(Arrays.asList(
+        /*Services services = new StubServices(Arrays.asList(
                 new StubService("mittens-discord", sys),
                 new StubService("milkboi-discord", sys),
                 new StubService("milkboi-telegram", sys)
-        ));
+        ));*/
+        Services services = new LinuxServices(Paths.get("/home/exolin/services"), sys);
         
         ServletHandler servletHandler = new ServletHandler();
         servletHandler.addServletWithMapping(StatusServlet.class, "/status");
