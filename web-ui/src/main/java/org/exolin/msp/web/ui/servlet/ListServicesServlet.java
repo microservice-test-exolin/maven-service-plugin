@@ -99,7 +99,7 @@ public class ListServicesServlet extends HttpServlet
             out.append("</table>");
             
             out.append("<h2>Status</h2>");
-            out.append("<table>");
+            out.append("<table class=\"table\">");
             for(Map.Entry<String, String> e: statusMap.entrySet())
             {
                 out.append("<tr>");
@@ -116,7 +116,7 @@ public class ListServicesServlet extends HttpServlet
             if(!exceptions.isEmpty())
             {
                 out.append("<h2>Errors</h2>");
-                out.append("<table>");
+                out.append("<table class=\"table\">");
                 for(Map.Entry<String, Exception> e: exceptions.entrySet())
                 {
                     out.append("<tr>");
