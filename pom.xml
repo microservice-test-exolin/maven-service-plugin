@@ -9,5 +9,6 @@
         <module>test-service</module>
         <module>service</module>
         <module>system-lib</module>
+        <module>web-ui</module>
     </modules>
 </project>
