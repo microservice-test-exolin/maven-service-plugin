@@ -89,6 +89,10 @@ public class ListServicesServlet extends HttpServlet
                 write(out, "stop", "Stop");
                 write(out, "restart", "Restart");
                 out.append("</form>");
+                out.append("<form action=\"/deploy\" method=\"POST\">");
+                out.append("<input type=\"hidden\" name=\"service\" value=\"").append(service.getName()).append("\">");
+                write(out, "deploy", "Deploy");
+                out.append("</form>");
                 out.append("</td>");
                 
                 out.append("</tr>");
