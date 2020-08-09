@@ -54,7 +54,7 @@ public class ListServicesServlet extends HttpServlet
             out.append("<tr>");
             out.append("<th>Name</th>");
             out.append("<th>Status</th>");
-            out.append("<th></th>");
+            out.append("<th colspan=\"3\"></th>");
             out.append("</tr>");
             
             for(Service service: services.getServices())
@@ -90,11 +90,20 @@ public class ListServicesServlet extends HttpServlet
                 write(out, "restart", "Restart");
                 out.append("</form>");
                 out.append("<form action=\"/deploy\" method=\"POST\" style=\"display: inline\">");
-                out.append("<input type=\"hidden\" name=\"service\" value=\"").append(service.getName()).append("\">");
-                write(out, "compile", "Compile");
-                write(out, "deploy", "Deploy");
-                out.append("</form>");
                 
+                out.append("</td>");
+                
+                out.append("<td>");
+                if(service.supportsBuildAndDeployment())
+                {
+                    out.append("<input type=\"hidden\" name=\"service\" value=\"").append(service.getName()).append("\">");
+                    write(out, "compile", "Compile");
+                    write(out, "deploy", "Deploy");
+                    out.append("</form>");
+                }
+                out.append("</td>");
+                
+                out.append("<td>");
                 out.append("<a href=\"/logs?service="+service.getName()+"\">Logfiles</a><br>");
                 
                 out.append("</td>");

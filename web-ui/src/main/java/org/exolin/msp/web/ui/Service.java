@@ -19,6 +19,7 @@ public interface Service
     public void stop() throws IOException;
     public void restart() throws IOException;
     
+    public boolean supportsBuildAndDeployment() throws IOException;
     public void build(ProcessManager pm) throws IOException, InterruptedException;
     public void deploy(ProcessManager pm) throws IOException, InterruptedException;
     

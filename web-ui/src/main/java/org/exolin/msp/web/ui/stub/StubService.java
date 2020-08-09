@@ -54,17 +54,23 @@ public class StubService implements Service
     {
         sys.restart(name);
     }
+
+    @Override
+    public boolean supportsBuildAndDeployment() throws IOException
+    {
+        return false;
+    }
     
     @Override
     public void build(ProcessManager pm) throws IOException, InterruptedException
     {
-        
+        throw new UnsupportedOperationException();
     }
     
     @Override
     public void deploy(ProcessManager pm) throws IOException, InterruptedException
     {
-        
+        throw new UnsupportedOperationException();
     }
 
     @Override

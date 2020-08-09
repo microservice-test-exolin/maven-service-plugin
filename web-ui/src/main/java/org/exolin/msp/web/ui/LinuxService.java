@@ -26,6 +26,17 @@ public class LinuxService extends StubService
         this.serviceDirectory = serviceDirectory;
     }
     
+    @Override
+    public boolean supportsBuildAndDeployment() throws IOException
+    {
+        try{
+            getOriginalPath();
+            return true;
+        }catch(UnsupportedOperationException e){
+            return false;
+        }
+    }
+    
     private Path getOriginalPath() throws IOException
     {
         Path originalPathFile = serviceDirectory.resolve("original.path");
