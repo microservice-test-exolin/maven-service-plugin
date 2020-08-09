@@ -91,6 +91,6 @@ public class Generator
         }
         
         if(path.getFileSystem().supportedFileAttributeViews().contains("posix"))
-            Files.setPosixFilePermissions(path, PosixFilePermissions.fromString("rw-r--r--"));
+            Files.setPosixFilePermissions(path, PosixFilePermissions.fromString("rwxr--r--"));
     }
 }
