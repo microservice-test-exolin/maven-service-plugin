@@ -53,6 +53,11 @@ public class LogServlet extends HttpServlet
             showLogFile(service, logFile, resp);
     }
 
+    static String getUrl(String service, String logfile)
+    {
+        return "/logs?service="+service+"&logfile="+logfile;
+    }
+    
     private void showLogFileIndex(Service service, HttpServletResponse resp) throws IOException
     {
         resp.setContentType("text/html;charset=UTF-8");
@@ -72,7 +77,7 @@ public class LogServlet extends HttpServlet
             out.append("<h1>Logfiles of "+service.getName()+"</h1>");
             
             for(String name: service.getLogFiles().keySet())
-                out.append("<a href=\"?service="+service.getName()+"&logfile="+name+"\">"+name+"</a><br>");
+                out.append("<a href=\""+getUrl(service.getName(), name)+"\">"+name+"</a><br>");
             
             out.append("</body>");
             out.append("</head>");

@@ -3,6 +3,7 @@ package org.exolin.msp.web.ui;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
+import java.nio.file.NoSuchFileException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Arrays;
@@ -30,12 +31,19 @@ public class LinuxService extends StubService
     private Path getOriginalPath() throws IOException
     {
         Path originalPathFile = serviceDirectory.resolve("original.path");
-        return Paths.get(new String(Files.readAllBytes(originalPathFile), StandardCharsets.UTF_8));
+        try{
+            return Paths.get(new String(Files.readAllBytes(originalPathFile), StandardCharsets.UTF_8));
+        }catch(NoSuchFileException e){
+            throw new UnsupportedOperationException("Can't determine original path of "+getName(), e);
+        }
     }
+    
+    public static final String BUILD_LOG = "build.out.log";
+    public static final String DEPLOY_LOG = "deploy.out.log";
     
     private Path getBuildOut()
     {
-        return serviceDirectory.resolve("log").resolve("build.out.log");
+        return serviceDirectory.resolve("log").resolve(BUILD_LOG);
     }
     
     private Path getBuildErr()
@@ -45,7 +53,7 @@ public class LinuxService extends StubService
     
     private Path getDeployOut()
     {
-        return serviceDirectory.resolve("log").resolve("deploy.out.log");
+        return serviceDirectory.resolve("log").resolve(DEPLOY_LOG);
     }
     
     private Path getDeployErr()
@@ -65,34 +73,38 @@ public class LinuxService extends StubService
     }
     
     @Override
-    public void build(List<String> log) throws IOException, InterruptedException
+    public void build(ProcessManager pm) throws IOException, InterruptedException
     {
         Path dir = getOriginalPath();
         
-        Process p = new ProcessBuilder("/bin/bash", "-c", "git pull && mvn package")
+        String[] cmd = {"/bin/bash", "-c", "git pull && mvn package"};
+        
+        long startTime = System.currentTimeMillis();
+        Process p = new ProcessBuilder(cmd)
                 .directory(dir.toFile())
                 .redirectInput(ProcessBuilder.Redirect.INHERIT)
                 .redirectOutput(ProcessBuilder.Redirect.to(getBuildOut().toFile()))
                 .redirectError(ProcessBuilder.Redirect.to(getBuildErr().toFile()))
                 .start();
         
-        String out = LinuxAbstraction.read(p);
-        log.addAll(Arrays.asList(out.split("\n")));
+        pm.register(p, Arrays.asList(cmd), "Building "+getName(), startTime);
     }
     
     @Override
-    public void deploy(List<String> log) throws IOException, InterruptedException
+    public void deploy(ProcessManager pm) throws IOException, InterruptedException
     {
         Path dir = getOriginalPath();
         
-        Process p = new ProcessBuilder("/bin/bash", "-c", "/root/repos/deploy.sh")
+        String[] cmd = {"/bin/bash", "-c", "/root/repos/deploy.sh"};
+        
+        long startTime = System.currentTimeMillis();
+        Process p = new ProcessBuilder(cmd)
                 .directory(dir.toFile())
                 .redirectInput(ProcessBuilder.Redirect.INHERIT)
                 .redirectOutput(ProcessBuilder.Redirect.to(getDeployOut().toFile()))
                 .redirectError(ProcessBuilder.Redirect.to(getDeployErr().toFile()))
                 .start();
         
-        String out = LinuxAbstraction.read(p);
-        log.addAll(Arrays.asList(out.split("\n")));
+        pm.register(p, Arrays.asList(cmd), "Deploying "+getName(), startTime);
     }
 }

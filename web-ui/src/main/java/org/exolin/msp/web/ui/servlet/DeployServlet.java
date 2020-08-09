@@ -8,6 +8,8 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import org.exolin.msp.web.ui.LinuxService;
+import org.exolin.msp.web.ui.ProcessManager;
 import org.exolin.msp.web.ui.Service;
 import org.exolin.msp.web.ui.Services;
 import static org.exolin.msp.web.ui.servlet.ListServicesServlet.write;
@@ -19,12 +21,14 @@ import static org.exolin.msp.web.ui.servlet.ListServicesServlet.write;
 public class DeployServlet extends HttpServlet
 {
     private final Services services;
+    private final ProcessManager pm;
 
-    public DeployServlet(Services services)
+    public DeployServlet(Services services, ProcessManager pm)
     {
         this.services = services;
+        this.pm = pm;
     }
-    
+
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException
     {
@@ -107,28 +111,28 @@ public class DeployServlet extends HttpServlet
         {
             case "compile":
             {
-                List<String> log = new ArrayList<>();
                 try{
-                    service.build(log);
-                }catch(IOException|InterruptedException e){
+                    service.build(pm);
+                }catch(IOException|InterruptedException|UnsupportedOperationException e){
                     e.printStackTrace(resp.getWriter());
                     return;
                 }
                 
-                resp.getWriter().append(String.join("\n", log));
+                resp.sendRedirect(LogServlet.getUrl(service.getName(), LinuxService.BUILD_LOG));
+                
                 return;
             }
             case "deploy":
             {
-                List<String> log = new ArrayList<>();
                 try{
-                    service.deploy(log);
-                }catch(IOException|InterruptedException e){
+                    service.deploy(pm);
+                }catch(IOException|InterruptedException|UnsupportedOperationException e){
                     e.printStackTrace(resp.getWriter());
                     return;
                 }
                 
-                resp.getWriter().append(String.join("\n", log));
+                resp.sendRedirect(LogServlet.getUrl(service.getName(), LinuxService.DEPLOY_LOG));
+                
                 return;
             }
             default:

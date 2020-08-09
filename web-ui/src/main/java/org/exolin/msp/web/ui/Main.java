@@ -51,6 +51,16 @@ public class Main
         
         SystemAbstraction sys;
         Services services;
+        ProcessManager pm = new ProcessManager();
+        
+        Runtime.getRuntime().addShutdownHook(new Thread("childprocess.kill"){
+            @Override
+            public void run()
+            {
+                pm.killAll();
+            }
+        });
+        
         if(testEnv)
         {
             sys = new PseudoAbstraction(log);
@@ -73,7 +83,7 @@ public class Main
         ServletHandler servletHandler = new ServletHandler();
         servletHandler.addServletWithMapping(StatusServlet.class, "/status");
         servletHandler.addServletWithMapping(ListServicesServlet.class, "/services").setServlet(new ListServicesServlet(services));
-        servletHandler.addServletWithMapping(ListServicesServlet.class, "/deploy").setServlet(new DeployServlet(services));
+        servletHandler.addServletWithMapping(ListServicesServlet.class, "/deploy").setServlet(new DeployServlet(services, pm));
         servletHandler.addServletWithMapping(ListServicesServlet.class, "/logs").setServlet(new LogServlet(services));
         
         server.setHandler(servletHandler);
