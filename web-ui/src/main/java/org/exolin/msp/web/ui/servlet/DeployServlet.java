@@ -80,7 +80,7 @@ public class DeployServlet extends HttpServlet
         String serviceName = req.getParameter("service");
         if(serviceName == null)
         {
-            resp.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+            //resp.setStatus(HttpServletResponse.SC_BAD_REQUEST);
             resp.getWriter().write("Missing parameter service");
             return;
         }
@@ -88,7 +88,7 @@ public class DeployServlet extends HttpServlet
         String action = req.getParameter("action");
         if(action == null)
         {
-            resp.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+            //resp.setStatus(HttpServletResponse.SC_BAD_REQUEST);
             resp.getWriter().write("Missing parameter action");
             return;
         }
