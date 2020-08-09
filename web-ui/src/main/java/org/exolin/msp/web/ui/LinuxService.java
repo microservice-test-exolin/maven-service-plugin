@@ -7,10 +7,8 @@ import java.nio.file.NoSuchFileException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Arrays;
-import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
-import org.exolin.msp.core.LinuxAbstraction;
+import java.util.TreeMap;
 import org.exolin.msp.core.SystemAbstraction;
 import org.exolin.msp.web.ui.stub.StubService;
 
@@ -64,7 +62,7 @@ public class LinuxService extends StubService
     @Override
     public Map<String, Path> getLogFiles() throws IOException
     {
-        Map<String, Path> files = new HashMap<>();
+        Map<String, Path> files = new TreeMap<>();
         
         for(Path p: Files.newDirectoryStream(serviceDirectory.resolve("log")))
             files.put(p.getFileName().toString(), p);
