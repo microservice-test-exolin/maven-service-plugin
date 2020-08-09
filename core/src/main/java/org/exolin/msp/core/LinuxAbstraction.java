@@ -103,7 +103,8 @@ public class LinuxAbstraction implements SystemAbstraction
             while((r = in.read(b)) != -1)
                 out.write(b, 0, r);
             
-            if(p.waitFor() != 0)
+            p.waitFor();
+            if(false)//p.waitFor() != 0)
             {
                 InputStream err = p.getInputStream();
                 ByteArrayOutputStream errout = new ByteArrayOutputStream();
