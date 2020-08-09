@@ -28,14 +28,6 @@ public class ListServicesServlet extends HttpServlet
     {
         this.services = services;
     }
-    
-    private static class FailedService extends RuntimeException
-    {
-        public FailedService(String message)
-        {
-            super(message);
-        }
-    }
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException
@@ -45,6 +37,7 @@ public class ListServicesServlet extends HttpServlet
         try(PrintWriter out = resp.getWriter())
         {
             Map<String, Exception> exceptions = new HashMap<>();
+            Map<String, String> statusMap = new HashMap<>();
             
             out.append("<html>");
             out.append("<head>");
@@ -72,6 +65,7 @@ public class ListServicesServlet extends HttpServlet
                 out.append("<td>").append(service.getName()).append("</td>");
                 
                 out.append("<td>");
+                statusMap.put(service.getName(), "failed to read");
                 try{
                     StatusInfo status = service.getStatus();
                     try{
@@ -79,8 +73,7 @@ public class ListServicesServlet extends HttpServlet
                         
                         out.append(statusType.toString());
                         
-                        if(statusType != StatusType.FAILED)
-                            exceptions.put(service.getName(), new FailedService(status.getInfo()));
+                        statusMap.put(service.getName(), status.getInfo());
                     }catch(UnsupportedOperationException e){
                         exceptions.put(service.getName(), e);
                         out.append("Couldn't be determined");
@@ -105,6 +98,21 @@ public class ListServicesServlet extends HttpServlet
             
             out.append("</table>");
             
+            out.append("<h2>Status</h2>");
+            out.append("<table>");
+            for(Map.Entry<String, String> e: statusMap.entrySet())
+            {
+                out.append("<tr>");
+                out.append("<td>");
+                out.append(e.getKey());
+                out.append("</td>");
+                out.append("<td><pre>");
+                out.append(e.getValue());
+                out.append("</pre></td>");
+                out.append("</tr>");
+            }
+            out.append("</table>");
+            
             if(!exceptions.isEmpty())
             {
                 out.append("<h2>Errors</h2>");
@@ -116,10 +124,7 @@ public class ListServicesServlet extends HttpServlet
                     out.append(e.getKey());
                     out.append("</td>");
                     out.append("<td><pre>");
-                    if(e.getValue() instanceof FailedService)
-                        out.append(e.getValue().getMessage());
-                    else
-                        e.getValue().printStackTrace(out);
+                    e.getValue().printStackTrace(out);
                     out.append("</pre></td>");
                     out.append("</tr>");
                 }
