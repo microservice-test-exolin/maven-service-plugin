@@ -12,6 +12,7 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import org.exolin.msp.core.StatusInfo;
+import org.exolin.msp.core.StatusType;
 import org.exolin.msp.web.ui.Service;
 import org.exolin.msp.web.ui.Services;
 
@@ -66,7 +67,12 @@ public class ListServicesServlet extends HttpServlet
                 try{
                     StatusInfo status = service.getStatus();
                     try{
-                        out.append(status.isRunning() ? "Running" : "Stop");
+                        StatusType statusType = status.getStatus();
+                        
+                        out.append(statusType.toString());
+                        
+                        if(statusType != StatusType.FAILED)
+                            exceptions.put(service.getName(), new RuntimeException(status.getInfo()));
                     }catch(UnsupportedOperationException e){
                         exceptions.put(service.getName(), e);
                         out.append("Couldn't be determined");

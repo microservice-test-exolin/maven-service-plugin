@@ -24,7 +24,7 @@ public class LinuxStatusInfoTest
 "           ââ3933 /bin/bash /home/exolin/services/mittens-discord/bin/start.sh\n" +
 "           ââ3934 /usr/bin/java -jar /home/exolin/services/mittens-discord/bin/mittens-discord.jar";
         
-        assertTrue(LinuxStatusInfo.parse(okay));
+        assertEquals(StatusType.ACTIVE, LinuxStatusInfo.parse(okay));
     }
     
     @Test
@@ -38,7 +38,21 @@ public class LinuxStatusInfoTest
 "Jul 30 15:58:19 exolin.org java[20881]: Started\n" +
 "Jul 30 16:48:46 exolin.org java[20881]: Exiting";
         
-        assertFalse(LinuxStatusInfo.parse(okay));
+        assertEquals(StatusType.FAILED, LinuxStatusInfo.parse(okay));
+    }
+    
+    @Test
+    public void testGetStatus_Inactive() throws Exception
+    {
+        String okay = "â empty-service.service\n" +
+"   Loaded: not-found (Reason: No such file or directory)\n" +
+"   Active: inactive (Result: exit-code) since Thu 2020-07-30 16:48:46 UTC; 3 days ago\n" +
+" Main PID: 20881 (code=exited, status=143)\n" +
+"\n" +
+"Jul 30 15:58:19 exolin.org java[20881]: Started\n" +
+"Jul 30 16:48:46 exolin.org java[20881]: Exiting";
+        
+        assertEquals(StatusType.INACTIVE, LinuxStatusInfo.parse(okay));
     }
     
     @Test

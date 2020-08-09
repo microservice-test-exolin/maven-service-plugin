@@ -14,7 +14,7 @@ public class LinuxStatusInfo implements StatusInfo
     }
     
     @Override
-    public boolean isRunning()
+    public StatusType getStatus()
     {
         return parse(stdout);
     }
@@ -25,12 +25,14 @@ public class LinuxStatusInfo implements StatusInfo
         return stdout;
     }
     
-    static boolean parse(String stdout)
+    static StatusType parse(String stdout)
     {
         if(stdout.contains("   Active: active"))
-            return true;
+            return StatusType.ACTIVE;
         else if(stdout.contains("   Active: failed "))
-            return false;
+            return StatusType.FAILED;
+        else if(stdout.contains("   Active: inactive "))
+            return StatusType.INACTIVE;
         else
             throw new UnsupportedOperationException("Can't parse:\n"+stdout);
     }

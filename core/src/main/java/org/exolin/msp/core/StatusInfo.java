@@ -6,6 +6,6 @@ package org.exolin.msp.core;
  */
 public interface StatusInfo
 {
-    boolean isRunning();
+    StatusType getStatus();
     String getInfo();
 }

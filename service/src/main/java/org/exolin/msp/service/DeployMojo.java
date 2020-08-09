@@ -11,6 +11,7 @@ import org.exolin.msp.core.SystemAbstraction;
 import org.apache.maven.plugins.annotations.Mojo;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.exolin.msp.core.LinuxAbstraction;
+import org.exolin.msp.core.StatusType;
 
 /**
  * Goal which touches a timestamp file.
@@ -106,7 +107,7 @@ public class DeployMojo extends BaseMojo
         getLog().info("Installed");
 
         sys.restart(name);
-        if(!sys.getStatus(name).isRunning())
+        if(sys.getStatus(name).getStatus() != StatusType.ACTIVE)
             throw new IllegalStateException("Not running: "+name);
     }
 }
