@@ -2,8 +2,6 @@ package org.exolin.msp.web.ui.servlet;
 
 import java.io.IOException;
 import java.io.PrintWriter;
-import java.util.ArrayList;
-import java.util.List;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -59,6 +57,7 @@ public class DeployServlet extends HttpServlet
             out.append("<head>");
             out.append("<title>Services</title>");
             out.append("<link rel=\"stylesheet\" href=\"https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css\" integrity=\"sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm\" crossorigin=\"anonymous\">");
+            out.append("<link rel=\"icon\" type=\"image/png\" href=\"/favicon.png\"/>");
             out.append("</head>");
             
             out.append("<body>");

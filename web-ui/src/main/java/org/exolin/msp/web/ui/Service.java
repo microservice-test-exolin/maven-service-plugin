@@ -2,7 +2,6 @@ package org.exolin.msp.web.ui;
 
 import java.io.IOException;
 import java.nio.file.Path;
-import java.util.List;
 import java.util.Map;
 import org.exolin.msp.core.StatusInfo;
 

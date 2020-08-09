@@ -2,9 +2,7 @@ package org.exolin.msp.web.ui;
 
 import java.nio.file.Files;
 import java.nio.file.Paths;
-import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.List;
 import org.eclipse.jetty.server.Connector;
 import org.eclipse.jetty.server.Server;
 import org.eclipse.jetty.server.ServerConnector;
@@ -14,6 +12,7 @@ import org.exolin.msp.core.Log;
 import org.exolin.msp.core.PseudoAbstraction;
 import org.exolin.msp.core.SystemAbstraction;
 import org.exolin.msp.web.ui.servlet.DeployServlet;
+import org.exolin.msp.web.ui.servlet.FaviconServlet;
 import org.exolin.msp.web.ui.servlet.IndexServlet;
 import org.exolin.msp.web.ui.servlet.ListServicesServlet;
 import org.exolin.msp.web.ui.servlet.LogServlet;
@@ -85,11 +84,19 @@ public class Main
         ServletHandler servletHandler = new ServletHandler();
         servletHandler.addServletWithMapping(StatusServlet.class, "/status");
         servletHandler.addServletWithMapping(IndexServlet.class, "/");
+        servletHandler.addServletWithMapping(FaviconServlet.class, "/favicon.png");
         servletHandler.addServletWithMapping(ListServicesServlet.class, "/services").setServlet(new ListServicesServlet(services));
         servletHandler.addServletWithMapping(ListServicesServlet.class, "/deploy").setServlet(new DeployServlet(services, pm));
         servletHandler.addServletWithMapping(ListServicesServlet.class, "/logs").setServlet(new LogServlet(services));
         servletHandler.addServletWithMapping(ListServicesServlet.class, "/processes").setServlet(new ProcessServlet(pm));
         
+        /*ResourceHandler resHandler = new ResourceHandler();
+        resHandler.setBaseResource(Resource.newClassPathResource("/"));
+        resHandler.setDirectoriesListed(false);
+        resHandler.setDirAllowed(false);
+        HandlerCollection col = new HandlerCollection();
+        col.addHandler(servletHandler);
+        col.addHandler(resHandler);*/
         server.setHandler(servletHandler);
         
         server.start();

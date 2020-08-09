@@ -1,16 +1,11 @@
 package org.exolin.msp.web.ui;
 
 import java.io.IOException;
-import java.nio.charset.StandardCharsets;
 import java.nio.file.DirectoryStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
-import org.exolin.msp.core.LinuxAbstraction;
-import org.exolin.msp.core.Log;
 import org.exolin.msp.core.SystemAbstraction;
 import org.exolin.msp.web.ui.stub.StubService;
 

@@ -11,6 +11,8 @@ import java.util.Map;
 import java.util.TreeMap;
 import org.exolin.msp.core.SystemAbstraction;
 import org.exolin.msp.web.ui.stub.StubService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  *
@@ -19,6 +21,8 @@ import org.exolin.msp.web.ui.stub.StubService;
 public class LinuxService extends StubService
 {
     private final Path serviceDirectory;
+    
+    private static final Logger LOGGER = LoggerFactory.getLogger(LinuxService.class);
 
     public LinuxService(Path serviceDirectory, String name, SystemAbstraction sys)
     {
@@ -33,6 +37,7 @@ public class LinuxService extends StubService
             getOriginalPath();
             return true;
         }catch(UnsupportedOperationException e){
+            LOGGER.info("Couldn't determine original path", e);
             return false;
         }
     }
