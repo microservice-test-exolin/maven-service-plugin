@@ -94,6 +94,9 @@ public class ListServicesServlet extends HttpServlet
                 write(out, "compile", "Compile");
                 write(out, "deploy", "Deploy");
                 out.append("</form>");
+                
+                out.append("<a href=\"/logs?service="+service.getName()+"\">Logfiles</a><br>");
+                
                 out.append("</td>");
                 
                 out.append("</tr>");

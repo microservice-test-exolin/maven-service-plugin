@@ -1,5 +1,6 @@
 package org.exolin.msp.web.ui;
 
+import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -14,6 +15,7 @@ import org.exolin.msp.core.PseudoAbstraction;
 import org.exolin.msp.core.SystemAbstraction;
 import org.exolin.msp.web.ui.servlet.DeployServlet;
 import org.exolin.msp.web.ui.servlet.ListServicesServlet;
+import org.exolin.msp.web.ui.servlet.LogServlet;
 import org.exolin.msp.web.ui.servlet.StatusServlet;
 import org.exolin.msp.web.ui.stub.StubService;
 import org.exolin.msp.web.ui.stub.StubServices;
@@ -40,7 +42,7 @@ public class Main
                 }
             };
         
-        boolean testEnv = false;
+        boolean testEnv = true;
         
         Server server = new Server();
         ServerConnector connector = new ServerConnector(server);
@@ -58,6 +60,8 @@ public class Main
                     new StubService("milkboi-discord", sys),
                     new StubService("milkboi-telegram", sys)
             ));
+            
+            Files.write(Paths.get("test.log"), Arrays.asList("Log Entry"));
         }
         else
         {
@@ -70,6 +74,7 @@ public class Main
         servletHandler.addServletWithMapping(StatusServlet.class, "/status");
         servletHandler.addServletWithMapping(ListServicesServlet.class, "/services").setServlet(new ListServicesServlet(services));
         servletHandler.addServletWithMapping(ListServicesServlet.class, "/deploy").setServlet(new DeployServlet(services));
+        servletHandler.addServletWithMapping(ListServicesServlet.class, "/logs").setServlet(new LogServlet(services));
         
         server.setHandler(servletHandler);
         

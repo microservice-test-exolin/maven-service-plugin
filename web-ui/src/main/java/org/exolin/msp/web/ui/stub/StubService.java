@@ -1,7 +1,11 @@
 package org.exolin.msp.web.ui.stub;
 
 import java.io.IOException;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.util.Collections;
 import java.util.List;
+import java.util.Map;
 import org.exolin.msp.core.StatusInfo;
 import org.exolin.msp.core.SystemAbstraction;
 import org.exolin.msp.web.ui.Service;
@@ -61,5 +65,11 @@ public class StubService implements Service
     public void deploy(List<String> log) throws IOException, InterruptedException
     {
         log.add("Not supported");
+    }
+
+    @Override
+    public Map<String, Path> getLogFiles() throws IOException
+    {
+        return Collections.singletonMap("test.log", Paths.get("test.log"));
     }
 }

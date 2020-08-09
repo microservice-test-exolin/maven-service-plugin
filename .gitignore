@@ -5,3 +5,4 @@
 /core/nbproject/
 /core/target/
 /system-lib/target/
+*.log

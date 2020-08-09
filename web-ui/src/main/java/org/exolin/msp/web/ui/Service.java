@@ -1,7 +1,9 @@
 package org.exolin.msp.web.ui;
 
 import java.io.IOException;
+import java.nio.file.Path;
 import java.util.List;
+import java.util.Map;
 import org.exolin.msp.core.StatusInfo;
 
 /**
@@ -19,4 +21,6 @@ public interface Service
     
     public void build(List<String> log) throws IOException, InterruptedException;
     public void deploy(List<String> log) throws IOException, InterruptedException;
+    
+    public Map<String, Path> getLogFiles() throws IOException;
 }
