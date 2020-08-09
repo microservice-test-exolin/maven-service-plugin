@@ -3,7 +3,6 @@ package org.exolin.msp.web.ui.servlet;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
-import java.nio.file.Files;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -13,13 +12,22 @@ import javax.servlet.http.HttpServletResponse;
  *
  * @author tomgk
  */
-public class FaviconServlet extends HttpServlet
+public class ResourceServlet extends HttpServlet
 {
+    private final String contentType;
+    private final String path;
+
+    public ResourceServlet(String contentType, String path)
+    {
+        this.contentType = contentType;
+        this.path = path;
+    }
+    
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException
     {
-        resp.setContentType("image/png");
-        InputStream in = FaviconServlet.class.getClassLoader().getResourceAsStream("files/favicon.png");
+        resp.setContentType(contentType);
+        InputStream in = ResourceServlet.class.getClassLoader().getResourceAsStream(path);
         if(in == null)
         {
             resp.sendError(HttpServletResponse.SC_NOT_FOUND);
