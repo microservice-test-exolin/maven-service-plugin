@@ -32,7 +32,7 @@ public class LinuxServices implements Services
             List<Service> services = new ArrayList<>();
             
             for(Path p : dir)
-                services.add(new StubService(p.getFileName().toString(), sys));
+                services.add(new LinuxService(p, p.getFileName().toString(), sys));
             
             return services;
         }
