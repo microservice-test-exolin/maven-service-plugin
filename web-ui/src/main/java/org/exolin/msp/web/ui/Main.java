@@ -70,9 +70,9 @@ public class Main
             sys = new PseudoAbstraction(log);
 
             services = new StubServices(Arrays.asList(
-                    new StubService("mittens-discord", sys),
-                    new StubService("milkboi-discord", sys),
-                    new StubService("milkboi-telegram", sys)
+                    new StubService("test-mittens-discord", sys),
+                    new StubService("test-milkboi-discord", sys),
+                    new StubService("test-milkboi-telegram", sys)
             ));
             
             Files.write(Paths.get("test.log"), Arrays.asList("Log Entry"));
