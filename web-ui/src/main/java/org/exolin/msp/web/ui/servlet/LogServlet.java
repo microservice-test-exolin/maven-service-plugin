@@ -1,6 +1,8 @@
 package org.exolin.msp.web.ui.servlet;
 
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.io.OutputStream;
 import java.io.PrintWriter;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -49,13 +51,20 @@ public class LogServlet extends HttpServlet
         String logFile = req.getParameter("logfile");
         if(logFile == null)
             showLogFileIndex(service, req, resp);
+        else if("raw".equals(req.getParameter("type")))
+            showLogFileRaw(service, logFile, req, resp);
         else
-            showLogFile(service, logFile, resp);
+            showLogFile(service, logFile, req, resp);
     }
 
     static String getUrl(String service, String logfile)
     {
-        return "/logs?service="+service+"&logfile="+logfile;
+        return getUrl(service, logfile, false);
+    }
+    
+    static String getUrl(String service, String logfile, boolean raw)
+    {
+        return "/logs?service="+service+"&logfile="+logfile+(raw ? "&type=raw" : "");
     }
     
     private void showLogFileIndex(Services services, HttpServletRequest req, HttpServletResponse resp) throws IOException
@@ -112,7 +121,7 @@ public class LogServlet extends HttpServlet
         }
     }
     
-    private void showLogFile(Service service, String logFile, HttpServletResponse resp) throws IOException
+    private void showLogFileRaw(Service service, String logFile, HttpServletRequest req, HttpServletResponse resp) throws IOException
     {
         resp.setContentType("text/plain;charset=UTF-8");
         Path path = service.getLogFiles().get(logFile);
@@ -123,5 +132,36 @@ public class LogServlet extends HttpServlet
         }
         
         Files.copy(path, resp.getOutputStream());
+    }
+    
+    private void showLogFile(Service service, String logFile, HttpServletRequest req, HttpServletResponse resp) throws IOException
+    {
+        Path path = service.getLogFiles().get(logFile);
+        if(path == null)
+        {
+            resp.sendError(HttpServletResponse.SC_NOT_FOUND, "Logfile "+logFile+" not found");
+            return;
+        }
+        
+        resp.setContentType("text/html;charset=UTF-8");
+        
+        try(PrintWriter out = resp.getWriter())
+        {
+            Fame.start("Logfiles", req.getRequestURI(), out);
+            
+            out.append("<h1>Logfiles</h1>");
+            
+            out.append("<a href=\"").append(getUrl(service.getName(), logFile, true)).append("\">").append("Raw").append("</a>");
+            
+            out.append("<pre style=\"border: 1px solid #ccc;padding:0.5em\">");
+            
+            ByteArrayOutputStream arr = new ByteArrayOutputStream();
+            Files.copy(path, arr);
+            out.append(arr.toString().replace("<", "&lt;").replace(">", "&gt;"));
+            
+            out.append("</pre>");
+            
+            Fame.end(out);
+        }
     }
 }
