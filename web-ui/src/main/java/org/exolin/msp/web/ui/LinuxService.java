@@ -80,8 +80,15 @@ public class LinuxService extends StubService
     {
         Map<String, Path> files = new TreeMap<>();
         
-        for(Path p: Files.newDirectoryStream(serviceDirectory.resolve("log")))
+        Path logDir = serviceDirectory.resolve("log");
+        
+        LOGGER.info("Reading log file list for {} from {}", getName(), logDir);
+        
+        for(Path p: Files.newDirectoryStream(logDir))
+        {
+            LOGGER.info("- {}", p.getFileName());
             files.put(p.getFileName().toString(), p);
+        }
         
         return files;
     }

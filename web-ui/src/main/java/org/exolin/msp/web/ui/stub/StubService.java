@@ -8,6 +8,8 @@ import java.util.Map;
 import org.exolin.msp.core.SystemAbstraction;
 import org.exolin.msp.web.ui.AbstractService;
 import org.exolin.msp.web.ui.ProcessManager;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  *
@@ -37,10 +39,13 @@ public class StubService extends AbstractService
     {
         throw new UnsupportedOperationException();
     }
+    
+    private static final Logger LOGGER = LoggerFactory.getLogger(StubService.class);
 
     @Override
     public Map<String, Path> getLogFiles() throws IOException
     {
+        LOGGER.info("Reading log file list");
         return Collections.singletonMap("test.log", Paths.get("test.log"));
     }
 }
