@@ -48,7 +48,7 @@ public class LogServlet extends HttpServlet
         
         String logFile = req.getParameter("logfile");
         if(logFile == null)
-            showLogFileIndex(service, resp);
+            showLogFileIndex(service, req, resp);
         else
             showLogFile(service, logFile, resp);
     }
@@ -58,13 +58,15 @@ public class LogServlet extends HttpServlet
         return "/logs?service="+service+"&logfile="+logfile;
     }
     
-    private void showLogFileIndex(Service service, HttpServletResponse resp) throws IOException
+    private void showLogFileIndex(Service service, HttpServletRequest req, HttpServletResponse resp) throws IOException
     {
         resp.setContentType("text/html;charset=UTF-8");
         
         try(PrintWriter out = resp.getWriter())
         {
-            out.append("<html>");
+            Fame.start("Logfiles of "+service.getName(), req.getRequestURI(), out);
+            
+            /*out.append("<html>");
             out.append("<head>");
             out.append("<title>Logfiles of "+service.getName()+"</title>");
             out.append("<link rel=\"stylesheet\" href=\"https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css\" integrity=\"sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm\" crossorigin=\"anonymous\">");
@@ -73,16 +75,17 @@ public class LogServlet extends HttpServlet
             
             out.append("<body>");
             
-            out.append("<div class=\"container\">");
+            out.append("<div class=\"container\">");*/
             
             out.append("<h1>Logfiles of "+service.getName()+"</h1>");
             
             for(String name: service.getLogFiles().keySet())
                 out.append("<a href=\""+getUrl(service.getName(), name)+"\">"+name+"</a><br>");
             
-            out.append("</body>");
+            /*out.append("</body>");
             out.append("</head>");
-            out.append("</html>");
+            out.append("</html>");*/
+            Fame.end(out);
         }
     }
     

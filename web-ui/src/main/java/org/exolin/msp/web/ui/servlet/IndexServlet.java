@@ -22,10 +22,7 @@ public class IndexServlet extends HttpServlet
         
         try(PrintWriter out = resp.getWriter())
         {
-            Map<String, Exception> exceptions = new HashMap<>();
-            Map<String, String> statusMap = new HashMap<>();
-            
-            out.append("<html>");
+            /*out.append("<html>");
             out.append("<head>");
             out.append("<title>Services</title>");
             out.append("<link rel=\"stylesheet\" href=\"https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css\" integrity=\"sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm\" crossorigin=\"anonymous\">");
@@ -34,16 +31,18 @@ public class IndexServlet extends HttpServlet
             
             out.append("<body>");
             
-            out.append("<div class=\"container\">");
+            out.append("<div class=\"container\">");*/
+            Fame.start("Service Web UI", req.getRequestURI(), out);
             
             out.append("<h1>Service Web UI</h1>");
             
             out.append("<a href=\"/services\">Services</a><br>");
             out.append("<a href=\"/processes\">Processes</a><br>");
                         
-            out.append("</div>");
+            /*out.append("</div>");
             out.append("</body>");
-            out.append("</html>");
+            out.append("</html>");*/
+            Fame.end(out);
         }
     }
 }

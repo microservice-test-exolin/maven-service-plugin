@@ -37,20 +37,12 @@ public class ListServicesServlet extends HttpServlet
             Map<String, Exception> exceptions = new HashMap<>();
             Map<String, String> statusMap = new HashMap<>();
             
-            out.append("<html>");
-            out.append("<head>");
-            out.append("<title>Services</title>");
-            out.append("<link rel=\"stylesheet\" href=\"https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css\" integrity=\"sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm\" crossorigin=\"anonymous\">");
-            out.append("<link rel=\"icon\" type=\"image/png\" href=\"/favicon.png\"/>");
-            out.append("</head>");
-            
-            out.append("<body>");
-            
-            out.append("<div class=\"container\">");
+            Fame.start("Services", req.getRequestURI(), out);
+            //out.append("<div class=\"d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom\">");
             
             out.append("<h1>Services</h1>");
             
-            out.append("<table class=\"table\">");
+            out.append("<table class=\"table table-striped table-sm\">");
             
             out.append("<tr>");
             out.append("<th>Name</th>");
@@ -115,7 +107,10 @@ public class ListServicesServlet extends HttpServlet
             out.append("</table>");
             
             out.append("<h2>Status</h2>");
-            out.append("<table class=\"table\">");
+            out.append("<table class=\"table table-striped table-sm\">");out.append("<tr>");
+            out.append("<th>Service</th>");
+            out.append("<th>Status</th>");
+            out.append("</tr>");
             for(Map.Entry<String, String> e: statusMap.entrySet())
             {
                 out.append("<tr>");
@@ -132,7 +127,7 @@ public class ListServicesServlet extends HttpServlet
             if(!exceptions.isEmpty())
             {
                 out.append("<h2>Errors</h2>");
-                out.append("<table class=\"table\">");
+                out.append("<table class=\"table table-striped table-sm\">");
                 for(Map.Entry<String, Exception> e: exceptions.entrySet())
                 {
                     out.append("<tr>");
@@ -147,10 +142,8 @@ public class ListServicesServlet extends HttpServlet
                 out.append("</table>");
             }
             
-            out.append("</div>");
-            
-            out.append("</body>");
-            out.append("</html>");
+            //out.append("</div>");
+            Fame.end(out);
         }
     }
 

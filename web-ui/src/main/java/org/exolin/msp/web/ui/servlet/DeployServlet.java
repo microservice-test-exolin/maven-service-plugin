@@ -53,7 +53,7 @@ public class DeployServlet extends HttpServlet
         
         try(PrintWriter out = resp.getWriter())
         {
-            out.append("<html>");
+            /*out.append("<html>");
             out.append("<head>");
             out.append("<title>Services</title>");
             out.append("<link rel=\"stylesheet\" href=\"https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css\" integrity=\"sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm\" crossorigin=\"anonymous\">");
@@ -62,7 +62,8 @@ public class DeployServlet extends HttpServlet
             
             out.append("<body>");
             
-            out.append("<div class=\"container\">");
+            out.append("<div class=\"container\">");*/
+            Fame.start("Build/Deploy", req.getRequestURI(), out);
             
             out.append("<h1>Services</h1>");
             out.append("<form action=\"#\" method=\"POST\">");
@@ -70,10 +71,11 @@ public class DeployServlet extends HttpServlet
             write(out, "compile", "Compile");
             write(out, "deploy", "Deploy");
             out.append("</form>");
-            out.append("</div>");
+            /*out.append("</div>");
             
             out.append("</body>");
-            out.append("</html>");
+            out.append("</html>");*/
+            Fame.end(out);
         }
     }
 

@@ -18,6 +18,7 @@ import org.exolin.msp.web.ui.servlet.IndexServlet;
 import org.exolin.msp.web.ui.servlet.ListServicesServlet;
 import org.exolin.msp.web.ui.servlet.LogServlet;
 import org.exolin.msp.web.ui.servlet.ProcessServlet;
+import org.exolin.msp.web.ui.servlet.ResourceServlet;
 import org.exolin.msp.web.ui.servlet.StatusServlet;
 import org.exolin.msp.web.ui.stub.StubService;
 import org.exolin.msp.web.ui.stub.StubServices;
@@ -44,7 +45,7 @@ public class Main
                 }
             };
         
-        boolean testEnv = false;
+        boolean testEnv = true;
         
         Server server = new Server();
         ServerConnector connector = new ServerConnector(server);
@@ -87,6 +88,8 @@ public class Main
         servletHandler.addServletWithMapping(IndexServlet.class, "/");
         servletHandler.addServletWithMapping(FaviconPngServlet.class, "/favicon.png");
         servletHandler.addServletWithMapping(FaviconIcoServlet.class, "/favicon.ico");
+        servletHandler.addServletWithMapping(ResourceServlet.class, "/dashboard.css").setServlet(new ResourceServlet("text/css", "files/dashboard.css"));
+        
         servletHandler.addServletWithMapping(ListServicesServlet.class, "/services").setServlet(new ListServicesServlet(services));
         servletHandler.addServletWithMapping(ListServicesServlet.class, "/deploy").setServlet(new DeployServlet(services, pm));
         servletHandler.addServletWithMapping(ListServicesServlet.class, "/logs").setServlet(new LogServlet(services));
