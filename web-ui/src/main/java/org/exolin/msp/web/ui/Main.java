@@ -46,7 +46,7 @@ public class Main
                 }
             };
         
-        boolean testEnv = true;
+        boolean testEnv = false;
         
         Server server = new Server();
         ServerConnector connector = new ServerConnector(server);
