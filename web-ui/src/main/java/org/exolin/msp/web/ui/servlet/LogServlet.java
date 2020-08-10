@@ -30,7 +30,7 @@ public class LogServlet extends HttpServlet
         String serviceName = req.getParameter("service");
         if(serviceName == null)
         {
-            resp.sendError(HttpServletResponse.SC_BAD_REQUEST, "Missing parameter service");
+            showLogFileIndex(services, req, resp);//resp.sendError(HttpServletResponse.SC_BAD_REQUEST, "Missing parameter service");
             return;
         }
         
@@ -56,6 +56,29 @@ public class LogServlet extends HttpServlet
     static String getUrl(String service, String logfile)
     {
         return "/logs?service="+service+"&logfile="+logfile;
+    }
+    
+    private void showLogFileIndex(Services services, HttpServletRequest req, HttpServletResponse resp) throws IOException
+    {
+        resp.setContentType("text/html;charset=UTF-8");
+        
+        try(PrintWriter out = resp.getWriter())
+        {
+            Fame.start("Logfiles", req.getRequestURI(), out);
+            
+            out.append("<h1>Logfiles</h1>");
+            
+            for(Service service: services.getServices())
+            {
+                for(String name: service.getLogFiles().keySet())
+                {
+                    out.append("<a href=\"").append(ListServicesServlet.getUrl(service.getName())).append("\">").append(service.getName()).append("</a>");
+                    out.append(" / <a href=\"").append(getUrl(service.getName(), name)).append("\">").append(name).append("</a><br>");
+                }
+            }
+            
+            Fame.end(out);
+        }
     }
     
     private void showLogFileIndex(Service service, HttpServletRequest req, HttpServletResponse resp) throws IOException

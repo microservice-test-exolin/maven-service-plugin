@@ -19,6 +19,7 @@ import org.exolin.msp.web.ui.servlet.ListServicesServlet;
 import org.exolin.msp.web.ui.servlet.LogServlet;
 import org.exolin.msp.web.ui.servlet.ProcessServlet;
 import org.exolin.msp.web.ui.servlet.ResourceServlet;
+import org.exolin.msp.web.ui.servlet.ServerInfoClass;
 import org.exolin.msp.web.ui.servlet.StatusServlet;
 import org.exolin.msp.web.ui.stub.StubService;
 import org.exolin.msp.web.ui.stub.StubServices;
@@ -94,6 +95,7 @@ public class Main
         servletHandler.addServletWithMapping(ListServicesServlet.class, "/deploy").setServlet(new DeployServlet(services, pm));
         servletHandler.addServletWithMapping(ListServicesServlet.class, "/logs").setServlet(new LogServlet(services));
         servletHandler.addServletWithMapping(ListServicesServlet.class, "/processes").setServlet(new ProcessServlet(pm));
+        servletHandler.addServletWithMapping(ServerInfoClass.class, "/server-info");
         
         /*ResourceHandler resHandler = new ResourceHandler();
         resHandler.setBaseResource(Resource.newClassPathResource("/"));
