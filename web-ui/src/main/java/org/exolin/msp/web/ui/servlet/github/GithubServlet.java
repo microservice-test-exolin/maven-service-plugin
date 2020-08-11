@@ -29,25 +29,29 @@ public class GithubServlet extends HttpServlet
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException
     {
-        ObjectMapper mapper = new ObjectMapper();
-        mapper.setVisibility(PropertyAccessor.ALL, JsonAutoDetect.Visibility.NONE);
-        mapper.setVisibility(PropertyAccessor.FIELD, JsonAutoDetect.Visibility.ANY);
-
-        GithubPayload payload = mapper.readValue(req.getReader(), GithubPayload.class);
-        
-        Writer out = resp.getWriter();
-        out.append("{");
-        out.append("{\"name\": \"").append(payload.getRepository().getName()).append("\"");
-        out.append(",");
-        
-        out.append("\"service\": ");
         try{
-            Service service = services.getServiceFromRepositoryUrl(payload.getRepository().getUrl());
-            out.append("\"").append(service.getName()).append("\"");
-        }catch(IOException e){
-            out.append("null, error: \"").append(e.getMessage()).append("\"");
+            ObjectMapper mapper = new ObjectMapper();
+            mapper.setVisibility(PropertyAccessor.ALL, JsonAutoDetect.Visibility.NONE);
+            mapper.setVisibility(PropertyAccessor.FIELD, JsonAutoDetect.Visibility.ANY);
+
+            GithubPayload payload = mapper.readValue(req.getReader(), GithubPayload.class);
+
+            Writer out = resp.getWriter();
+            out.append("{");
+            out.append("{\"name\": \"").append(payload.getRepository().getName()).append("\"");
+            out.append(",");
+
+            out.append("\"service\": ");
+            try{
+                Service service = services.getServiceFromRepositoryUrl(payload.getRepository().getUrl());
+                out.append("\"").append(service.getName()).append("\"");
+            }catch(IOException e){
+                out.append("null, error: \"").append(e.getMessage()).append("\"");
+            }
+
+            out.append("}");
+        }catch(Exception e){
+            e.printStackTrace(resp.getWriter());
         }
-        
-        out.append("}");
     }
 }
