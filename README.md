@@ -4,17 +4,6 @@
 ![Check Markdown links](https://github.com/microservice-test-exolin/ubuntu-services/workflows/Check%20Markdown%20links/badge.svg)
 <!-- markdown-link-check-enable -->
 
-## [maven deployment plugin](service)
-
-### goal `deploy`
-Deployment
-
-Does the following:
-  * setup directory structure 
-  * copy binaries 
-  * creating service file
-  * create start script
-
 ## service management web app
 Itself a service, providing a web interface for controlling services:
 * start, stop, restart
