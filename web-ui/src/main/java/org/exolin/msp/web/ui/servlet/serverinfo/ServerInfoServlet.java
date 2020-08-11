@@ -4,6 +4,8 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.io.Writer;
 import java.util.Map;
+import java.util.function.BiFunction;
+import java.util.regex.Pattern;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -35,14 +37,24 @@ public class ServerInfoServlet extends HttpServlet
     
     static void list(Writer out, Map<String, String> tab) throws IOException
     {
+        list(out, tab, (k, v) -> v);
+    }
+    
+    static void list(Writer out, Map<String, String> tab, BiFunction<String, String, String> formatter) throws IOException
+    {
         out.append("<table class=\"table table-striped table-sm\">");
         for(Map.Entry<String, String> p: tab.entrySet())
         {
             out.append("<tr>");
             out.append("<td>").append(p.getKey()).append("</td>");
-            out.append("<td>").append(p.getValue()).append("</td>");
+            out.append("<td>").append(formatter.apply(p.getKey(), p.getValue())).append("</td>");
             out.append("</tr>");
         }
         out.append("</table>");
+    }
+
+    static String path(String value)
+    {
+        return String.join("<br>", value.split(Pattern.quote(System.getProperty("path.separator"))));
     }
 }

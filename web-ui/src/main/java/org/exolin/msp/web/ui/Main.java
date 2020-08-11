@@ -1,5 +1,6 @@
 package org.exolin.msp.web.ui;
 
+import java.io.IOException;
 import java.nio.file.Paths;
 import org.eclipse.jetty.server.Connector;
 import org.eclipse.jetty.server.Server;
@@ -72,6 +73,15 @@ public class Main
         
         server.setHandler(servletHandler);
         
-        server.start();
+        try{
+            server.start();
+        }catch(IOException e){
+            try{
+                server.stop();
+            }catch(Exception e2){
+                e.addSuppressed(e2);
+            }
+            throw e;
+        }
     }
 }
