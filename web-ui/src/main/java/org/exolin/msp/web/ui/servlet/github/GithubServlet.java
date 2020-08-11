@@ -5,6 +5,7 @@ import com.fasterxml.jackson.annotation.PropertyAccessor;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import java.io.IOException;
 import java.io.Writer;
+import java.util.HashMap;
 import java.util.Map;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
@@ -36,23 +37,21 @@ public class GithubServlet extends HttpServlet
         mapper.setVisibility(PropertyAccessor.FIELD, JsonAutoDetect.Visibility.ANY);
 
         GithubPayload payload = mapper.readValue(req.getReader(), GithubPayload.class);
+        
+        Map<String, String> map = new HashMap<>();
+        
+        map.put("name", payload.getRepository().getName());
 
-        Writer out = resp.getWriter();
-        out.append("{");
-        out.append("\"name\": \"").append(payload.getRepository().getName()).append("\"");
-        out.append(",");
-
-        out.append("\"service\": ");
         try{
             Service service = services.getServiceFromRepositoryUrl(payload.getRepository().getUrl());
             if(service != null)
-                out.append("\"").append(service.getName()).append("\"");
+                map.put("service", service.getName());
             else
-                out.append("null");
+                map.put("service", null);
         }catch(IOException e){
-            out.append("null, error: \"").append(e.getMessage()).append("\"");
+            map.put("error", e.getMessage());
         }
-
-        out.append("}");
+        
+        mapper.writeValue(resp.getWriter(), map);
     }
 }
