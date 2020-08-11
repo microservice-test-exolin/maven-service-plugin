@@ -85,7 +85,9 @@ public class LinuxAbstraction implements SystemAbstraction
         try{
             Process p = new ProcessBuilder(cmd).start();
             
-            return read(p);
+            String str = read(p);
+            log.info(str);
+            return str;
         }catch(InterruptedException e){
             InterruptedIOException ex = new InterruptedIOException(e.toString());
             ex.initCause(e);
