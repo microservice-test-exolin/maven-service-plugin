@@ -28,9 +28,18 @@ public class Layout
     private static void writeMenu(Writer out, String title, String link, String icon, boolean cur) throws IOException
     {
          out.append("<li class=\"nav-item\">\n");
-         out.append("<a class=\"nav-link").append(cur ? " active" : "").append("\" href=\""+link+"\">");
+         out.append("<a class=\"nav-link");
+         
+         if(cur)
+            out.append(" active");
+         
+         out.append("\" href=\""+link+"\">");
          out.append("<span data-feather=\""+icon+"\"></span>");
-         out.append(title).append(cur ? " <span class=\"sr-only\">(current)</span>" : "");
+         out.append(title);
+         
+         if(cur)
+            out.append("<span class=\"sr-only\">(current)</span>");
+         
          out.append("</a>");
     }
     
@@ -39,19 +48,6 @@ public class Layout
         w.write("<nav class=\"col-md-2 d-none d-md-block bg-light sidebar\">");
         w.append("<div class=\"sidebar-sticky\">");
         w.append("<ul class=\"nav flex-column\">");
-        /*w.write(
-"              <li class=\"nav-item\">\n" +
-"                <a class=\"nav-link active\" href=\"#\">\n" +
-"                  <span data-feather=\"home\"></span>\n" +
-"                  Dashboard <span class=\"sr-only\">(current)</span>\n" +
-"                </a>\n" +
-"              </li>\n" +
-"              <li class=\"nav-item\">\n" +
-"                <a class=\"nav-link\" href=\"/services\">\n" +
-"                  <span data-feather=\"file\"></span>\n" +
-"                  Services\n" +
-"                </a>\n" +
-"              </li>\n");*/
         
         writeMenu(w, "Dashboard", "/", "home", current.equals("/"));
         writeMenu(w, "Services", "/services", "layers", current.startsWith("/services"));
@@ -59,67 +55,9 @@ public class Layout
         writeMenu(w, "Logs", "/logs", "file-text", current.startsWith("/logs"));
         writeMenu(w, "Server Info", "/server-info", "server", current.startsWith("/server-info"));
         
-        w.write(/*
-"              <li class=\"nav-item\">\n" +
-"                <a class=\"nav-link\" href=\"#\">\n" +
-"                  <span data-feather=\"shopping-cart\"></span>\n" +
-"                  Products\n" +
-"                </a>\n" +
-"              </li>\n" +
-"              <li class=\"nav-item\">\n" +
-"                <a class=\"nav-link\" href=\"#\">\n" +
-"                  <span data-feather=\"users\"></span>\n" +
-"                  Customers\n" +
-"                </a>\n" +
-"              </li>\n" +
-"              <li class=\"nav-item\">\n" +
-"                <a class=\"nav-link\" href=\"#\">\n" +
-"                  <span data-feather=\"bar-chart-2\"></span>\n" +
-"                  Reports\n" +
-"                </a>\n" +
-"              </li>\n" +
-"              <li class=\"nav-item\">\n" +
-"                <a class=\"nav-link\" href=\"#\">\n" +
-"                  <span data-feather=\"layers\"></span>\n" +
-"                  Integrations\n" +
-"                </a>\n" +
-"              </li>\n" +*/
-"            </ul>" /*+
-"\n" +
-"            <h6 class=\"sidebar-heading d-flex justify-content-between align-items-center px-3 mt-4 mb-1 text-muted\">\n" +
-"              <span>Saved reports</span>\n" +
-"              <a class=\"d-flex align-items-center text-muted\" href=\"#\">\n" +
-"                <span data-feather=\"plus-circle\"></span>\n" +
-"              </a>\n" +
-"            </h6>\n" +
-"            <ul class=\"nav flex-column mb-2\">\n" +
-"              <li class=\"nav-item\">\n" +
-"                <a class=\"nav-link\" href=\"#\">\n" +
-"                  <span data-feather=\"file-text\"></span>\n" +
-"                  Current month\n" +
-"                </a>\n" +
-"              </li>\n" +
-"              <li class=\"nav-item\">\n" +
-"                <a class=\"nav-link\" href=\"#\">\n" +
-"                  <span data-feather=\"file-text\"></span>\n" +
-"                  Last quarter\n" +
-"                </a>\n" +
-"              </li>\n" +
-"              <li class=\"nav-item\">\n" +
-"                <a class=\"nav-link\" href=\"#\">\n" +
-"                  <span data-feather=\"file-text\"></span>\n" +
-"                  Social engagement\n" +
-"                </a>\n" +
-"              </li>\n" +
-"              <li class=\"nav-item\">\n" +
-"                <a class=\"nav-link\" href=\"#\">\n" +
-"                  <span data-feather=\"file-text\"></span>\n" +
-"                  Year-end sale\n" +
-"                </a>\n" +
-"              </li>\n" +
-"            </ul>\n"*/ +
-"          </div>" +
-"        </nav>");
+        w.write("</ul>");
+        w.write("</div>");
+        w.write("</nav>");
     }
 
     public static void end(PrintWriter out)
@@ -163,3 +101,75 @@ public class Layout
         out.append("<main role=\"main\" class=\"col-md-9 ml-sm-auto col-lg-10 px-4\">");
     }
 }
+        /*w.write(
+"              <li class=\"nav-item\">\n" +
+"                <a class=\"nav-link active\" href=\"#\">\n" +
+"                  <span data-feather=\"home\"></span>\n" +
+"                  Dashboard <span class=\"sr-only\">(current)</span>\n" +
+"                </a>\n" +
+"              </li>\n" +
+"              <li class=\"nav-item\">\n" +
+"                <a class=\"nav-link\" href=\"/services\">\n" +
+"                  <span data-feather=\"file\"></span>\n" +
+"                  Services\n" +
+"                </a>\n" +
+"              </li>\n");*/
+/*
+"              <li class=\"nav-item\">\n" +
+"                <a class=\"nav-link\" href=\"#\">\n" +
+"                  <span data-feather=\"shopping-cart\"></span>\n" +
+"                  Products\n" +
+"                </a>\n" +
+"              </li>\n" +
+"              <li class=\"nav-item\">\n" +
+"                <a class=\"nav-link\" href=\"#\">\n" +
+"                  <span data-feather=\"users\"></span>\n" +
+"                  Customers\n" +
+"                </a>\n" +
+"              </li>\n" +
+"              <li class=\"nav-item\">\n" +
+"                <a class=\"nav-link\" href=\"#\">\n" +
+"                  <span data-feather=\"bar-chart-2\"></span>\n" +
+"                  Reports\n" +
+"                </a>\n" +
+"              </li>\n" +
+"              <li class=\"nav-item\">\n" +
+"                <a class=\"nav-link\" href=\"#\">\n" +
+"                  <span data-feather=\"layers\"></span>\n" +
+"                  Integrations\n" +
+"                </a>\n" +
+"              </li>\n" +*/
+/*+
+"\n" +
+"            <h6 class=\"sidebar-heading d-flex justify-content-between align-items-center px-3 mt-4 mb-1 text-muted\">\n" +
+"              <span>Saved reports</span>\n" +
+"              <a class=\"d-flex align-items-center text-muted\" href=\"#\">\n" +
+"                <span data-feather=\"plus-circle\"></span>\n" +
+"              </a>\n" +
+"            </h6>\n" +
+"            <ul class=\"nav flex-column mb-2\">\n" +
+"              <li class=\"nav-item\">\n" +
+"                <a class=\"nav-link\" href=\"#\">\n" +
+"                  <span data-feather=\"file-text\"></span>\n" +
+"                  Current month\n" +
+"                </a>\n" +
+"              </li>\n" +
+"              <li class=\"nav-item\">\n" +
+"                <a class=\"nav-link\" href=\"#\">\n" +
+"                  <span data-feather=\"file-text\"></span>\n" +
+"                  Last quarter\n" +
+"                </a>\n" +
+"              </li>\n" +
+"              <li class=\"nav-item\">\n" +
+"                <a class=\"nav-link\" href=\"#\">\n" +
+"                  <span data-feather=\"file-text\"></span>\n" +
+"                  Social engagement\n" +
+"                </a>\n" +
+"              </li>\n" +
+"              <li class=\"nav-item\">\n" +
+"                <a class=\"nav-link\" href=\"#\">\n" +
+"                  <span data-feather=\"file-text\"></span>\n" +
+"                  Year-end sale\n" +
+"                </a>\n" +
+"              </li>\n" +
+"            </ul>\n"*/
