@@ -1,7 +1,7 @@
 # Service
 
 Konzepte:
-* [Service](service.dm)
+* [Service](service.md)
 
 Tools:
 * [Maven Service Plugin](maven-deployment-plugin.md)
