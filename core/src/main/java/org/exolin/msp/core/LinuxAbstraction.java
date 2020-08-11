@@ -127,6 +127,6 @@ public class LinuxAbstraction implements SystemAbstraction
     @Override
     public String getGitRepositoryUrl(Path originalPath) throws IOException
     {
-        return system2("/bin/bash", "-c", "\"git config --get remote.origin.url\"").trim();
+        return system2("/bin/bash", "-c", "\"cd "+originalPath+" && git config --get remote.origin.url\"").trim();
     }
 }
