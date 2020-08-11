@@ -132,7 +132,7 @@ public class LinuxService extends AbstractService
     @Override
     public void deploy(ProcessManager pm) throws IOException, InterruptedException
     {
-        Path dir = getOriginalPath();
+        Path dir = getGitRoot();
         
         String[] cmd = {"/bin/bash", "-c", "/root/repos/deploy.sh"};
         
