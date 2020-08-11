@@ -1,6 +1,5 @@
 package org.exolin.msp.web.ui.servlet.service;
 
-import org.exolin.msp.web.ui.servlet.service.ListServicesServlet;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.PrintWriter;

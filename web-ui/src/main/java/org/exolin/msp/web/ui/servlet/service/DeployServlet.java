@@ -6,10 +6,10 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import org.exolin.msp.web.ui.linux.LinuxService;
-import org.exolin.msp.web.ui.pm.ProcessManager;
 import org.exolin.msp.web.ui.Service;
 import org.exolin.msp.web.ui.Services;
+import org.exolin.msp.web.ui.linux.LinuxService;
+import org.exolin.msp.web.ui.pm.ProcessManager;
 import org.exolin.msp.web.ui.servlet.Fame;
 import static org.exolin.msp.web.ui.servlet.service.ListServicesServlet.write;
 

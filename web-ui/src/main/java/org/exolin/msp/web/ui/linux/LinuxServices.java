@@ -9,7 +9,6 @@ import java.util.List;
 import org.exolin.msp.core.SystemAbstraction;
 import org.exolin.msp.web.ui.Service;
 import org.exolin.msp.web.ui.Services;
-import org.exolin.msp.web.ui.stub.StubService;
 
 /**
  *
