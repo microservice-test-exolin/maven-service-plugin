@@ -9,6 +9,8 @@ import java.nio.file.Paths;
 import java.util.Arrays;
 import java.util.Map;
 import java.util.TreeMap;
+import org.eclipse.jgit.lib.Repository;
+import org.eclipse.jgit.storage.file.FileRepositoryBuilder;
 import org.exolin.msp.core.SystemAbstraction;
 import org.exolin.msp.web.ui.AbstractService;
 import org.exolin.msp.web.ui.pm.ProcessManager;
@@ -139,6 +141,14 @@ public class LinuxService extends AbstractService
             return null;
         }
         
-        return sys.getGitRepositoryUrl(originalPath);
+        Repository repository = new FileRepositoryBuilder()
+            .setGitDir(originalPath.toFile())
+            .build();
+        try
+        {
+            return repository.getConfig().getString("remote", "origin", "url");
+        }finally{
+            repository.close();
+        }
     }
 }

@@ -58,10 +58,4 @@ public class PseudoAbstraction implements SystemAbstraction
         log.warn("Pseudo > Stop "+name);
         running.remove(name);
     }
-
-    @Override
-    public String getGitRepositoryUrl(Path originalPath) throws IOException
-    {
-        throw new UnsupportedOperationException();
-    }
 }
