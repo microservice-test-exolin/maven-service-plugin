@@ -4,7 +4,6 @@ import java.io.IOException;
 import java.nio.file.Path;
 import java.util.Map;
 import org.exolin.msp.core.StatusInfo;
-import org.exolin.msp.web.ui.pm.ProcessManager;
 
 /**
  *
@@ -20,8 +19,8 @@ public interface Service
     public void restart() throws IOException;
     
     public boolean supportsBuildAndDeployment() throws IOException;
-    public void build(ProcessManager pm) throws IOException, InterruptedException;
-    public void deploy(ProcessManager pm) throws IOException, InterruptedException;
+    public void build(boolean async) throws IOException, InterruptedException;
+    public void deploy(boolean async) throws IOException, InterruptedException;
     
     public Map<String, Path> getLogFiles() throws IOException;
 }

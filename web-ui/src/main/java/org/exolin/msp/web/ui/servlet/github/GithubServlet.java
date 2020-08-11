@@ -42,20 +42,30 @@ public class GithubServlet extends HttpServlet
         
         map.put("name", payload.getRepository().getName());
 
-        Service service = null;
-        
+        String error = null;
         try{
-            service = services.getServiceFromRepositoryUrl(payload.getRepository().getUrl());
+            Service service = services.getServiceFromRepositoryUrl(payload.getRepository().getUrl());
             if(service != null)
+            {
                 map.put("service", service.getName());
+                
+                service.build(false);
+                service.deploy(false);
+            }
             else
+            {
                 map.put("service", null);
-        }catch(IOException e){
-            map.put("error", e.getMessage());
+                error = "Service not found";
+            }
+        }catch(IOException|InterruptedException e){
+            error = e.getMessage();
         }
         
-        if(service == null)
+        if(error != null)
+        {
             resp.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+            map.put("error", error);
+        }
         
         mapper.writeValue(resp.getWriter(), map);
     }
