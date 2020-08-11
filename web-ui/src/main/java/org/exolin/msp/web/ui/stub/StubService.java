@@ -45,7 +45,7 @@ public class StubService extends AbstractService
     @Override
     public Map<String, Path> getLogFiles() throws IOException
     {
-        LOGGER.info("Reading log file list");
+        //LOGGER.info("Reading log file list");
         return Collections.singletonMap("test.log", Paths.get("test.log"));
     }
 }

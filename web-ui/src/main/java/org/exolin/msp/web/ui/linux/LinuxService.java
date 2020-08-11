@@ -83,11 +83,11 @@ public class LinuxService extends AbstractService
         
         Path logDir = serviceDirectory.resolve("log");
         
-        LOGGER.info("Reading log file list for {} from {}", getName(), logDir);
+        //LOGGER.info("Reading log file list for {} from {}", getName(), logDir);
         
         for(Path p: Files.newDirectoryStream(logDir))
         {
-            LOGGER.info("- {}", p.getFileName());
+            //LOGGER.info("- {}", p.getFileName());
             files.put(p.getFileName().toString(), p);
         }
         
