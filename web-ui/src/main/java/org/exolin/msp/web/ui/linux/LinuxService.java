@@ -7,10 +7,9 @@ import java.nio.file.NoSuchFileException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Arrays;
+import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
-import org.eclipse.jgit.lib.Repository;
-import org.eclipse.jgit.storage.file.FileRepositoryBuilder;
 import org.exolin.msp.core.SystemAbstraction;
 import org.exolin.msp.web.ui.AbstractService;
 import org.exolin.msp.web.ui.pm.ProcessManager;
@@ -53,6 +52,22 @@ public class LinuxService extends AbstractService
         }catch(NoSuchFileException e){
             throw new UnsupportedOperationException("Can't determine original path of "+getName(), e);
         }
+    }
+    
+    public Path getGitRoot() throws IOException
+    {
+        return getGitRoot(getOriginalPath());
+    }
+    
+    static Path getGitRoot(Path path)
+    {
+        for(Path p=path;p!=null;p=p.getParent())
+        {
+            if(Files.exists(p.resolve(".git")))
+                return p;
+        }
+        
+        throw new IllegalArgumentException("Not a git repository: "+path);
     }
     
     public static final String BUILD_LOG = "build.out.log";
@@ -134,21 +149,47 @@ public class LinuxService extends AbstractService
     
     public String getRepositoryUrl() throws IOException
     {
-        Path originalPath;
-        try{
-            originalPath = getOriginalPath();
-        }catch(UnsupportedOperationException e){
-            return null;
-        }
+        return getRepositoryUrl(getGitRoot());
+    }
+    
+    private static int findFirstStartingWith(List<String> list, String startString, int start, int end)
+    {
+        for(int i=start;i<end;++i)
+            if(list.get(i).trim().startsWith(startString))
+                return i;
         
-        Repository repository = new FileRepositoryBuilder()
-            .setGitDir(originalPath.toFile())
-            .build();
-        try
-        {
-            return repository.getConfig().getString("remote", "origin", "url");
-        }finally{
-            repository.close();
-        }
+        return -1;
+    }
+    
+    public static String getRepositoryUrl(Path gitRepository) throws IOException
+    {
+        /*
+        [remote "origin"]
+        url = $URL
+        */
+        
+        List<String> lines = Files.readAllLines(gitRepository.resolve(".git/config"));
+        
+        String URL = "url = ";
+        
+        int sectionLine = lines.indexOf("[remote \"origin\"]");
+        if(sectionLine == -1)
+            throw new IOException("No section remote origin");
+        
+        int nextSectionLine = findFirstStartingWith(lines, "[", sectionLine+1, lines.size());
+        if(nextSectionLine == -1) nextSectionLine = lines.size();
+        
+        int urlLine = findFirstStartingWith(lines, URL, sectionLine+1, lines.size());
+        if(urlLine == -1 || urlLine > nextSectionLine)  //nicht in (richtiger) section gefundne
+            throw new IOException("no remote origin url\n"+
+                    "sectionLine:"+sectionLine+"\n"+
+                    "URlLine:"+urlLine+"\n"+
+                    "nextSectionLine:"+nextSectionLine+"\n"+
+                    String.join("\n", lines));
+        
+        String repo = lines.get(urlLine).trim().substring(URL.length());
+        if(!repo.endsWith(".git"))
+            throw new IOException(repo+" has no trailing .git");
+        return repo.substring(0, repo.length()-4);
     }
 }

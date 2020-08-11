@@ -6,3 +6,4 @@
 /core/target/
 /system-lib/target/
 *.log
+/web-ui/nbproject/
