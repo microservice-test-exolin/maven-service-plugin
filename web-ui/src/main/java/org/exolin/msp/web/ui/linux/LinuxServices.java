@@ -10,6 +10,8 @@ import java.util.List;
 import org.exolin.msp.core.SystemAbstraction;
 import org.exolin.msp.web.ui.Service;
 import org.exolin.msp.web.ui.Services;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  *
@@ -17,6 +19,8 @@ import org.exolin.msp.web.ui.Services;
  */
 public class LinuxServices implements Services
 {
+    private static final Logger LOGGER = LoggerFactory.getLogger(LinuxServices.class);
+    
     private final Path servicesDirectory;
     private final SystemAbstraction sys;
 
@@ -61,12 +65,22 @@ public class LinuxServices implements Services
     @Override
     public Service getServiceFromRepositoryUrl(String url) throws IOException
     {
+        LOGGER.info("getServiceFromRepositoryUrl({})", url);
+        
         for(LinuxService s: getLinuxServices())
         {
+            String repoUrl = s.getRepositoryUrl();
+            LOGGER.info("  {} => {}", s.getName(), repoUrl);
+            
             //info: getRepositoryUrl() kann null zurück geben
-            if(url.equals(s.getRepositoryUrl()))
+            if(url.equals(repoUrl))
+            {
+                LOGGER.info("  found");
                 return s;
+            }
         }
+        
+        LOGGER.info("  not found");
         
         return null;
     }
