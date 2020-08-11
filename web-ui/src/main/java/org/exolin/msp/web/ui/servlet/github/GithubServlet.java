@@ -42,8 +42,10 @@ public class GithubServlet extends HttpServlet
         
         map.put("name", payload.getRepository().getName());
 
+        Service service = null;
+        
         try{
-            Service service = services.getServiceFromRepositoryUrl(payload.getRepository().getUrl());
+            service = services.getServiceFromRepositoryUrl(payload.getRepository().getUrl());
             if(service != null)
                 map.put("service", service.getName());
             else
@@ -51,6 +53,9 @@ public class GithubServlet extends HttpServlet
         }catch(IOException e){
             map.put("error", e.getMessage());
         }
+        
+        if(service == null)
+            resp.setStatus(HttpServletResponse.SC_BAD_REQUEST);
         
         mapper.writeValue(resp.getWriter(), map);
     }
