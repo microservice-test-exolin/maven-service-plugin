@@ -5,6 +5,7 @@ import java.nio.file.DirectoryStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import org.exolin.msp.core.SystemAbstraction;
 import org.exolin.msp.web.ui.Service;
@@ -28,9 +29,14 @@ public class LinuxServices implements Services
     @Override
     public List<Service> getServices() throws IOException
     {
+        return Collections.unmodifiableList(getLinuxServices());
+    }
+    
+    public List<LinuxService> getLinuxServices() throws IOException
+    {
         try(DirectoryStream<Path> dir = Files.newDirectoryStream(servicesDirectory))
         {
-            List<Service> services = new ArrayList<>();
+            List<LinuxService> services = new ArrayList<>();
             
             for(Path p : dir)
                 services.add(new LinuxService(p, p.getFileName().toString(), sys));
@@ -50,5 +56,18 @@ public class LinuxServices implements Services
             return null;
         
         return new LinuxService(sDir, serviceName, sys);
+    }
+
+    @Override
+    public Service getServiceFromRepositoryUrl(String url) throws IOException
+    {
+        for(LinuxService s: getLinuxServices())
+        {
+            //info: getRepositoryUrl() kann null zurück geben
+            if(url.equals(s.getRepositoryUrl()))
+                return s;
+        }
+        
+        return null;
     }
 }

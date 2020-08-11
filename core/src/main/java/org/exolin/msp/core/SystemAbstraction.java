@@ -16,4 +16,6 @@ public interface SystemAbstraction
     public void stop(String name) throws IOException;
     public void restart(String name) throws IOException;
     public StatusInfo getStatus(String name) throws IOException;
+
+    public String getGitRepositoryUrl(Path originalPath) throws IOException;
 }

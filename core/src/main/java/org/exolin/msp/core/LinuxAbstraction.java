@@ -121,4 +121,10 @@ public class LinuxAbstraction implements SystemAbstraction
 
         return new String(out.toByteArray());
     }
+
+    @Override
+    public String getGitRepositoryUrl(Path originalPath) throws IOException
+    {
+        return system2("git", "config", "--get", "remote.origin.url").trim();
+    }
 }

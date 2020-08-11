@@ -11,7 +11,7 @@ import org.exolin.msp.core.SystemAbstraction;
 public abstract class AbstractService implements Service
 {
     private final String name;
-    private final SystemAbstraction sys;
+    protected final SystemAbstraction sys;
 
     public AbstractService(String name, SystemAbstraction sys)
     {

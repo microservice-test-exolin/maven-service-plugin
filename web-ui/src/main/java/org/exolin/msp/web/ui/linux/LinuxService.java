@@ -129,4 +129,16 @@ public class LinuxService extends AbstractService
         
         pm.register(getName(), p, Arrays.asList(cmd), "Deploying "+getName(), startTime);
     }
+    
+    public String getRepositoryUrl() throws IOException
+    {
+        Path originalPath;
+        try{
+            originalPath = getOriginalPath();
+        }catch(UnsupportedOperationException e){
+            return null;
+        }
+        
+        return sys.getGitRepositoryUrl(originalPath);
+    }
 }
