@@ -14,32 +14,31 @@ public class Fame
     
     private static void writeNav(Writer w) throws IOException
     {
-        w.append("<nav class=\"navbar navbar-dark fixed-top bg-dark flex-md-nowrap p-0 shadow\">\n" +
-"      <a class=\"navbar-brand col-sm-3 col-md-2 mr-0\" href=\"/\">").append(NAME).append("</a>\n" +
-"      <input class=\"form-control form-control-dark w-100\" type=\"text\" placeholder=\"Search\" aria-label=\"Search\">\n" +
-"      <ul class=\"navbar-nav px-3\">\n" +
-"        <li class=\"nav-item text-nowrap\">\n" +
-"          <a class=\"nav-link\" href=\"/sign-out\">Sign out</a>\n" +
-"        </li>\n" +
-"      </ul>\n" +
-"    </nav>");
+        w.append("<nav class=\"navbar navbar-dark fixed-top bg-dark flex-md-nowrap p-0 shadow\">");
+            w.append("<a class=\"navbar-brand col-sm-3 col-md-2 mr-0\" href=\"/\">").append(NAME).append("</a>");
+            w.append("<input class=\"form-control form-control-dark w-100\" type=\"text\" placeholder=\"Search\" aria-label=\"Search\">");
+            w.append("<ul class=\"navbar-nav px-3\">");
+                w.append("<li class=\"nav-item text-nowrap\">");
+                w.append("<a class=\"nav-link\" href=\"/sign-out\">Sign out</a>");
+                w.append("</li>");
+            w.append("</ul>");
+        w.append("</nav>");
     }
     
     private static void writeMenu(Writer out, String title, String link, String icon, boolean cur) throws IOException
     {
-         out.append(
-"              <li class=\"nav-item\">\n" +
-"                <a class=\"nav-link").append(cur ? " active" : "").append("\" href=\""+link+"\">\n" +
-"                  <span data-feather=\""+icon+"\"></span>\n" +
-"                  ").append(title).append(cur ? " <span class=\"sr-only\">(current)</span>" : "").append("\n" +
-"                </a>");
+         out.append("<li class=\"nav-item\">\n");
+         out.append("<a class=\"nav-link").append(cur ? " active" : "").append("\" href=\""+link+"\">");
+         out.append("<span data-feather=\""+icon+"\"></span>");
+         out.append(title).append(cur ? " <span class=\"sr-only\">(current)</span>" : "");
+         out.append("</a>");
     }
     
     private static void writeSidebar(Writer w, String current) throws IOException
     {
-        w.write("<nav class=\"col-md-2 d-none d-md-block bg-light sidebar\">\n" +
-"          <div class=\"sidebar-sticky\">\n" +
-"            <ul class=\"nav flex-column\">\n");
+        w.write("<nav class=\"col-md-2 d-none d-md-block bg-light sidebar\">");
+        w.append("<div class=\"sidebar-sticky\">");
+        w.append("<ul class=\"nav flex-column\">");
         /*w.write(
 "              <li class=\"nav-item\">\n" +
 "                <a class=\"nav-link active\" href=\"#\">\n" +
@@ -85,7 +84,7 @@ public class Fame
 "                  Integrations\n" +
 "                </a>\n" +
 "              </li>\n" +*/
-"            </ul>\n" /*+
+"            </ul>" /*+
 "\n" +
 "            <h6 class=\"sidebar-heading d-flex justify-content-between align-items-center px-3 mt-4 mb-1 text-muted\">\n" +
 "              <span>Saved reports</span>\n" +
@@ -119,7 +118,7 @@ public class Fame
 "                </a>\n" +
 "              </li>\n" +
 "            </ul>\n"*/ +
-"          </div>\n" +
+"          </div>" +
 "        </nav>");
     }
 
@@ -161,6 +160,6 @@ public class Fame
 
         Fame.writeSidebar(out, curPath);
 
-        out.append("<main role=\"main\" class=\"col-md-9 ml-sm-auto col-lg-10 px-4\">\n");
+        out.append("<main role=\"main\" class=\"col-md-9 ml-sm-auto col-lg-10 px-4\">");
     }
 }
