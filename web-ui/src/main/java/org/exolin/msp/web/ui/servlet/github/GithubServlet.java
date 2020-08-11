@@ -44,7 +44,10 @@ public class GithubServlet extends HttpServlet
             out.append("\"service\": ");
             try{
                 Service service = services.getServiceFromRepositoryUrl(payload.getRepository().getUrl());
-                out.append("\"").append(service.getName()).append("\"");
+                if(service != null)
+                    out.append("\"").append(service.getName()).append("\"");
+                else
+                    out.append("null");
             }catch(IOException e){
                 out.append("null, error: \"").append(e.getMessage()).append("\"");
             }
