@@ -1,11 +1,13 @@
 package org.exolin.msp.web.ui.servlet.github;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import java.util.List;
 
 /**
  *
  * @author tomgk
  */
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class GithubCommit
 {
     private String id;

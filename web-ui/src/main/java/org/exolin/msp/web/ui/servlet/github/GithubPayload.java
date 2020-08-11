@@ -1,5 +1,6 @@
 package org.exolin.msp.web.ui.servlet.github;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import java.util.Collections;
 import java.util.List;
 
@@ -7,6 +8,7 @@ import java.util.List;
  *
  * @author tomgk
  */
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class GithubPayload
 {
     private GithubRepository repository;
