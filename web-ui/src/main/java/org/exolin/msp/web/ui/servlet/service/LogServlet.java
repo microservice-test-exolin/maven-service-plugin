@@ -11,7 +11,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import org.exolin.msp.web.ui.Service;
 import org.exolin.msp.web.ui.Services;
-import org.exolin.msp.web.ui.servlet.Fame;
+import org.exolin.msp.web.ui.servlet.Layout;
 
 /**
  *
@@ -73,7 +73,7 @@ public class LogServlet extends HttpServlet
         
         try(PrintWriter out = resp.getWriter())
         {
-            Fame.start("Logfiles", req.getRequestURI(), out);
+            Layout.start("Logfiles", req.getRequestURI(), out);
             
             out.append("<h1>Logfiles</h1>");
             
@@ -86,7 +86,7 @@ public class LogServlet extends HttpServlet
                 }
             }
             
-            Fame.end(out);
+            Layout.end(out);
         }
     }
     
@@ -96,7 +96,7 @@ public class LogServlet extends HttpServlet
         
         try(PrintWriter out = resp.getWriter())
         {
-            Fame.start("Logfiles of "+service.getName(), req.getRequestURI(), out);
+            Layout.start("Logfiles of "+service.getName(), req.getRequestURI(), out);
             
             /*out.append("<html>");
             out.append("<head>");
@@ -117,7 +117,7 @@ public class LogServlet extends HttpServlet
             /*out.append("</body>");
             out.append("</head>");
             out.append("</html>");*/
-            Fame.end(out);
+            Layout.end(out);
         }
     }
     
@@ -147,7 +147,7 @@ public class LogServlet extends HttpServlet
         
         try(PrintWriter out = resp.getWriter())
         {
-            Fame.start("Logfiles", req.getRequestURI(), out);
+            Layout.start("Logfiles", req.getRequestURI(), out);
             
             out.append("<h1>Logfiles</h1>");
             
@@ -161,7 +161,7 @@ public class LogServlet extends HttpServlet
             
             out.append("</pre>");
             
-            Fame.end(out);
+            Layout.end(out);
         }
     }
 }

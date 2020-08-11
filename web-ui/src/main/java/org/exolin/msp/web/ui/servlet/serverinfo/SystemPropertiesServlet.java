@@ -7,7 +7,7 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import org.exolin.msp.web.ui.servlet.Fame;
+import org.exolin.msp.web.ui.servlet.Layout;
 import static org.exolin.msp.web.ui.servlet.serverinfo.ServerInfoServlet.list;
 
 /**
@@ -23,12 +23,12 @@ public class SystemPropertiesServlet extends HttpServlet
     {
         PrintWriter out = resp.getWriter();
         
-        Fame.start("System properties", req.getRequestURI(), out);
+        Layout.start("System properties", req.getRequestURI(), out);
         
         out.append("<h1><a href=\""+ServerInfoServlet.URL+"\">System info</a> / System properties</h1>");
         list(out, (Map)System.getProperties());
         
-        Fame.end(out);
+        Layout.end(out);
     }
     
 }

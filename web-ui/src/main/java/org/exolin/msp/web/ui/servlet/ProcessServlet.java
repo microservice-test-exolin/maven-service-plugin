@@ -41,7 +41,7 @@ public class ProcessServlet extends HttpServlet
             out.append("<body>");
             
             out.append("<div class=\"container\">");*/
-            Fame.start("Processes", req.getRequestURI(), out);
+            Layout.start("Processes", req.getRequestURI(), out);
             
             out.append("<h1>Processes</h1>");
             
@@ -57,7 +57,7 @@ public class ProcessServlet extends HttpServlet
             
             out.append("</body>");
             out.append("</html>");*/
-            Fame.end(out);
+            Layout.end(out);
         }
     }
     

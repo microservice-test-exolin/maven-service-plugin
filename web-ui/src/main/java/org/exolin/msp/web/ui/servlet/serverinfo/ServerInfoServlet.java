@@ -8,7 +8,7 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import org.exolin.msp.web.ui.servlet.Fame;
+import org.exolin.msp.web.ui.servlet.Layout;
 
 /**
  *
@@ -23,14 +23,14 @@ public class ServerInfoServlet extends HttpServlet
     {
         PrintWriter out = resp.getWriter();
         
-        Fame.start("Server info", req.getRequestURI(), out);
+        Layout.start("Server info", req.getRequestURI(), out);
         
         out.append("<h1>Server info</h1>");
         
         out.append("<a href=\""+SystemPropertiesServlet.URL+"\">System properties</a><br>");
         out.append("<a href=\""+SystemEnvironmentServlet.URL+"\">Environment Variables</a>");
         
-        Fame.end(out);
+        Layout.end(out);
     }
     
     static void list(Writer out, Map<String, String> tab) throws IOException

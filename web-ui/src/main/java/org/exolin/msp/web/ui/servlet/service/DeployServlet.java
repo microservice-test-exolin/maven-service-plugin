@@ -10,7 +10,7 @@ import org.exolin.msp.web.ui.Service;
 import org.exolin.msp.web.ui.Services;
 import org.exolin.msp.web.ui.linux.LinuxService;
 import org.exolin.msp.web.ui.pm.ProcessManager;
-import org.exolin.msp.web.ui.servlet.Fame;
+import org.exolin.msp.web.ui.servlet.Layout;
 import static org.exolin.msp.web.ui.servlet.service.ListServicesServlet.write;
 
 /**
@@ -64,7 +64,7 @@ public class DeployServlet extends HttpServlet
             out.append("<body>");
             
             out.append("<div class=\"container\">");*/
-            Fame.start("Build/Deploy", req.getRequestURI(), out);
+            Layout.start("Build/Deploy", req.getRequestURI(), out);
             
             out.append("<h1>Services</h1>");
             out.append("<form action=\"#\" method=\"POST\">");
@@ -76,7 +76,7 @@ public class DeployServlet extends HttpServlet
             
             out.append("</body>");
             out.append("</html>");*/
-            Fame.end(out);
+            Layout.end(out);
         }
     }
 

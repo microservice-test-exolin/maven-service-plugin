@@ -30,7 +30,7 @@ public class IndexServlet extends HttpServlet
             out.append("<body>");
             
             out.append("<div class=\"container\">");*/
-            Fame.start("Service Web UI", req.getRequestURI(), out);
+            Layout.start("Service Web UI", req.getRequestURI(), out);
             
             out.append("<h1>Service Web UI</h1>");
             
@@ -40,7 +40,7 @@ public class IndexServlet extends HttpServlet
             /*out.append("</div>");
             out.append("</body>");
             out.append("</html>");*/
-            Fame.end(out);
+            Layout.end(out);
         }
     }
 }

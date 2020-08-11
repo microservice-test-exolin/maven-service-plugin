@@ -13,7 +13,7 @@ import org.exolin.msp.core.StatusInfo;
 import org.exolin.msp.core.StatusType;
 import org.exolin.msp.web.ui.Service;
 import org.exolin.msp.web.ui.Services;
-import org.exolin.msp.web.ui.servlet.Fame;
+import org.exolin.msp.web.ui.servlet.Layout;
 
 /**
  *
@@ -38,7 +38,7 @@ public class ListServicesServlet extends HttpServlet
             Map<String, Exception> exceptions = new HashMap<>();
             Map<String, String> statusMap = new HashMap<>();
             
-            Fame.start("Services", req.getRequestURI(), out);
+            Layout.start("Services", req.getRequestURI(), out);
             //out.append("<div class=\"d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom\">");
             
             out.append("<h1>Services</h1>");
@@ -144,7 +144,7 @@ public class ListServicesServlet extends HttpServlet
             }
             
             //out.append("</div>");
-            Fame.end(out);
+            Layout.end(out);
         }
     }
 

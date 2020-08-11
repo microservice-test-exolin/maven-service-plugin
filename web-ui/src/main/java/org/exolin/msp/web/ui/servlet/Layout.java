@@ -8,7 +8,7 @@ import java.io.Writer;
  *
  * @author tomgk
  */
-public class Fame
+public class Layout
 {
     private static final String NAME = "Service Web UI";
     
@@ -153,12 +153,12 @@ public class Fame
 
         out.append("<body>");
 
-        Fame.writeNav(out);
+        Layout.writeNav(out);
 
         out.append("<div class=\"container-fluid\">");
         out.append("<div class=\"row\">");
 
-        Fame.writeSidebar(out, curPath);
+        Layout.writeSidebar(out, curPath);
 
         out.append("<main role=\"main\" class=\"col-md-9 ml-sm-auto col-lg-10 px-4\">");
     }
