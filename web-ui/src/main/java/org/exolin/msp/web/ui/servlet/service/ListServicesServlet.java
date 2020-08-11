@@ -1,4 +1,4 @@
-package org.exolin.msp.web.ui.servlet;
+package org.exolin.msp.web.ui.servlet.service;
 
 import java.io.IOException;
 import java.io.PrintWriter;
@@ -13,6 +13,7 @@ import org.exolin.msp.core.StatusInfo;
 import org.exolin.msp.core.StatusType;
 import org.exolin.msp.web.ui.Service;
 import org.exolin.msp.web.ui.Services;
+import org.exolin.msp.web.ui.servlet.Fame;
 
 /**
  *
@@ -147,7 +148,7 @@ public class ListServicesServlet extends HttpServlet
         }
     }
 
-    static String getUrl(String service)
+    public static String getUrl(String service)
     {
         return "/services#"+service;
     }

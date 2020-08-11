@@ -1,4 +1,4 @@
-package org.exolin.msp.web.ui.servlet;
+package org.exolin.msp.web.ui.servlet.service;
 
 import java.io.IOException;
 import java.io.PrintWriter;
@@ -6,11 +6,12 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import org.exolin.msp.web.ui.LinuxService;
-import org.exolin.msp.web.ui.ProcessManager;
+import org.exolin.msp.web.ui.linux.LinuxService;
+import org.exolin.msp.web.ui.pm.ProcessManager;
 import org.exolin.msp.web.ui.Service;
 import org.exolin.msp.web.ui.Services;
-import static org.exolin.msp.web.ui.servlet.ListServicesServlet.write;
+import org.exolin.msp.web.ui.servlet.Fame;
+import static org.exolin.msp.web.ui.servlet.service.ListServicesServlet.write;
 
 /**
  *

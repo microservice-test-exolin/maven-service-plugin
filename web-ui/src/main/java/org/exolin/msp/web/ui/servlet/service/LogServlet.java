@@ -1,5 +1,6 @@
-package org.exolin.msp.web.ui.servlet;
+package org.exolin.msp.web.ui.servlet.service;
 
+import org.exolin.msp.web.ui.servlet.service.ListServicesServlet;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.PrintWriter;
@@ -11,6 +12,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import org.exolin.msp.web.ui.Service;
 import org.exolin.msp.web.ui.Services;
+import org.exolin.msp.web.ui.servlet.Fame;
 
 /**
  *

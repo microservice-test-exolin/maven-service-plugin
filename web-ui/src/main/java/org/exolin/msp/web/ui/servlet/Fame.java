@@ -12,7 +12,7 @@ public class Fame
 {
     private static final String NAME = "Service Web UI";
     
-    public static void writeNav(Writer w) throws IOException
+    private static void writeNav(Writer w) throws IOException
     {
         w.append("<nav class=\"navbar navbar-dark fixed-top bg-dark flex-md-nowrap p-0 shadow\">\n" +
 "      <a class=\"navbar-brand col-sm-3 col-md-2 mr-0\" href=\"/\">").append(NAME).append("</a>\n" +
@@ -35,7 +35,7 @@ public class Fame
 "                </a>");
     }
     
-    public static void writeSidebar(Writer w, String current) throws IOException
+    private static void writeSidebar(Writer w, String current) throws IOException
     {
         w.write("<nav class=\"col-md-2 d-none d-md-block bg-light sidebar\">\n" +
 "          <div class=\"sidebar-sticky\">\n" +
@@ -123,7 +123,7 @@ public class Fame
 "        </nav>");
     }
 
-    static void end(PrintWriter out)
+    public static void end(PrintWriter out)
     {
         out.append("</main>");
         
@@ -141,7 +141,7 @@ public class Fame
         out.append("</html>");
     }
 
-    static void start(String title, String curPath, Writer out) throws IOException
+    public static void start(String title, String curPath, Writer out) throws IOException
     {
         out.append("<html>");
         out.append("<head>");

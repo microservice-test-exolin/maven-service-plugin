@@ -1,5 +1,6 @@
 package org.exolin.msp.web.ui.servlet;
 
+import org.exolin.msp.web.ui.servlet.service.ListServicesServlet;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.List;
@@ -7,7 +8,8 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import org.exolin.msp.web.ui.ProcessManager;
+import org.exolin.msp.web.ui.pm.ProcessInfo;
+import org.exolin.msp.web.ui.pm.ProcessManager;
 
 /**
  *
@@ -44,7 +46,7 @@ public class ProcessServlet extends HttpServlet
             out.append("<h1>Processes</h1>");
             
             list(out, pm.getProcesses());
-            List<ProcessManager.ProcessInfo> processesHistory = pm.getProcessesHistory();
+            List<ProcessInfo> processesHistory = pm.getProcessesHistory();
             if(!processesHistory.isEmpty())
             {
                 out.append("<h2>History</h2>");
@@ -59,7 +61,7 @@ public class ProcessServlet extends HttpServlet
         }
     }
     
-    private void list(PrintWriter out, List<ProcessManager.ProcessInfo> processes)
+    private void list(PrintWriter out, List<ProcessInfo> processes)
     {
         out.append("<table class=\"table table-striped table-sm\">");
 
@@ -73,7 +75,7 @@ public class ProcessServlet extends HttpServlet
         if(processes.isEmpty())
             out.append("<tr><td style=\"text-align: center\" colspan=\"4\"><em>No running processes</em></td></tr>");
 
-        for(ProcessManager.ProcessInfo process: processes)
+        for(ProcessInfo process: processes)
         {
             long runtime = process.getRuntime();
             

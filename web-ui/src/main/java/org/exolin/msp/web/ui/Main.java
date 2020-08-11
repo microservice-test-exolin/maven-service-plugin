@@ -1,5 +1,7 @@
 package org.exolin.msp.web.ui;
 
+import org.exolin.msp.web.ui.pm.ProcessManager;
+import org.exolin.msp.web.ui.linux.LinuxServices;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
@@ -12,12 +14,12 @@ import org.exolin.msp.core.LinuxAbstraction;
 import org.exolin.msp.core.Log;
 import org.exolin.msp.core.PseudoAbstraction;
 import org.exolin.msp.core.SystemAbstraction;
-import org.exolin.msp.web.ui.servlet.DeployServlet;
+import org.exolin.msp.web.ui.servlet.service.DeployServlet;
 import org.exolin.msp.web.ui.servlet.FaviconIcoServlet;
 import org.exolin.msp.web.ui.servlet.FaviconPngServlet;
 import org.exolin.msp.web.ui.servlet.IndexServlet;
-import org.exolin.msp.web.ui.servlet.ListServicesServlet;
-import org.exolin.msp.web.ui.servlet.LogServlet;
+import org.exolin.msp.web.ui.servlet.service.ListServicesServlet;
+import org.exolin.msp.web.ui.servlet.service.LogServlet;
 import org.exolin.msp.web.ui.servlet.ProcessServlet;
 import org.exolin.msp.web.ui.servlet.ResourceServlet;
 import org.exolin.msp.web.ui.servlet.ServerInfoClass;
@@ -89,16 +91,19 @@ public class Main
         }
         
         ServletHandler servletHandler = new ServletHandler();
-        servletHandler.addServletWithMapping(StatusServlet.class, "/status");
         servletHandler.addServletWithMapping(IndexServlet.class, "/");
-        servletHandler.addServletWithMapping(FaviconPngServlet.class, "/favicon.png");
-        servletHandler.addServletWithMapping(FaviconIcoServlet.class, "/favicon.ico");
+        
+        servletHandler.addServletWithMapping(StatusServlet.class, "/status");
+        
+        servletHandler.addServletWithMapping(ResourceServlet.class, "/favicon.png").setServlet(new ResourceServlet("image/png", "files/favicon.png"));
+        servletHandler.addServletWithMapping(ResourceServlet.class, "/favicon.ico").setServlet(new ResourceServlet("image/x-icon", "files/favicon.ico"));
         servletHandler.addServletWithMapping(ResourceServlet.class, "/dashboard.css").setServlet(new ResourceServlet("text/css", "files/dashboard.css"));
         
         servletHandler.addServletWithMapping(ListServicesServlet.class, "/services").setServlet(new ListServicesServlet(services));
         servletHandler.addServletWithMapping(ListServicesServlet.class, "/deploy").setServlet(new DeployServlet(services, pm));
         servletHandler.addServletWithMapping(ListServicesServlet.class, "/logs").setServlet(new LogServlet(services));
         servletHandler.addServletWithMapping(ListServicesServlet.class, "/processes").setServlet(new ProcessServlet(pm));
+        
         servletHandler.addServletWithMapping(ServerInfoClass.class, "/server-info");
         
         /*ResourceHandler resHandler = new ResourceHandler();
