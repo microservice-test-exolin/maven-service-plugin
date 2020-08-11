@@ -188,8 +188,9 @@ public class LinuxService extends AbstractService
                     String.join("\n", lines));
         
         String repo = lines.get(urlLine).trim().substring(URL.length());
-        if(!repo.endsWith(".git"))
-            throw new IOException(repo+" has no trailing .git");
-        return repo.substring(0, repo.length()-4);
+        if(repo.endsWith(".git"))
+            repo = repo.substring(0, repo.length()-4);
+        
+        return repo;
     }
 }
