@@ -30,21 +30,21 @@ public class Main
 {
     public static void main(String[] args) throws Exception
     {
+        ProcessManager pm = new ProcessManager();
+        
         SystemAbstraction sys = new LinuxAbstraction(new LogAdapter(LinuxAbstraction.class));
             
-        LinuxServices services = new LinuxServices(Paths.get("/home/exolin/services"), sys);
+        LinuxServices services = new LinuxServices(Paths.get("/home/exolin/services"), sys, pm);
         
-        run(sys, services);
+        run(pm, sys, services);
     }
     
-    public static void run(SystemAbstraction sys, Services services) throws Exception
+    public static void run(ProcessManager pm, SystemAbstraction sys, Services services) throws Exception
     {
         Server server = new Server();
         ServerConnector connector = new ServerConnector(server);
         connector.setPort(8090);
         server.setConnectors(new Connector[]{connector});
-        
-        ProcessManager pm = new ProcessManager();
         
         Runtime.getRuntime().addShutdownHook(new Thread("childprocess.kill"){
             @Override
