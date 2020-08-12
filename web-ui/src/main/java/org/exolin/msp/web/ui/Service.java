@@ -23,4 +23,6 @@ public interface Service
     public void deploy(boolean async) throws IOException, InterruptedException;
     
     public Map<String, Path> getLogFiles() throws IOException;
+
+    public String getRepositoryUrl() throws IOException;
 }

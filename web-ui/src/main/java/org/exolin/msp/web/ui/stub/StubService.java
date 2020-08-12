@@ -47,4 +47,10 @@ public class StubService extends AbstractService
         //LOGGER.info("Reading log file list");
         return Collections.singletonMap("test.log", Paths.get("test.log"));
     }
+
+    @Override
+    public String getRepositoryUrl() throws IOException
+    {
+        throw new UnsupportedOperationException();
+    }
 }
