@@ -134,7 +134,7 @@ public class LinuxService extends AbstractService
         {
             int code = p.waitFor();
             if(code != 0)
-                throw new IOException("Build process returned "+code);
+                throw new IOException("Build process for "+getName()+" returned "+code);
         }
     }
     
@@ -159,10 +159,11 @@ public class LinuxService extends AbstractService
         {
             int code = p.waitFor();
             if(code != 0)
-                throw new IOException("Deploy process returned "+code);
+                throw new IOException("Deploy process for "+getName()+" returned "+code);
         }
     }
     
+    @Override
     public String getRepositoryUrl() throws IOException
     {
         return getRepositoryUrl(getGitRoot());
