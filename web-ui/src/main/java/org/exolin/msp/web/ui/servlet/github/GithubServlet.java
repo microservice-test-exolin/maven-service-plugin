@@ -48,7 +48,7 @@ public class GithubServlet extends HttpServlet
 
             String error = null;
             try{
-                Service service = services.getServiceFromRepositoryUrl(payload.getRepository().getUrl());
+                Service service = services.getServiceFromRepositoryUrl(payload.getRepository().getHtml_url());
                 if(service != null)
                 {
                     map.put("service", service.getName());

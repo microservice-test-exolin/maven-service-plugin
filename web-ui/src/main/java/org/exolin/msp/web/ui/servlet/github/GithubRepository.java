@@ -10,15 +10,15 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 public class GithubRepository
 {
     private String name;
-    private String url;
+    private String html_url;
 
     public String getName()
     {
         return name;
     }
 
-    public String getUrl()
+    public String getHtml_url()
     {
-        return url;
+        return html_url;
     }
 }
