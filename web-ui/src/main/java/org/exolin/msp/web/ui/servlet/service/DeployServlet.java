@@ -20,12 +20,10 @@ import static org.exolin.msp.web.ui.servlet.service.ListServicesServlet.write;
 public class DeployServlet extends HttpServlet
 {
     private final Services services;
-    private final ProcessManager pm;
 
-    public DeployServlet(Services services, ProcessManager pm)
+    public DeployServlet(Services services)
     {
         this.services = services;
-        this.pm = pm;
     }
 
     @Override
@@ -114,7 +112,7 @@ public class DeployServlet extends HttpServlet
             case "compile":
             {
                 try{
-                    service.build(pm);
+                    service.build(true);
                 }catch(IOException|InterruptedException|UnsupportedOperationException e){
                     e.printStackTrace(resp.getWriter());
                     return;
@@ -127,7 +125,7 @@ public class DeployServlet extends HttpServlet
             case "deploy":
             {
                 try{
-                    service.deploy(pm);
+                    service.deploy(true);
                 }catch(IOException|InterruptedException|UnsupportedOperationException e){
                     e.printStackTrace(resp.getWriter());
                     return;

@@ -10,6 +10,7 @@ import java.util.List;
 import org.exolin.msp.core.SystemAbstraction;
 import org.exolin.msp.web.ui.Service;
 import org.exolin.msp.web.ui.Services;
+import org.exolin.msp.web.ui.pm.ProcessManager;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -23,11 +24,13 @@ public class LinuxServices implements Services
     
     private final Path servicesDirectory;
     private final SystemAbstraction sys;
+    private final ProcessManager pm;
 
-    public LinuxServices(Path servicesDirectory, SystemAbstraction sys)
+    public LinuxServices(Path servicesDirectory, SystemAbstraction sys, ProcessManager pm)
     {
         this.servicesDirectory = servicesDirectory;
         this.sys = sys;
+        this.pm = pm;
     }
 
     @Override
@@ -43,7 +46,7 @@ public class LinuxServices implements Services
             List<LinuxService> services = new ArrayList<>();
             
             for(Path p : dir)
-                services.add(new LinuxService(p, p.getFileName().toString(), sys));
+                services.add(service(p));
             
             return services;
         }
@@ -52,14 +55,19 @@ public class LinuxServices implements Services
     @Override
     public Service getService(String serviceName)
     {
-        Path sDir = servicesDirectory.resolve(serviceName);
-        if(!sDir.getParent().equals(servicesDirectory))
+        Path serviceDirectory = servicesDirectory.resolve(serviceName);
+        if(!serviceDirectory.getParent().equals(servicesDirectory))
             throw new IllegalArgumentException("Invalid service name: "+serviceName);
         
-        if(!Files.exists(sDir))
+        if(!Files.exists(serviceDirectory))
             return null;
         
-        return new LinuxService(sDir, serviceName, sys);
+        return service(serviceDirectory);
+    }
+    
+    private LinuxService service(Path serviceDirectory)
+    {
+        return new LinuxService(serviceDirectory, serviceDirectory.getFileName().toString(), sys, pm);
     }
 
     @Override

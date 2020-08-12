@@ -7,7 +7,6 @@ import java.util.Collections;
 import java.util.Map;
 import org.exolin.msp.core.SystemAbstraction;
 import org.exolin.msp.web.ui.AbstractService;
-import org.exolin.msp.web.ui.pm.ProcessManager;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -29,13 +28,13 @@ public class StubService extends AbstractService
     }
     
     @Override
-    public void build(ProcessManager pm) throws IOException, InterruptedException
+    public void build(boolean asynch) throws IOException, InterruptedException
     {
         throw new UnsupportedOperationException();
     }
     
     @Override
-    public void deploy(ProcessManager pm) throws IOException, InterruptedException
+    public void deploy(boolean asynch) throws IOException, InterruptedException
     {
         throw new UnsupportedOperationException();
     }

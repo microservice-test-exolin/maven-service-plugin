@@ -23,13 +23,15 @@ import org.slf4j.LoggerFactory;
 public class LinuxService extends AbstractService
 {
     private final Path serviceDirectory;
+    private final ProcessManager pm;
     
     private static final Logger LOGGER = LoggerFactory.getLogger(LinuxService.class);
 
-    public LinuxService(Path serviceDirectory, String name, SystemAbstraction sys)
+    public LinuxService(Path serviceDirectory, String name, SystemAbstraction sys, ProcessManager pm)
     {
         super(name, sys);
         this.serviceDirectory = serviceDirectory;
+        this.pm = pm;
     }
     
     @Override
@@ -112,7 +114,7 @@ public class LinuxService extends AbstractService
     }
     
     @Override
-    public void build(ProcessManager pm) throws IOException, InterruptedException
+    public void build(boolean asynch) throws IOException, InterruptedException
     {
         Path dir = getOriginalPath();
         
@@ -127,10 +129,17 @@ public class LinuxService extends AbstractService
                 .start();
         
         pm.register(getName(), p, Arrays.asList(cmd), "Building "+getName(), startTime);
+        
+        if(!asynch)
+        {
+            int code = p.waitFor();
+            if(code != 0)
+                throw new IOException("Build process returned "+code);
+        }
     }
     
     @Override
-    public void deploy(ProcessManager pm) throws IOException, InterruptedException
+    public void deploy(boolean asynch) throws IOException, InterruptedException
     {
         Path dir = getGitRoot();
         
@@ -145,6 +154,13 @@ public class LinuxService extends AbstractService
                 .start();
         
         pm.register(getName(), p, Arrays.asList(cmd), "Deploying "+getName(), startTime);
+        
+        if(!asynch)
+        {
+            int code = p.waitFor();
+            if(code != 0)
+                throw new IOException("Deploy process returned "+code);
+        }
     }
     
     public String getRepositoryUrl() throws IOException
