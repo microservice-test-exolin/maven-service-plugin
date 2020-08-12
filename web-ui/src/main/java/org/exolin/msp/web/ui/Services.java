@@ -13,5 +13,5 @@ public interface Services
 
     public Service getService(String serviceName) throws IOException;
     
-    public Service getServiceFromRepositoryUrl(String url) throws IOException;
+    public List<Service> getServicesFromRepositoryUrl(String url) throws IOException;
 }

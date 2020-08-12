@@ -71,9 +71,11 @@ public class LinuxServices implements Services
     }
 
     @Override
-    public Service getServiceFromRepositoryUrl(String url) throws IOException
+    public List<Service> getServicesFromRepositoryUrl(String url) throws IOException
     {
         LOGGER.info("getServiceFromRepositoryUrl({})", url);
+        
+        List<Service> services = new ArrayList<>();
         
         for(LinuxService s: getLinuxServices())
         {
@@ -84,11 +86,12 @@ public class LinuxServices implements Services
             if(url.equals(repoUrl))
             {
                 LOGGER.info("  found");
-                return s;
+                services.add(s);
             }
         }
         
-        LOGGER.info("  not found");
+        if(services.isEmpty())
+            LOGGER.info("  not found");
         
         return null;
     }

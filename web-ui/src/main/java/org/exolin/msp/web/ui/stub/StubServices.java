@@ -1,6 +1,7 @@
 package org.exolin.msp.web.ui.stub;
 
 import java.io.IOException;
+import java.util.Collections;
 import java.util.List;
 import org.exolin.msp.web.ui.Service;
 import org.exolin.msp.web.ui.Services;
@@ -33,8 +34,8 @@ public class StubServices implements Services
     }
 
     @Override
-    public Service getServiceFromRepositoryUrl(String url) throws IOException
+    public List<Service> getServicesFromRepositoryUrl(String url) throws IOException
     {
-        return null;
+        return Collections.emptyList();
     }
 }

@@ -101,11 +101,11 @@ public class GithubServlet extends HttpServlet
         }
         else
         {
-            Service service = services.getServiceFromRepositoryUrl(url);
-            if(service == null)
+            List<Service> serviceList = services.getServicesFromRepositoryUrl(url);
+            if(serviceList.isEmpty())
                 throw new RuntimeException("Service not found for "+url);
             
-            return Collections.singletonList(service);
+            return serviceList;
         }
     }
 }
