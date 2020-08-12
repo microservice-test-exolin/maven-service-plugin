@@ -116,7 +116,7 @@ public class LinuxService extends AbstractService
     @Override
     public void build(boolean asynch) throws IOException, InterruptedException
     {
-        Path dir = getOriginalPath();
+        Path dir = getGitRoot();
         
         String[] cmd = {"/bin/bash", "-c", "git pull && mvn package"};
         
@@ -141,7 +141,7 @@ public class LinuxService extends AbstractService
     @Override
     public void deploy(boolean asynch) throws IOException, InterruptedException
     {
-        Path dir = getGitRoot();
+        Path dir = getOriginalPath();
         
         String[] cmd = {"/bin/bash", "-c", "/root/repos/deploy.sh"};
         
