@@ -52,7 +52,6 @@ public class LognameGenerator
             String group = filename.substring(0, filename.length()-suffixLen);
             
             String ts = filename.substring(filename.length()-suffixLen+1, filename.length()-extLen);
-            System.out.println(ts);
             
             TemporalAccessor parse = FORMAT.parse(ts);
             LocalDateTime dateTime = parse.query(TemporalQueries.localDate()).atTime(parse.query(TemporalQueries.localTime()));
