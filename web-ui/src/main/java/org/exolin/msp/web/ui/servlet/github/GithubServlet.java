@@ -76,7 +76,8 @@ public class GithubServlet extends HttpServlet
             }
 
             mapper.writeValue(resp.getWriter(), map);
-        }catch(IOException|RuntimeException e){
+        //}catch(IOException|RuntimeException e){
+        }catch(Throwable e){
             LOGGER.error("Error in doPost", e);
             throw e;
         }
