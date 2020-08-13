@@ -7,6 +7,7 @@ import org.eclipse.jetty.server.Server;
 import org.eclipse.jetty.server.ServerConnector;
 import org.eclipse.jetty.servlet.ServletHandler;
 import org.exolin.msp.core.LinuxAbstraction;
+import org.exolin.msp.core.Log;
 import org.exolin.msp.core.SystemAbstraction;
 import org.exolin.msp.web.ui.linux.LinuxServices;
 import org.exolin.msp.web.ui.pm.ProcessManager;
@@ -32,7 +33,13 @@ public class Main
     {
         ProcessManager pm = new ProcessManager();
         
-        SystemAbstraction sys = new LinuxAbstraction(new LogAdapter(LinuxAbstraction.class));
+        SystemAbstraction sys = new LinuxAbstraction(new Log()
+        {
+            @Override
+            public void warn(String string){}
+            @Override
+            public void info(String string){}
+        });//new LogAdapter(LinuxAbstraction.class));
             
         LinuxServices services = new LinuxServices(Paths.get("/home/exolin/services"), sys, pm);
         
