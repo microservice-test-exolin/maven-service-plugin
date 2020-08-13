@@ -22,6 +22,7 @@ import org.exolin.msp.web.ui.servlet.serverinfo.SystemPropertiesServlet;
 import org.exolin.msp.web.ui.servlet.service.DeployServlet;
 import org.exolin.msp.web.ui.servlet.service.ListServicesServlet;
 import org.exolin.msp.web.ui.servlet.service.LogServlet;
+import org.exolin.msp.web.ui.servlet.service.ServiceStatusServlet;
 
 /**
  *
@@ -71,9 +72,10 @@ public class Main
         servletHandler.addServletWithMapping(ResourceServlet.class, "/dashboard.css").setServlet(new ResourceServlet("text/css", "files/dashboard.css"));
         
         servletHandler.addServletWithMapping(ListServicesServlet.class, "/services").setServlet(new ListServicesServlet(services));
-        servletHandler.addServletWithMapping(ListServicesServlet.class, "/deploy").setServlet(new DeployServlet(services));
-        servletHandler.addServletWithMapping(ListServicesServlet.class, "/logs").setServlet(new LogServlet(services));
-        servletHandler.addServletWithMapping(ListServicesServlet.class, "/processes").setServlet(new ProcessServlet(pm));
+        servletHandler.addServletWithMapping(DeployServlet.class, "/deploy").setServlet(new DeployServlet(services));
+        servletHandler.addServletWithMapping(LogServlet.class, "/logs").setServlet(new LogServlet(services));
+        servletHandler.addServletWithMapping(ProcessServlet.class, "/processes").setServlet(new ProcessServlet(pm));
+        servletHandler.addServletWithMapping(ServiceStatusServlet.class, ServiceStatusServlet.URL).setServlet(new ServiceStatusServlet(services));
         
         servletHandler.addServletWithMapping(GithubServlet.class, "/github").setServlet(new GithubServlet(services));
         

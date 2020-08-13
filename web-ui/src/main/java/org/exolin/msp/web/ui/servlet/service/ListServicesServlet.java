@@ -36,7 +36,6 @@ public class ListServicesServlet extends HttpServlet
         try(PrintWriter out = resp.getWriter())
         {
             Map<String, Exception> exceptions = new HashMap<>();
-            Map<String, String> statusMap = new HashMap<>();
             
             Layout.start("Services", req.getRequestURI(), out);
             //out.append("<div class=\"d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom\">");
@@ -57,7 +56,6 @@ public class ListServicesServlet extends HttpServlet
                 out.append("<td>").append(service.getName()).append("</td>");
                 
                 out.append("<td>");
-                statusMap.put(service.getName(), "failed to read");
                 try{
                     StatusInfo status = service.getStatus();
                     try{
@@ -65,7 +63,6 @@ public class ListServicesServlet extends HttpServlet
                         
                         out.append(statusType.toString());
                         
-                        statusMap.put(service.getName(), status.getInfo());
                     }catch(UnsupportedOperationException e){
                         exceptions.put(service.getName(), e);
                         out.append("Couldn't be determined");
@@ -83,11 +80,13 @@ public class ListServicesServlet extends HttpServlet
                 write(out, "stop", "Stop");
                 write(out, "restart", "Restart");
                 out.append("</form>");
-                out.append("<form action=\"/deploy\" method=\"POST\" style=\"display: inline\">");
+                
+                out.append("<a href=\""+ServiceStatusServlet.getUrl(service.getName())+"\">Status</a>");
                 
                 out.append("</td>");
                 
                 out.append("<td>");
+                out.append("<form action=\"/deploy\" method=\"POST\" style=\"display: inline\">");
                 if(service.supportsBuildAndDeployment())
                 {
                     out.append("<input type=\"hidden\" name=\"service\" value=\"").append(service.getName()).append("\">");
@@ -105,24 +104,6 @@ public class ListServicesServlet extends HttpServlet
                 out.append("</tr>");
             }
             
-            out.append("</table>");
-            
-            out.append("<h2>Status</h2>");
-            out.append("<table class=\"table table-striped table-sm\">");out.append("<tr>");
-            out.append("<th>Service</th>");
-            out.append("<th>Status</th>");
-            out.append("</tr>");
-            for(Map.Entry<String, String> e: statusMap.entrySet())
-            {
-                out.append("<tr>");
-                out.append("<td>");
-                out.append(e.getKey());
-                out.append("</td>");
-                out.append("<td><pre>");
-                out.append(e.getValue());
-                out.append("</pre></td>");
-                out.append("</tr>");
-            }
             out.append("</table>");
             
             if(!exceptions.isEmpty())
