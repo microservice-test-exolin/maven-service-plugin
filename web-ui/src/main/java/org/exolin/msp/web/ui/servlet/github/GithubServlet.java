@@ -35,15 +35,21 @@ public class GithubServlet extends HttpServlet
         this.services = services;
     }
     
+    public static ObjectMapper createObjectMapper()
+    {
+        ObjectMapper mapper = new ObjectMapper();
+        mapper.setVisibility(PropertyAccessor.ALL, JsonAutoDetect.Visibility.NONE);
+        mapper.setVisibility(PropertyAccessor.FIELD, JsonAutoDetect.Visibility.ANY);
+        return mapper;
+    }
+    
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException
     {
         try{
             resp.setContentType("application/json;charset=UTF-8");
 
-            ObjectMapper mapper = new ObjectMapper();
-            mapper.setVisibility(PropertyAccessor.ALL, JsonAutoDetect.Visibility.NONE);
-            mapper.setVisibility(PropertyAccessor.FIELD, JsonAutoDetect.Visibility.ANY);
+            ObjectMapper mapper = createObjectMapper();
 
             GithubPayload payload = mapper.readValue(req.getReader(), GithubPayload.class);
 

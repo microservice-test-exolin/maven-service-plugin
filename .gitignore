@@ -7,3 +7,4 @@
 /system-lib/target/
 *.log
 /web-ui/nbproject/
+*.token
