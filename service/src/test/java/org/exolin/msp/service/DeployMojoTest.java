@@ -105,7 +105,7 @@ public class DeployMojoTest
                         + "-Dsystem.baseDirectory=$DIR "
                         + "-Dsystem.logDirectory=$DIR/log "
                         + "-Dsystem.configDirectory=$DIR/cfg"
-                        + " -jar $DIR/bin/test-service-1.0-SNAPSHOT.jar >> $DIR/log/service.log 2>>&1",
+                        + " -jar $DIR/bin/test-service-1.0-SNAPSHOT.jar >> $DIR/log/service.log 2>&1",
                 "echo Stopped >> service.log"
         )), String.join("\n", x));
         
