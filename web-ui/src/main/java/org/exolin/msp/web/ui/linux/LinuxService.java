@@ -6,12 +6,14 @@ import java.nio.file.Files;
 import java.nio.file.NoSuchFileException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
 import org.exolin.msp.core.SystemAbstraction;
 import org.exolin.msp.web.ui.AbstractService;
+import org.exolin.msp.web.ui.LognameGenerator;
 import org.exolin.msp.web.ui.pm.ProcessManager;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -72,29 +74,14 @@ public class LinuxService extends AbstractService
         throw new IllegalArgumentException("Not a git repository: "+path);
     }
     
-    public static final String BUILD_LOG = "build.out.log";
-    public static final String DEPLOY_LOG = "deploy.out.log";
+    public static final String BUILD_LOG_GROUP = LognameGenerator.creatTaskGroup("build");
+    public static final String DEPLOY_LOG_GROUP = LognameGenerator.creatTaskGroup("deploy");
     
-    private Path getBuildOut()
+    private Path getLogDirectory()
     {
-        return serviceDirectory.resolve("log").resolve(BUILD_LOG);
+        return serviceDirectory.resolve("log");
     }
     
-    private Path getBuildErr()
-    {
-        return serviceDirectory.resolve("log").resolve("build.err.log");
-    }
-    
-    private Path getDeployOut()
-    {
-        return serviceDirectory.resolve("log").resolve(DEPLOY_LOG);
-    }
-    
-    private Path getDeployErr()
-    {
-        return serviceDirectory.resolve("log").resolve("deploy.err.log");
-    }
-
     @Override
     public Map<String, Path> getLogFiles() throws IOException
     {
@@ -120,12 +107,14 @@ public class LinuxService extends AbstractService
         
         String[] cmd = {"/bin/bash", "-c", "git pull && mvn package"};
         
+        Path logFile = getLogDirectory().resolve(LognameGenerator.generateFilename(BUILD_LOG_GROUP, LocalDateTime.now()));
+        
         long startTime = System.currentTimeMillis();
         Process p = new ProcessBuilder(cmd)
                 .directory(dir.toFile())
                 .redirectInput(ProcessBuilder.Redirect.INHERIT)
-                .redirectOutput(ProcessBuilder.Redirect.to(getBuildOut().toFile()))
-                .redirectError(ProcessBuilder.Redirect.to(getBuildErr().toFile()))
+                .redirectOutput(ProcessBuilder.Redirect.to(logFile.toFile()))
+                .redirectError(ProcessBuilder.Redirect.to(logFile.toFile()))
                 .start();
         
         pm.register(getName(), p, Arrays.asList(cmd), "Building "+getName(), startTime);
@@ -145,12 +134,14 @@ public class LinuxService extends AbstractService
         
         String[] cmd = {"/bin/bash", "-c", "/root/repos/deploy.sh"};
         
+        Path logFile = getLogDirectory().resolve(LognameGenerator.generateFilename(BUILD_LOG_GROUP, LocalDateTime.now()));
+        
         long startTime = System.currentTimeMillis();
         Process p = new ProcessBuilder(cmd)
                 .directory(dir.toFile())
                 .redirectInput(ProcessBuilder.Redirect.INHERIT)
-                .redirectOutput(ProcessBuilder.Redirect.to(getDeployOut().toFile()))
-                .redirectError(ProcessBuilder.Redirect.to(getDeployErr().toFile()))
+                .redirectOutput(ProcessBuilder.Redirect.to(logFile.toFile()))
+                .redirectError(ProcessBuilder.Redirect.to(logFile.toFile()))
                 .start();
         
         pm.register(getName(), p, Arrays.asList(cmd), "Deploying "+getName(), startTime);

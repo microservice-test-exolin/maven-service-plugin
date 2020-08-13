@@ -9,6 +9,7 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import org.exolin.msp.web.ui.LognameGenerator;
 import org.exolin.msp.web.ui.Service;
 import org.exolin.msp.web.ui.Services;
 import org.exolin.msp.web.ui.servlet.Layout;
@@ -25,6 +26,12 @@ public class LogServlet extends HttpServlet
     {
         this.services = services;
     }
+    
+    private static final String SERVICE = "service";
+    private static final String LOGFILE = "logfile";
+    private static final String GROUP = "group";
+    private static final String TYPE = "type";
+    private static final String TYPE_RAW = "raw";
     
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException
@@ -48,23 +55,29 @@ public class LogServlet extends HttpServlet
             return;
         }
         
-        String logFile = req.getParameter("logfile");
+        String logFile = req.getParameter(LOGFILE);
+        String group = req.getParameter(GROUP);
         if(logFile == null)
-            showLogFileIndex(service, req, resp);
-        else if("raw".equals(req.getParameter("type")))
+            showLogFileIndex(service, req, resp, group != null ? group : "");
+        else if(TYPE_RAW.equals(req.getParameter(TYPE)))
             showLogFileRaw(service, logFile, req, resp);
         else
             showLogFile(service, logFile, req, resp);
     }
 
-    static String getUrl(String service, String logfile)
+    static String getFileUrl(String service, String logfile)
     {
-        return getUrl(service, logfile, false);
+        return getFileUrl(service, logfile, false);
     }
     
-    static String getUrl(String service, String logfile, boolean raw)
+    static String getFileUrl(String service, String logfile, boolean raw)
     {
-        return "/logs?service="+service+"&logfile="+logfile+(raw ? "&type=raw" : "");
+        return "/logs?"+SERVICE+"="+service+"&"+LOGFILE+"="+logfile+(raw ? "&"+TYPE+"="+TYPE_RAW : "");
+    }
+    
+    static String getFilesOfGroup(String service, String group)
+    {
+        return "/logs?"+SERVICE+"="+service+"&"+GROUP+"="+group;
     }
     
     private void showLogFileIndex(Services services, HttpServletRequest req, HttpServletResponse resp) throws IOException
@@ -82,7 +95,7 @@ public class LogServlet extends HttpServlet
                 for(String name: service.getLogFiles().keySet())
                 {
                     out.append("<a href=\"").append(ListServicesServlet.getUrl(service.getName())).append("\">").append(service.getName()).append("</a>");
-                    out.append(" / <a href=\"").append(getUrl(service.getName(), name)).append("\">").append(name).append("</a><br>");
+                    out.append(" / <a href=\"").append(getFileUrl(service.getName(), name)).append("\">").append(name).append("</a><br>");
                 }
             }
             
@@ -90,13 +103,15 @@ public class LogServlet extends HttpServlet
         }
     }
     
-    private void showLogFileIndex(Service service, HttpServletRequest req, HttpServletResponse resp) throws IOException
+    private void showLogFileIndex(Service service, HttpServletRequest req, HttpServletResponse resp, String group) throws IOException
     {
         resp.setContentType("text/html;charset=UTF-8");
         
+        String prefix = LognameGenerator.getPrefix(group);
+        
         try(PrintWriter out = resp.getWriter())
         {
-            Layout.start("Logfiles of "+service.getName(), req.getRequestURI(), out);
+            Layout.start("Logfiles"+(prefix.isEmpty()?"":" "+prefix)+" of "+service.getName(), req.getRequestURI(), out);
             
             /*out.append("<html>");
             out.append("<head>");
@@ -112,7 +127,10 @@ public class LogServlet extends HttpServlet
             out.append("<h1>Logfiles of "+service.getName()+"</h1>");
             
             for(String name: service.getLogFiles().keySet())
-                out.append("<a href=\""+getUrl(service.getName(), name)+"\">"+name+"</a><br>");
+            {
+                if(!name.startsWith(prefix))
+                    out.append("<a href=\""+getFileUrl(service.getName(), name)+"\">"+name+"</a><br>");
+            }
             
             /*out.append("</body>");
             out.append("</head>");
@@ -151,7 +169,7 @@ public class LogServlet extends HttpServlet
             
             out.append("<h1>Logfiles</h1>");
             
-            out.append("<a href=\"").append(getUrl(service.getName(), logFile, true)).append("\">").append("Raw").append("</a>");
+            out.append("<a href=\"").append(getFileUrl(service.getName(), logFile, true)).append("\">").append("Raw").append("</a>");
             
             out.append("<pre style=\"border: 1px solid #ccc;padding:0.5em\">");
             
