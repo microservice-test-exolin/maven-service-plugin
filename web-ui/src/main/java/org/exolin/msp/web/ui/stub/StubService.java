@@ -16,9 +16,9 @@ import org.slf4j.LoggerFactory;
  */
 public class StubService extends AbstractService
 {
-    public StubService(String name, SystemAbstraction sys)
+    public StubService(String name, SystemAbstraction sys, Path logDirectory)
     {
-        super(name, sys);
+        super(name, sys, logDirectory);
     }
 
     @Override
@@ -39,15 +39,6 @@ public class StubService extends AbstractService
         throw new UnsupportedOperationException();
     }
     
-    private static final Logger LOGGER = LoggerFactory.getLogger(StubService.class);
-
-    @Override
-    public Map<String, Path> getLogFiles() throws IOException
-    {
-        //LOGGER.info("Reading log file list");
-        return Collections.singletonMap("test.log", Paths.get("test.log"));
-    }
-
     @Override
     public String getRepositoryUrl() throws IOException
     {

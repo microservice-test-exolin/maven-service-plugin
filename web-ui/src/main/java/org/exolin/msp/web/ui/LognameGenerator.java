@@ -4,6 +4,8 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeFormatterBuilder;
 import java.time.temporal.ChronoField;
+import java.time.temporal.TemporalAccessor;
+import java.time.temporal.TemporalQueries;
 
 /**
  *
@@ -36,5 +38,31 @@ public class LognameGenerator
     public static String creatTaskGroup(String taskName)
     {
         return "task-"+taskName;
+    }
+    
+    public static String getLogFileTitle(String filename)
+    {
+        if(filename.equals("service.log"))
+            return "Service Log";
+        else if(filename.matches(".*-....-..-..-......\\.log"))
+        {
+            int suffixLen = 22;
+            int extLen = 4;  //.log
+            
+            String group = filename.substring(0, filename.length()-suffixLen);
+            
+            String ts = filename.substring(filename.length()-suffixLen+1, filename.length()-extLen);
+            System.out.println(ts);
+            
+            TemporalAccessor parse = FORMAT.parse(ts);
+            LocalDateTime dateTime = parse.query(TemporalQueries.localDate()).atTime(parse.query(TemporalQueries.localTime()));
+            
+            if(group.startsWith("task-"))
+                group = "Task "+group.substring(5);
+            
+            return group+" at "+dateTime.toString().replace('T', ' ');
+        }
+        else
+            return filename;
     }
 }

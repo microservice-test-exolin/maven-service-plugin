@@ -9,8 +9,6 @@ import java.nio.file.Paths;
 import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.List;
-import java.util.Map;
-import java.util.TreeMap;
 import org.exolin.msp.core.SystemAbstraction;
 import org.exolin.msp.web.ui.AbstractService;
 import org.exolin.msp.web.ui.LognameGenerator;
@@ -25,13 +23,19 @@ import org.slf4j.LoggerFactory;
 public class LinuxService extends AbstractService
 {
     private final Path serviceDirectory;
+    
     private final ProcessManager pm;
     
     private static final Logger LOGGER = LoggerFactory.getLogger(LinuxService.class);
 
-    public LinuxService(Path serviceDirectory, String name, SystemAbstraction sys, ProcessManager pm)
+    public LinuxService(
+            Path serviceDirectory,
+            Path logDirectory,
+            String name,
+            SystemAbstraction sys,
+            ProcessManager pm)
     {
-        super(name, sys);
+        super(name, sys, logDirectory);
         this.serviceDirectory = serviceDirectory;
         this.pm = pm;
     }
@@ -76,29 +80,6 @@ public class LinuxService extends AbstractService
     
     public static final String BUILD_LOG_GROUP = LognameGenerator.creatTaskGroup("build");
     public static final String DEPLOY_LOG_GROUP = LognameGenerator.creatTaskGroup("deploy");
-    
-    private Path getLogDirectory()
-    {
-        return serviceDirectory.resolve("log");
-    }
-    
-    @Override
-    public Map<String, Path> getLogFiles() throws IOException
-    {
-        Map<String, Path> files = new TreeMap<>();
-        
-        Path logDir = serviceDirectory.resolve("log");
-        
-        //LOGGER.info("Reading log file list for {} from {}", getName(), logDir);
-        
-        for(Path p: Files.newDirectoryStream(logDir))
-        {
-            //LOGGER.info("- {}", p.getFileName());
-            files.put(p.getFileName().toString(), p);
-        }
-        
-        return files;
-    }
     
     @Override
     public void build(boolean asynch) throws IOException, InterruptedException

@@ -67,7 +67,7 @@ public class LinuxServices implements Services
     
     private LinuxService service(Path serviceDirectory)
     {
-        return new LinuxService(serviceDirectory, serviceDirectory.getFileName().toString(), sys, pm);
+        return new LinuxService(serviceDirectory, serviceDirectory.resolve("log"), serviceDirectory.getFileName().toString(), sys, pm);
     }
 
     @Override
