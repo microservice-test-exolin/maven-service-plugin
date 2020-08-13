@@ -5,7 +5,6 @@ import com.fasterxml.jackson.annotation.PropertyAccessor;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -18,7 +17,6 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import org.exolin.msp.web.ui.Service;
 import org.exolin.msp.web.ui.Services;
-import org.exolin.msp.web.ui.linux.LinuxService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

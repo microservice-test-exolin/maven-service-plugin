@@ -7,12 +7,12 @@ import java.nio.file.Files;
 import java.nio.file.NoSuchFileException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import org.apache.maven.plugins.annotations.LifecyclePhase;
-import org.exolin.msp.core.SystemAbstraction;
-import org.apache.maven.plugins.annotations.Mojo;
 import org.apache.maven.plugin.MojoExecutionException;
+import org.apache.maven.plugins.annotations.LifecyclePhase;
+import org.apache.maven.plugins.annotations.Mojo;
 import org.exolin.msp.core.LinuxAbstraction;
 import org.exolin.msp.core.StatusType;
+import org.exolin.msp.core.SystemAbstraction;
 
 /**
  * Goal which touches a timestamp file.

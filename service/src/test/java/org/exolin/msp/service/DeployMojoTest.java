@@ -1,12 +1,6 @@
 package org.exolin.msp.service;
 
 
-import org.apache.maven.plugin.testing.MojoRule;
-import org.apache.maven.plugin.testing.WithoutMojo;
-
-import org.junit.Rule;
-import static org.junit.Assert.*;
-import org.junit.Test;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
@@ -17,10 +11,15 @@ import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 import org.apache.maven.plugin.MojoExecutionException;
+import org.apache.maven.plugin.testing.MojoRule;
+import org.apache.maven.plugin.testing.WithoutMojo;
 import org.exolin.msp.core.PseudoAbstraction;
 import org.ini4j.Ini;
 import org.junit.After;
+import static org.junit.Assert.*;
 import org.junit.Before;
+import org.junit.Rule;
+import org.junit.Test;
 
 public class DeployMojoTest
 {
