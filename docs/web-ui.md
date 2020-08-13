@@ -3,10 +3,7 @@ Itself a service, providing a web interface for controlling services:
 * start, stop, restart
 * status report: if running, in case of error the reason
 * log view
-* update:
-  * git pull
-  * mvn package
-  * mvn org.exolin.msp:maven-service-plugin:1.0-SNAPSHOT:deploy
+* [Build & Deploy](build+deploy.md)
 
 Implementation
 * using embedded web server:
