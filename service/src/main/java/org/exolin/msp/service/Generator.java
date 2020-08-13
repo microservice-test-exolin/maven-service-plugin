@@ -68,6 +68,9 @@ public class Generator
 
             w.write("cd $DIR/bin");
             w.newLine();
+            
+            w.write("echo Starting >> service.log");
+            w.newLine();
 
             w.write("/usr/bin/java");
             writeSysProp(w, "system.baseDirectory", "$DIR");
@@ -79,9 +82,10 @@ public class Generator
             w.write(" -jar ");
            /**/w.append("$DIR/bin/").append(jarName);
             w.write(" >> $DIR/log/service.log ");
-            w.write("2>&1");
+            w.write("2>>&1");
             w.newLine();
-
+            
+            w.write("echo Stopped >> service.log");
             w.newLine();
         }
         
