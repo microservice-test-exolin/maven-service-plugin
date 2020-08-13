@@ -23,4 +23,9 @@ public class GithubPayload
     {
         return commits != null ? commits : Collections.emptyList();
     }
+    
+    public GithubCommit getLatest()
+    {
+        return commits != null ? commits.get(0) : null;  //TOOD: ist 0 letztes?
+    }
 }

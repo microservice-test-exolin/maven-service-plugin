@@ -1,6 +1,7 @@
 package org.exolin.msp.web.ui;
 
 import java.io.IOException;
+import java.nio.file.Files;
 import java.nio.file.Paths;
 import org.eclipse.jetty.server.Connector;
 import org.eclipse.jetty.server.Server;
@@ -15,6 +16,7 @@ import org.exolin.msp.web.ui.servlet.IndexServlet;
 import org.exolin.msp.web.ui.servlet.ProcessServlet;
 import org.exolin.msp.web.ui.servlet.ResourceServlet;
 import org.exolin.msp.web.ui.servlet.StatusServlet;
+import org.exolin.msp.web.ui.servlet.github.GithubDeployerImpl;
 import org.exolin.msp.web.ui.servlet.github.GithubServlet;
 import org.exolin.msp.web.ui.servlet.serverinfo.ServerInfoServlet;
 import org.exolin.msp.web.ui.servlet.serverinfo.SystemEnvironmentServlet;
@@ -49,6 +51,8 @@ public class Main
     
     public static void run(ProcessManager pm, SystemAbstraction sys, Services services) throws Exception
     {
+        GithubDeployerImpl githubDeployer = new GithubDeployerImpl(new String(Files.readAllBytes(Paths.get("../config/github.token"))));
+        
         Server server = new Server();
         ServerConnector connector = new ServerConnector(server);
         connector.setPort(8090);
@@ -77,7 +81,7 @@ public class Main
         servletHandler.addServletWithMapping(ProcessServlet.class, "/processes").setServlet(new ProcessServlet(pm));
         servletHandler.addServletWithMapping(ServiceStatusServlet.class, ServiceStatusServlet.URL).setServlet(new ServiceStatusServlet(services));
         
-        servletHandler.addServletWithMapping(GithubServlet.class, "/github").setServlet(new GithubServlet(services));
+        servletHandler.addServletWithMapping(GithubServlet.class, "/github").setServlet(new GithubServlet(services, githubDeployer));
         
         servletHandler.addServletWithMapping(ServerInfoServlet.class, ServerInfoServlet.URL);
         servletHandler.addServletWithMapping(SystemPropertiesServlet.class, SystemPropertiesServlet.URL);

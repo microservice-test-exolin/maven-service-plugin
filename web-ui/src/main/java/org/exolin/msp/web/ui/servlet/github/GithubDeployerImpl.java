@@ -35,6 +35,24 @@ public class GithubDeployerImpl implements GithubDeployer
         return con;
     }
     
+    public Repo fromRepoUrl(String repoUrl)
+    {
+        //https://github.com/microservice-test-exolin/maven-service-plugin/issues/35
+        String prefix = "https://github.com/";
+        if(!repoUrl.startsWith(prefix))
+            throw new IllegalArgumentException(repoUrl);
+        
+        repoUrl = repoUrl.substring(prefix.length());
+        if(repoUrl.endsWith("/"))
+            repoUrl = repoUrl.substring(0, repoUrl.length()-1);
+        
+        String[] parts = repoUrl.split("/");
+        if(parts.length != 2)
+            throw new IllegalArgumentException(repoUrl);
+        
+        return new Repo(parts[0], parts[1]);
+    }
+    
     public class Repo
     {
         private final String owner;
@@ -71,6 +89,11 @@ public class GithubDeployerImpl implements GithubDeployer
             private HttpURLConnection openDeployment(String method) throws IOException
             {
                 return openConnection(method, "https://api.github.com/repos/"+owner+"/"+repo+"/deployments/"+deploymentId);
+            }
+            
+            public void createDeploymentStatus(DeploymentStatus state) throws IOException
+            {
+                createDeploymentStatus(state, null);
             }
             
             public void createDeploymentStatus(DeploymentStatus state, String environmentUrl) throws IOException

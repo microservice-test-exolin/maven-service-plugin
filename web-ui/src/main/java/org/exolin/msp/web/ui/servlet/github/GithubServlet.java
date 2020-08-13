@@ -29,10 +29,12 @@ public class GithubServlet extends HttpServlet
     private static final Logger LOGGER = LoggerFactory.getLogger(GithubServlet.class);
     
     private final Services services;
+    private final GithubDeployerImpl githubDeployer;
 
-    public GithubServlet(Services services)
+    public GithubServlet(Services services, GithubDeployerImpl githubDeployer)
     {
         this.services = services;
+        this.githubDeployer = githubDeployer;
     }
     
     public static ObjectMapper createObjectMapper()
@@ -62,6 +64,10 @@ public class GithubServlet extends HttpServlet
 
             Set<String> build = new HashSet<>();
             
+            Map<String, GithubDeployerImpl.Repo.Deployment> deployments = new HashMap<>();
+            for(Service service: serviceList)
+                deployments.put(service.getName(), githubDeployer.fromRepoUrl(service.getRepositoryUrl()).createDeployment(payload.getLatest().getSha1(), "service "+service.getName()));
+            
             String error = null;
             try{
                 for(Service service: serviceList)
@@ -70,10 +76,23 @@ public class GithubServlet extends HttpServlet
                         service.build(false);
                     
                     service.deploy(false);
+                    
+                    GithubDeployerImpl.Repo.Deployment deployment = deployments.get(service.getName());
+                    if(deployment != null)
+                    {
+                        deployment.createDeploymentStatus(GithubDeployerImpl.DeploymentStatus.success, null);
+                        deployments.remove(service.getName());
+                    }
+                    else
+                        LOGGER.error("No deployment for {}", service.getName());
                 }
             }catch(IOException|InterruptedException e){
                 error = e.getMessage();
             }
+                
+            //set all non finished to error
+            for(GithubDeployerImpl.Repo.Deployment dep: deployments.values())
+                dep.createDeploymentStatus(GithubDeployerImpl.DeploymentStatus.error, null);
 
             if(error != null)
             {
