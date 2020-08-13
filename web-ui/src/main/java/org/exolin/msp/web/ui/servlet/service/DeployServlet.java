@@ -10,6 +10,8 @@ import org.exolin.msp.web.ui.Service;
 import org.exolin.msp.web.ui.Services;
 import org.exolin.msp.web.ui.servlet.Layout;
 import static org.exolin.msp.web.ui.servlet.service.ListServicesServlet.write;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  *
@@ -17,6 +19,8 @@ import static org.exolin.msp.web.ui.servlet.service.ListServicesServlet.write;
  */
 public class DeployServlet extends HttpServlet
 {
+    private static final Logger LOGGER = LoggerFactory.getLogger(DeployServlet.class);
+    
     private final Services services;
 
     public DeployServlet(Services services)
@@ -99,7 +103,8 @@ public class DeployServlet extends HttpServlet
                 try{
                     service.build(true);
                 }catch(IOException|InterruptedException|UnsupportedOperationException e){
-                    e.printStackTrace(resp.getWriter());
+                    LOGGER.error("Error while deploying", e);
+                    resp.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
                     return;
                 }
                 
@@ -110,7 +115,8 @@ public class DeployServlet extends HttpServlet
                 try{
                     service.deploy(true);
                 }catch(IOException|InterruptedException|UnsupportedOperationException e){
-                    e.printStackTrace(resp.getWriter());
+                    LOGGER.error("Error while deploying", e);
+                    resp.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
                     return;
                 }
                 
