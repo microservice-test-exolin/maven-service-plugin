@@ -6,7 +6,9 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import org.exolin.msp.core.SystemAbstraction;
 import org.exolin.msp.web.ui.Service;
 import org.exolin.msp.web.ui.Services;
@@ -25,6 +27,7 @@ public class LinuxServices implements Services
     private final Path servicesDirectory;
     private final SystemAbstraction sys;
     private final ProcessManager pm;
+    private final Map<String, LinuxService> serviceCache = new HashMap<>();
 
     public LinuxServices(Path servicesDirectory, SystemAbstraction sys, ProcessManager pm)
     {
@@ -67,7 +70,9 @@ public class LinuxServices implements Services
     
     private LinuxService service(Path serviceDirectory)
     {
-        return new LinuxService(serviceDirectory, serviceDirectory.resolve("log"), serviceDirectory.getFileName().toString(), sys, pm);
+        return serviceCache.computeIfAbsent(serviceDirectory.getFileName().toString(), serviceName ->
+            new LinuxService(serviceDirectory, serviceDirectory.resolve("log"), serviceName, sys, pm)
+        );
     }
 
     @Override
