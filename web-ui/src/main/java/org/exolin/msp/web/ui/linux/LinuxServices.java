@@ -93,6 +93,6 @@ public class LinuxServices implements Services
         if(services.isEmpty())
             LOGGER.info("  not found");
         
-        return null;
+        return services;
     }
 }
