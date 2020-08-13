@@ -167,7 +167,7 @@ public class LogServlet extends HttpServlet
         {
             Layout.start(LognameGenerator.getLogFileTitle(logFile), req.getRequestURI(), out);
             
-            out.append("<h1>Logfiles</h1>");
+            out.append("<h1>"+LognameGenerator.getLogFileTitle(logFile)+"</h1>");
             
             out.append("<a href=\"").append(getFileUrl(service.getName(), logFile, true)).append("\">").append("Raw").append("</a>");
             
