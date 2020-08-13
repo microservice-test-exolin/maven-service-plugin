@@ -61,6 +61,20 @@ public class LognameGenerator
             
             return group+" at "+dateTime.toString().replace('T', ' ');
         }
+        //----------------------------------------------------------------------
+        //Backwards compatibliity start
+        //----------------------------------------------------------------------
+        else if(filename.equals("build.out.log"))
+            return "Build Log";
+        else if(filename.equals("build.err.log"))
+            return "Build Error Log";
+        else if(filename.equals("deploy.out.log"))
+            return "Deploy Log";
+        else if(filename.equals("deploy.err.log"))
+            return "Deploy Error Log";
+        //----------------------------------------------------------------------
+        //Backwards compatibliity end
+        //----------------------------------------------------------------------
         else
             return filename;
     }
