@@ -34,8 +34,8 @@ public class IndexServlet extends HttpServlet
             
             out.append("<h1>Service Web UI</h1>");
             
-            out.append("<a href=\"/services\">Services</a><br>");
-            out.append("<a href=\"/processes\">Processes</a><br>");
+            out.append("<p><a href=\"/services\"><span data-feather=\""+Layout.SERVICE+"\"></span> Services</a></p>");
+            out.append("<p><a href=\"/processes\"><span data-feather=\""+Layout.PROCESS+"\"></span> Processes</a></p>");
                         
             /*out.append("</div>");
             out.append("</body>");

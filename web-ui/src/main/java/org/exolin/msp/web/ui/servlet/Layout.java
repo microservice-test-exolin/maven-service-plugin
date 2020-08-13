@@ -43,6 +43,9 @@ public class Layout
          out.append("</a>");
     }
     
+    public static final String SERVICE = "layers";
+    public static final String PROCESS = "loader";
+    
     private static void writeSidebar(Writer w, String current) throws IOException
     {
         w.write("<nav class=\"col-md-2 d-none d-md-block bg-light sidebar\">");
@@ -50,8 +53,8 @@ public class Layout
         w.append("<ul class=\"nav flex-column\">");
         
         writeMenu(w, "Dashboard", "/", "home", current.equals("/"));
-        writeMenu(w, "Services", "/services", "layers", current.startsWith("/services"));
-        writeMenu(w, "Processes", "/processes", "loader", current.startsWith("/processes"));
+        writeMenu(w, "Services", "/services", SERVICE, current.startsWith("/services"));
+        writeMenu(w, "Processes", "/processes", PROCESS, current.startsWith("/processes"));
         writeMenu(w, "Logs", "/logs", "file-text", current.startsWith("/logs"));
         writeMenu(w, "Server Info", "/server-info", "server", current.startsWith("/server-info"));
         
