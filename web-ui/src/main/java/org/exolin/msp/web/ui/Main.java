@@ -51,7 +51,7 @@ public class Main
     
     public static void run(ProcessManager pm, SystemAbstraction sys, Services services) throws Exception
     {
-        GithubDeployerImpl githubDeployer = new GithubDeployerImpl(new String(Files.readAllBytes(Paths.get("../config/github.token"))));
+        GithubDeployerImpl githubDeployer = new GithubDeployerImpl(new String(Files.readAllBytes(Paths.get("../config/github.token"))).trim());
         
         Server server = new Server();
         ServerConnector connector = new ServerConnector(server);
