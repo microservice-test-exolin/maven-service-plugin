@@ -3,13 +3,19 @@ package org.exolin.msp.web.ui;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
+import java.util.EnumSet;
+import javax.servlet.DispatcherType;
 import org.eclipse.jetty.server.Connector;
 import org.eclipse.jetty.server.Server;
 import org.eclipse.jetty.server.ServerConnector;
+import org.eclipse.jetty.server.session.DefaultSessionIdManager;
+import org.eclipse.jetty.server.session.SessionHandler;
 import org.eclipse.jetty.servlet.ServletHandler;
 import org.exolin.msp.core.LinuxAbstraction;
 import org.exolin.msp.core.Log;
 import org.exolin.msp.core.SystemAbstraction;
+import org.exolin.msp.web.ui.google.MyOAuthCallbackServlet;
+import org.exolin.msp.web.ui.google.MyOAuthFilter;
 import org.exolin.msp.web.ui.linux.LinuxServices;
 import org.exolin.msp.web.ui.pm.ProcessManager;
 import org.exolin.msp.web.ui.servlet.IndexServlet;
@@ -51,7 +57,7 @@ public class Main
     
     public static void run(ProcessManager pm, SystemAbstraction sys, Services services) throws Exception
     {
-        GithubDeployerImpl githubDeployer = new GithubDeployerImpl(new String(Files.readAllBytes(Paths.get("../config/github.token"))).trim());
+        GithubDeployerImpl githubDeployer = new GithubDeployerImpl(new String(Files.readAllBytes(Paths.get("../config/github.token").toAbsolutePath().normalize())).trim());
         
         Server server = new Server();
         ServerConnector connector = new ServerConnector(server);
@@ -67,7 +73,17 @@ public class Main
             }
         });
         
+        server.setSessionIdManager(new DefaultSessionIdManager(server));
+        
         ServletHandler servletHandler = new ServletHandler();
+        
+        // Add OAuth2 callback servlet.
+        servletHandler.addServletWithMapping(MyOAuthCallbackServlet.class, "/callback");
+
+        // Add filters for app servlet
+        servletHandler.addFilterWithMapping(MyOAuthFilter.class, "/app/*",
+                                            EnumSet.of(DispatcherType.INCLUDE, DispatcherType.REQUEST));
+        
         servletHandler.addServletWithMapping(IndexServlet.class, "/");
         
         servletHandler.addServletWithMapping(StatusServlet.class, "/status");
@@ -88,7 +104,10 @@ public class Main
         servletHandler.addServletWithMapping(SystemPropertiesServlet.class, SystemPropertiesServlet.URL);
         servletHandler.addServletWithMapping(SystemEnvironmentServlet.class, SystemEnvironmentServlet.URL);
         
-        server.setHandler(servletHandler);
+        SessionHandler sessionHandler = new SessionHandler();
+        sessionHandler.setHandler(servletHandler);
+        sessionHandler.setSessionIdManager(server.getSessionIdManager());
+        server.setHandler(sessionHandler);
         
         try{
             server.start();
