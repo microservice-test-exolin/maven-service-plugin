@@ -10,6 +10,8 @@ import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.HashMap;
 import java.util.Map;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  *
@@ -17,6 +19,8 @@ import java.util.Map;
  */
 public class GithubDeployerImpl implements GithubDeployer
 {
+    private static final Logger LOGGER = LoggerFactory.getLogger(Repo.class);
+    
     private final String token;
     private final ObjectMapper mapper = GithubServlet.createObjectMapper();
 
@@ -27,12 +31,20 @@ public class GithubDeployerImpl implements GithubDeployer
     
     private HttpURLConnection openConnection(String method, String url) throws IOException
     {
+        LOGGER.info("{} {}", method, url);
+        
         HttpURLConnection con = (HttpURLConnection) new URL(url).openConnection();
         con.setRequestMethod(method);
         con.setDoOutput(!method.equalsIgnoreCase("GET"));
         con.setRequestProperty("Accept", "application/vnd.github.v3+json");
         con.setRequestProperty("Authorization", "token "+token);
         return con;
+    }
+    
+    private void send(HttpURLConnection con, Map<String, String> body) throws IOException
+    {
+        LOGGER.info("Sending ", mapper.writeValueAsString(body));
+        mapper.writeValue(con.getOutputStream(), body);
     }
     
     public Repo fromRepoUrl(String repoUrl)
@@ -72,7 +84,9 @@ public class GithubDeployerImpl implements GithubDeployer
             body.put("ref", ref);
             body.put("environment", environment);
 
-            mapper.writeValue(con.getOutputStream(), body);
+            send(con, body);
+            
+            checkSuccess(con);
 
             return new Deployment(mapper.readValue(con.getInputStream(), CreatedDeployment.class).getId());
         }
@@ -108,7 +122,7 @@ public class GithubDeployerImpl implements GithubDeployer
                 if(environmentUrl != null)
                     body.put("environment_url", environmentUrl);
 
-                mapper.writeValue(con.getOutputStream(), body);
+                send(con, body);
 
                 checkSuccess(con);
             }
@@ -136,7 +150,9 @@ public class GithubDeployerImpl implements GithubDeployer
         while((r = con.getErrorStream().read()) != -1)
             arr.write(r);
         
-        throw new IOException("Returned "+con.getResponseCode()+"\n"+new String(arr.toByteArray()));
+        LOGGER.error("Returned "+con.getResponseCode()+"\n"+new String(arr.toByteArray()));
+        
+        throw new IOException("Returned "+con.getResponseCode());
     }
     
     public enum DeploymentStatus
