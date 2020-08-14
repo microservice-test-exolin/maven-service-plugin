@@ -8,6 +8,7 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.nio.file.Files;
 import java.nio.file.Paths;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
@@ -42,7 +43,7 @@ public class GithubDeployerImpl implements GithubDeployer
         return con;
     }
     
-    private void send(HttpURLConnection con, Map<String, String> body) throws IOException
+    private void send(HttpURLConnection con, Map<String, ?> body) throws IOException
     {
         LOGGER.info("Sending {}", mapper.writeValueAsString(body));
         mapper.writeValue(con.getOutputStream(), body);
@@ -81,9 +82,10 @@ public class GithubDeployerImpl implements GithubDeployer
         {
             HttpURLConnection con = openConnection("POST", "https://api.github.com/repos/"+owner+"/"+repo+"/deployments");
 
-            Map<String, String> body = new HashMap<>();
+            Map<String, Object> body = new HashMap<>();
             body.put("ref", Objects.requireNonNull(ref, "ref"));
             body.put("environment", Objects.requireNonNull(environment, "environment"));
+            body.put("required_contexts", Collections.emptyList());
 
             send(con, body);
             
