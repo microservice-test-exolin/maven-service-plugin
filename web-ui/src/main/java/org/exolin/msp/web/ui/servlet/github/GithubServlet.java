@@ -66,7 +66,7 @@ public class GithubServlet extends HttpServlet
             
             Map<String, GithubDeployerImpl.Repo.Deployment> deployments = new HashMap<>();
             for(Service service: serviceList)
-                deployments.put(service.getName(), githubDeployer.fromRepoUrl(service.getRepositoryUrl()).createDeployment(payload.getLatest().getSha1(), "service "+service.getName()));
+                deployments.put(service.getName(), githubDeployer.fromRepoUrl(service.getRepositoryUrl()).createDeployment(payload.getLatest().getId(), "service "+service.getName()));
             
             String error = null;
             try{
