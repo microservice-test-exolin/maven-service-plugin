@@ -55,6 +55,7 @@ public class Main
         
         Server server = new Server();
         ServerConnector connector = new ServerConnector(server);
+        connector.setHost("127.0.0.1");
         connector.setPort(8090);
         server.setConnectors(new Connector[]{connector});
         
