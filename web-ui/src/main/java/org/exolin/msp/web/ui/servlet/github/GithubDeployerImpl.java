@@ -159,6 +159,5 @@ public class GithubDeployerImpl implements GithubDeployer
         
         Repo.Deployment dep = rep.createDeployment("5d7f23a39603e2c505924e21654ae12a815610b5", "service deployment");
         dep.createDeploymentStatus(DeploymentStatus.success, "http://example.org/environment/"+dep.getDeploymentId());
-        //github.createDeployment(owner, repo, id, DeploymentStatus.error);
     }
 }
