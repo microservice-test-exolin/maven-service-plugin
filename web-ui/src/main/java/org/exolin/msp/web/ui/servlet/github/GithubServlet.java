@@ -73,8 +73,12 @@ public class GithubServlet extends HttpServlet
                 for(Service service: serviceList)
                 {
                     if(build.add(service.getRepositoryUrl()))
+                    {
+                        LOGGER.info("Building {}", service.getRepositoryUrl());
                         service.build(false);
+                    }
                     
+                    LOGGER.info("Deploying {}", service.getName());
                     service.deploy(false);
                     
                     GithubDeployerImpl.Repo.Deployment deployment = deployments.get(service.getName());
