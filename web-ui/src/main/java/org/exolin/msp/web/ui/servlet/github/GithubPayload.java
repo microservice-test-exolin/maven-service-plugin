@@ -26,6 +26,6 @@ public class GithubPayload
     
     public GithubCommit getLatest()
     {
-        return commits != null ? commits.get(0) : null;  //TOOD: ist 0 letztes?
+        return commits != null ? commits.get(commits.size()-1) : null;  //TOOD: ist letztes neuestes?
     }
 }
