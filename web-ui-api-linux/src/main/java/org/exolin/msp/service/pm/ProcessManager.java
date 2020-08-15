@@ -78,4 +78,9 @@ public class ProcessManager
     {
         return store.getProcessLogDirectories(service);
     }
+    
+    public synchronized void notifyProcessFinished()
+    {
+        clean();
+    }
 }

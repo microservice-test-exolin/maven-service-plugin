@@ -141,6 +141,7 @@ public class LinuxService extends AbstractService
         if(!asynch)
         {
             int code = p.waitFor();
+            pm.notifyProcessFinished();
             if(code != 0)
                 throw new IOException("Build process for "+getName()+" returned "+code);
         }
@@ -169,6 +170,7 @@ public class LinuxService extends AbstractService
         if(!asynch)
         {
             int code = p.waitFor();
+            pm.notifyProcessFinished();
             if(code != 0)
                 throw new IOException("Deploy process for "+getName()+" returned "+code);
         }
