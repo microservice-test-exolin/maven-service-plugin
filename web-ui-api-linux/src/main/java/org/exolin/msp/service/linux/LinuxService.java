@@ -31,7 +31,9 @@ public class LinuxService extends AbstractService
     private final ProcessManager pm;
     
     private static final Logger LOGGER = LoggerFactory.getLogger(LinuxService.class);
-
+    
+    private Process runningBuildOrDeployProcess;
+    
     public LinuxService(
             Path serviceDirectory,
             Path logDirectory,
@@ -127,24 +129,7 @@ public class LinuxService extends AbstractService
         
         String[] cmd = {"/bin/bash", "-c", "git pull && mvn package"};
         
-        long startTime = System.currentTimeMillis();
-        ProcessInfo pi = pm.register(getName(), "build", Arrays.asList(cmd), "Building "+getName(), startTime);
-        Path logFile = pm.getLogFile(pi);
-        
-        Process p = new ProcessBuilder(cmd)
-                .directory(dir.toFile())
-                .redirectInput(ProcessBuilder.Redirect.INHERIT)
-                .redirectOutput(ProcessBuilder.Redirect.to(logFile.toFile()))
-                .redirectError(ProcessBuilder.Redirect.to(logFile.toFile()))
-                .start();
-        
-        if(!asynch)
-        {
-            int code = p.waitFor();
-            pm.notifyProcessFinished();
-            if(code != 0)
-                throw new IOException("Build process for "+getName()+" returned "+code);
-        }
+        start(dir, "build", cmd, asynch);
     }
     
     @Override
@@ -154,18 +139,31 @@ public class LinuxService extends AbstractService
         
         String[] cmd = {"/bin/bash", "-c", "/root/repos/deploy.sh"};
         
-        long startTime = System.currentTimeMillis();
-        
-        ProcessInfo pi = pm.register(getName(), "deploy", Arrays.asList(cmd), "Deploying "+getName(), startTime);
-        Path logFile = pm.getLogFile(pi);
-        
-        Process p = new ProcessBuilder(cmd)
-                .directory(dir.toFile())
-                .redirectInput(ProcessBuilder.Redirect.INHERIT)
-                .redirectOutput(ProcessBuilder.Redirect.to(logFile.toFile()))
-                .redirectError(ProcessBuilder.Redirect.to(logFile.toFile()))
-                .start();
-        pi.setProcess(p);
+        start(dir, "deploy", cmd, asynch);
+    }
+    
+    private void start(Path dir, String name, String[] cmd, boolean asynch) throws IOException, InterruptedException
+    {
+        Process p;
+        synchronized(this)
+        {
+            if(runningBuildOrDeployProcess != null && runningBuildOrDeployProcess.isAlive())
+                throw new IllegalStateException("There is already a build/deploy running for the service "+getName());
+            
+            long startTime = System.currentTimeMillis();
+            
+            ProcessInfo pi = pm.register(getName(), name, Arrays.asList(cmd), name+" "+getName(), startTime);
+            Path logFile = pm.getLogFile(pi);
+
+            p = new ProcessBuilder(cmd)
+                    .directory(dir.toFile())
+                    .redirectInput(ProcessBuilder.Redirect.INHERIT)
+                    .redirectOutput(ProcessBuilder.Redirect.to(logFile.toFile()))
+                    .redirectError(ProcessBuilder.Redirect.to(logFile.toFile()))
+                    .start();
+            pi.setProcess(p);
+            runningBuildOrDeployProcess = p;
+        }
         
         if(!asynch)
         {
