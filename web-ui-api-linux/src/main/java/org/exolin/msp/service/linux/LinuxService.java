@@ -47,6 +47,11 @@ public class LinuxService extends AbstractService
         this.logDirectory = logDirectory;
         this.pm = pm;
     }
+
+    public boolean isBuildOrDeployProcessRunning()
+    {
+        return runningBuildOrDeployProcess != null && runningBuildOrDeployProcess.isAlive();
+    }
     
     @Override
     public boolean supportsBuildAndDeployment() throws IOException
@@ -148,7 +153,7 @@ public class LinuxService extends AbstractService
         Process p;
         synchronized(this)
         {
-            if(runningBuildOrDeployProcess != null && runningBuildOrDeployProcess.isAlive())
+            if(isBuildOrDeployProcessRunning())
                 throw new BuildOrDeployAlreadyRunningException("There is already a build/deploy running for the service "+getName());
             
             long startTime = System.currentTimeMillis();
