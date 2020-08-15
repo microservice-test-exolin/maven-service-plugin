@@ -53,21 +53,26 @@ public class Main
     
     public static void main(String[] args) throws Exception
     {
-        ProcessManager pm = new ProcessManager(new ProcessDataStorage(Paths.get("../data")));
-        
-        SystemAbstraction sys = new LinuxAbstraction(new Log()
-        {
-            @Override
-            public void warn(String string){}
-            @Override
-            public void info(String string){}
-        });//new LogAdapter(LinuxAbstraction.class));
-            
-        LinuxServices services = new LinuxServices(
-                Paths.get("/home/exolin/services"),
-                sys, pm);
-        
-        run(pm, sys, services, Config.read(Paths.get("../config/config")));
+        try{
+            ProcessManager pm = new ProcessManager(new ProcessDataStorage(Paths.get("../data")));
+
+            SystemAbstraction sys = new LinuxAbstraction(new Log()
+            {
+                @Override
+                public void warn(String string){}
+                @Override
+                public void info(String string){}
+            });//new LogAdapter(LinuxAbstraction.class));
+
+            LinuxServices services = new LinuxServices(
+                    Paths.get("/home/exolin/services"),
+                    sys, pm);
+
+            run(pm, sys, services, Config.read(Paths.get("../config/config")));
+        }catch(Exception e){
+            LOGGER.error("Error starting", e);
+            throw e;
+        }
     }
     
     public static void run(ProcessManager pm, SystemAbstraction sys, Services services, Config config) throws Exception
