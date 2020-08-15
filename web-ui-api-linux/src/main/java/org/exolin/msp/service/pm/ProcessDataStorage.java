@@ -120,6 +120,7 @@ public class ProcessDataStorage
                             for(Path processFile: processFiles)
                             {
                                 try{
+                                    LOGGER.info("  {}", processFile);
                                     processInfos.add(load(serviceDir.getFileName().toString(), processDirectory.getFileName().toString(), processFile));
                                 }catch(IOException e){
                                     LOGGER.error("Error while reading {}", processFile);
