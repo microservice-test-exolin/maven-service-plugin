@@ -1,4 +1,4 @@
-package org.exolin.msp.web.ui.servlet.github;
+package org.exolin.msp.web.ui.servlet.github.api;
 
 /**
  *

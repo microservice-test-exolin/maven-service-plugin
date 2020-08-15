@@ -1,4 +1,4 @@
-package org.exolin.msp.web.ui.servlet.github;
+package org.exolin.msp.web.ui.servlet.github.api;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import java.io.ByteArrayOutputStream;
@@ -12,6 +12,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
+import org.exolin.msp.web.ui.servlet.github.GithubWebhookServlet;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -24,7 +25,7 @@ public class GithubDeployerImpl implements GithubDeployer
     private static final Logger LOGGER = LoggerFactory.getLogger(Repo.class);
     
     private final String token;
-    private final ObjectMapper mapper = GithubServlet.createObjectMapper();
+    private final ObjectMapper mapper = GithubWebhookServlet.createObjectMapper();
 
     public GithubDeployerImpl(String token)
     {

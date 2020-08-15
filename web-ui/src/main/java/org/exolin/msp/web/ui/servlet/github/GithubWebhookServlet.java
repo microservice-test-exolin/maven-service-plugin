@@ -1,5 +1,7 @@
 package org.exolin.msp.web.ui.servlet.github;
 
+import org.exolin.msp.web.ui.servlet.github.api.GithubPayload;
+import org.exolin.msp.web.ui.servlet.github.api.GithubDeployerImpl;
 import com.fasterxml.jackson.annotation.JsonAutoDetect;
 import com.fasterxml.jackson.annotation.PropertyAccessor;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -24,16 +26,16 @@ import org.slf4j.LoggerFactory;
  *
  * @author tomgk
  */
-public class GithubServlet extends HttpServlet
+public class GithubWebhookServlet extends HttpServlet
 {
-    private static final Logger LOGGER = LoggerFactory.getLogger(GithubServlet.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(GithubWebhookServlet.class);
     
     public static final String URL = "/github";
     
     private final Services services;
     private final GithubDeployerImpl githubDeployer;
 
-    public GithubServlet(Services services, GithubDeployerImpl githubDeployer)
+    public GithubWebhookServlet(Services services, GithubDeployerImpl githubDeployer)
     {
         this.services = services;
         this.githubDeployer = githubDeployer;

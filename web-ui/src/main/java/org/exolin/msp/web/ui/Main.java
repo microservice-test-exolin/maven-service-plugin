@@ -17,8 +17,8 @@ import org.exolin.msp.web.ui.servlet.IndexServlet;
 import org.exolin.msp.web.ui.servlet.ProcessServlet;
 import org.exolin.msp.web.ui.servlet.ResourceServlet;
 import org.exolin.msp.web.ui.servlet.StatusServlet;
-import org.exolin.msp.web.ui.servlet.github.GithubDeployerImpl;
-import org.exolin.msp.web.ui.servlet.github.GithubServlet;
+import org.exolin.msp.web.ui.servlet.github.api.GithubDeployerImpl;
+import org.exolin.msp.web.ui.servlet.github.GithubWebhookServlet;
 import org.exolin.msp.web.ui.servlet.serverinfo.ServerInfoServlet;
 import org.exolin.msp.web.ui.servlet.serverinfo.SystemEnvironmentServlet;
 import org.exolin.msp.web.ui.servlet.serverinfo.SystemPropertiesServlet;
@@ -100,7 +100,7 @@ public class Main
         servletHandler.addServletWithMapping(ProcessServlet.class, ProcessServlet.URL).setServlet(new ProcessServlet(pm));
         servletHandler.addServletWithMapping(ServiceStatusServlet.class, ServiceStatusServlet.URL).setServlet(new ServiceStatusServlet(services));
         
-        servletHandler.addServletWithMapping(GithubServlet.class, GithubServlet.URL).setServlet(new GithubServlet(services, githubDeployer));
+        servletHandler.addServletWithMapping(GithubWebhookServlet.class, GithubWebhookServlet.URL).setServlet(new GithubWebhookServlet(services, githubDeployer));
         
         servletHandler.addServletWithMapping(ServerInfoServlet.class, ServerInfoServlet.URL);
         servletHandler.addServletWithMapping(SystemPropertiesServlet.class, SystemPropertiesServlet.URL);
