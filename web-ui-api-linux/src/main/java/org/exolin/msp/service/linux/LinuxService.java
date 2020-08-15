@@ -69,11 +69,15 @@ public class LinuxService extends AbstractService
     {
         LOGGER.info(" Reading logs from {}", dir);
         
-        for(Path p: Files.newDirectoryStream(dir))
-        {
-            //LOGGER.info("- {}", p.getFileName());
-            files.put(prefix+p.getFileName().toString(), p);
-            LOGGER.info("    {}", p);
+        try{
+            for(Path p: Files.newDirectoryStream(dir))
+            {
+                //LOGGER.info("- {}", p.getFileName());
+                files.put(prefix+p.getFileName().toString(), p);
+                LOGGER.info("    {}", p);
+            }
+        }catch(NoSuchFileException e){
+            LOGGER.warn("Directory doesn't exist: {}", dir);
         }
     }
     
