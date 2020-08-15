@@ -127,8 +127,8 @@ public class ProcessDataStorage
                                 try{
                                     LOGGER.info("  {}", processFile);
                                     processInfos.add(load(serviceDir.getFileName().toString(), processDirectory.getFileName().toString(), processFile));
-                                }catch(IOException e){
-                                    LOGGER.error("Error while reading {}", processFile);
+                                }catch(IOException|RuntimeException e){
+                                    LOGGER.error("Error while reading "+processFile, e);
                                 }
                             }
                         }catch(IOException e){
