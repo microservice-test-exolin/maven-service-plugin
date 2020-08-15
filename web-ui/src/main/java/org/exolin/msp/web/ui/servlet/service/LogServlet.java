@@ -1,10 +1,9 @@
 package org.exolin.msp.web.ui.servlet.service;
 
-import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.PrintWriter;
-import java.nio.file.Files;
-import java.nio.file.Path;
+import java.util.Map;
+import java.util.Optional;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -35,10 +34,7 @@ public class LogServlet extends HttpServlet
     }
     
     private static final String SERVICE = "service";
-    private static final String LOGFILE = "logfile";
-    private static final String GROUP = "group";
-    private static final String TYPE = "type";
-    private static final String TYPE_RAW = "raw";
+    private static final String TASK = "task";
     
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException
@@ -47,7 +43,7 @@ public class LogServlet extends HttpServlet
             String serviceName = req.getParameter("service");
             if(serviceName == null)
             {
-                showLogFileIndex(services, req, resp);//resp.sendError(HttpServletResponse.SC_BAD_REQUEST, "Missing parameter service");
+                listServices(services, req, resp);//resp.sendError(HttpServletResponse.SC_BAD_REQUEST, "Missing parameter service");
                 return;
             }
 
@@ -63,36 +59,25 @@ public class LogServlet extends HttpServlet
                 return;
             }
 
-            String logFile = req.getParameter(LOGFILE);
-            String group = req.getParameter(GROUP);
-            if(logFile == null)
-                showLogFileIndex(service, req, resp, group != null ? group : "");
-            else if(TYPE_RAW.equals(req.getParameter(TYPE)))
-                showLogFileRaw(service, logFile, req, resp);
-            else
-                showLogFile(service, logFile, req, resp);
+            String task = req.getParameter(TASK);
+            listServiceFiles(service, Optional.ofNullable(task), req, resp);
         }catch(IOException|RuntimeException e){
             LOGGER.error("Error", e);
             throw e;
         }
     }
-
-    static String getFileUrl(String service, String logfile)
+    
+    static String getFilesOfService(String service)
     {
-        return getFileUrl(service, logfile, false);
+        return URL+"?"+SERVICE+"="+service;
     }
     
-    static String getFileUrl(String service, String logfile, boolean raw)
+    static String getFilesOfTask(String service, String taskName)
     {
-        return "/logs?"+SERVICE+"="+service+"&"+LOGFILE+"="+logfile+(raw ? "&"+TYPE+"="+TYPE_RAW : "");
+        return URL+"?"+SERVICE+"="+service+"&"+TASK+"="+taskName;
     }
     
-    static String getFilesOfGroup(String service, String group)
-    {
-        return "/logs?"+SERVICE+"="+service+"&"+GROUP+"="+group;
-    }
-    
-    private void showLogFileIndex(Services services, HttpServletRequest req, HttpServletResponse resp) throws IOException
+    private void listServices(Services services, HttpServletRequest req, HttpServletResponse resp) throws IOException
     {
         resp.setContentType("text/html;charset=UTF-8");
         
@@ -103,93 +88,27 @@ public class LogServlet extends HttpServlet
             out.append("<h1>Logfiles</h1>");
             
             for(Service service: services.getServices())
-            {
-                for(String logFile: service.getLogFiles(null).keySet())
-                {
-                    out.append("<a href=\"").append(ListServicesServlet.getUrl(service.getName())).append("\">").append(service.getName()).append("</a>");
-                    out.append(" / <a href=\"").append(getFileUrl(service.getName(), logFile)).append("\">").append(LognameGenerator.getLogFileTitle(service.getName(), logFile)).append("</a><br>");
-                }
-            }
+                out.append("<a href=\"").append(getFilesOfService(service.getName())).append("\">").append(service.getName()).append("</a><br>");
             
             Layout.end(out);
         }
     }
     
-    private void showLogFileIndex(Service service, HttpServletRequest req, HttpServletResponse resp, String group) throws IOException
+    private void listServiceFiles(Service service, Optional<String> taskName, HttpServletRequest req, HttpServletResponse resp) throws IOException
     {
-        resp.setContentType("text/html;charset=UTF-8");
-        
-        String prefix = LognameGenerator.getPrefix(group);
-        
-        try(PrintWriter out = resp.getWriter())
-        {
-            Layout.start("Logfiles"+(prefix.isEmpty()?"":" "+prefix)+" of "+service.getName(), req.getRequestURI(), out);
-            
-            /*out.append("<html>");
-            out.append("<head>");
-            out.append("<title>Logfiles of "+service.getName()+"</title>");
-            out.append("<link rel=\"stylesheet\" href=\"https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css\" integrity=\"sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm\" crossorigin=\"anonymous\">");
-            out.append("<link rel=\"icon\" type=\"image/png\" href=\"/favicon.png\"/>");
-            out.append("</head>");
-            
-            out.append("<body>");
-            
-            out.append("<div class=\"container\">");*/
-            
-            out.append("<h1>Logfiles of "+service.getName()+"</h1>");
-            
-            for(String name: service.getLogFiles(null).keySet())
-            {
-                if(!name.startsWith(prefix))
-                    out.append("<a href=\""+getFileUrl(service.getName(), name)+"\">"+LognameGenerator.getLogFileTitle(service.getName(), name)+"</a><br>");
-            }
-            
-            /*out.append("</body>");
-            out.append("</head>");
-            out.append("</html>");*/
-            Layout.end(out);
-        }
-    }
-    
-    private void showLogFileRaw(Service service, String logFile, HttpServletRequest req, HttpServletResponse resp) throws IOException
-    {
-        resp.setContentType("text/plain;charset=UTF-8");
-        LogFile lf = service.getLogFiles(null).get(logFile);
-        if(lf == null)
-        {
-            resp.sendError(HttpServletResponse.SC_NOT_FOUND, "Logfile "+logFile+" not found");
-            return;
-        }
-        
-        Files.copy(lf.getPath(), resp.getOutputStream());
-    }
-    
-    private void showLogFile(Service service, String logFile, HttpServletRequest req, HttpServletResponse resp) throws IOException
-    {
-        LogFile lf = service.getLogFiles(null).get(logFile);
-        if(lf == null)
-        {
-            resp.sendError(HttpServletResponse.SC_NOT_FOUND, "Logfile "+logFile+" not found");
-            return;
-        }
-        
         resp.setContentType("text/html;charset=UTF-8");
         
         try(PrintWriter out = resp.getWriter())
         {
-            Layout.start(LognameGenerator.getLogFileTitle(service.getName(), logFile), req.getRequestURI(), out);
+            Layout.start("Logfiles"+taskName.map(t -> " "+t).orElse("")+" of "+service.getName(), req.getRequestURI(), out);
             
-            out.append("<h1>"+LognameGenerator.getLogFileTitle(service.getName(), logFile)+"</h1>");
+            out.append("<h1>Logfiles"+taskName.map(t -> " "+t).orElse("")+" of "+service.getName()+"</h1>");
             
-            out.append("<a href=\"").append(getFileUrl(service.getName(), logFile, true)).append("\">").append("Raw").append("</a>");
-            
-            out.append("<pre style=\"border: 1px solid #ccc;padding:0.5em\">");
-            
-            ByteArrayOutputStream arr = new ByteArrayOutputStream();
-            Files.copy(lf.getPath(), arr);
-            out.append(arr.toString().replace("<", "&lt;").replace(">", "&gt;"));
-            
-            out.append("</pre>");
+            Map<String, LogFile> files = service.getLogFiles(taskName);
+            for(String name: files.keySet())
+                out.append("<a href=\""+LogFileShowServlet.getFileUrl(service.getName(), name)+"\">"+LognameGenerator.getLogFileTitle(service.getName(), name)+"</a><br>");
+            if(files.isEmpty())
+                out.append("<em>No files found</em>");
             
             Layout.end(out);
         }

@@ -54,7 +54,7 @@ public class StubService extends AbstractService
             return logFiles;
         
         Map<String, LogFile> filtered = new HashMap<>(logFiles);
-        logFiles.values().removeIf(l -> !l.getProcessName().equals(taskName));
+        filtered.values().removeIf(l -> !l.getProcessName().equals(taskName));
         return filtered;
     }
 }

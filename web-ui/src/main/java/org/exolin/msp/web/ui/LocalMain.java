@@ -25,6 +25,16 @@ import static org.exolin.msp.web.ui.Main.run;
  */
 public class LocalMain
 {
+    private static Optional<String> getTaskName(String str)
+    {
+        if(str.startsWith("task-build-"))
+            return Optional.of("build");
+        if(str.startsWith("task-deploy-"))
+            return Optional.of("deploy");
+        else
+            return Optional.empty();
+    }
+    
     public static void main(String[] args) throws Exception
     {
         String TS = "2020-01-02-030405";
@@ -41,7 +51,7 @@ public class LocalMain
         
         try(DirectoryStream<Path> dir = Files.newDirectoryStream(logDirectory))
         {
-            dir.forEach(d -> logFiles.put(d.getFileName().toString(), new LogFile("test-mittens-discord", Optional.empty(), d)));
+            dir.forEach(d -> logFiles.put(d.getFileName().toString(), new LogFile("test-mittens-discord", getTaskName(d.getFileName().toString()), d)));
         }
         
         ProcessManager pm = new ProcessManager(new ProcessDataStorage(logDirectory));

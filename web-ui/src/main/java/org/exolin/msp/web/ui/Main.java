@@ -37,6 +37,7 @@ import org.exolin.msp.web.ui.servlet.serverinfo.SystemEnvironmentServlet;
 import org.exolin.msp.web.ui.servlet.serverinfo.SystemPropertiesServlet;
 import org.exolin.msp.web.ui.servlet.service.DeployServlet;
 import org.exolin.msp.web.ui.servlet.service.ListServicesServlet;
+import org.exolin.msp.web.ui.servlet.service.LogFileShowServlet;
 import org.exolin.msp.web.ui.servlet.service.LogServlet;
 import org.exolin.msp.web.ui.servlet.service.ServiceStatusServlet;
 import org.slf4j.Logger;
@@ -139,6 +140,7 @@ public class Main
         servletHandler.addServletWithMapping(ListServicesServlet.class, ListServicesServlet.URL).setServlet(new ListServicesServlet(services));
         servletHandler.addServletWithMapping(DeployServlet.class, DeployServlet.URL).setServlet(new DeployServlet(services));
         servletHandler.addServletWithMapping(LogServlet.class, LogServlet.URL).setServlet(new LogServlet(services));
+        servletHandler.addServletWithMapping(LogFileShowServlet.class, LogFileShowServlet.URL).setServlet(new LogFileShowServlet(services));
         servletHandler.addServletWithMapping(ProcessServlet.class, ProcessServlet.URL).setServlet(new ProcessServlet(pm));
         servletHandler.addServletWithMapping(ServiceStatusServlet.class, ServiceStatusServlet.URL).setServlet(new ServiceStatusServlet(services));
         

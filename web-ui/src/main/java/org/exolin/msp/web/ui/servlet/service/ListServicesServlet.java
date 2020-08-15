@@ -99,7 +99,9 @@ public class ListServicesServlet extends HttpServlet
                 out.append("</td>");
                 
                 out.append("<td>");
-                out.append("<a href=\"/logs?service="+service.getName()+"\">Logfiles</a><br>");
+                out.append("<a href=\""+LogServlet.getFilesOfService(service.getName())+"\">Service Logfiles</a><br>");
+                out.append("<a href=\""+LogServlet.getFilesOfTask(service.getName(), "build")+"\">Build Logfiles</a><br>");
+                out.append("<a href=\""+LogServlet.getFilesOfTask(service.getName(), "deploy")+"\">Deploy Logfiles</a><br>");
                 
                 out.append("</td>");
                 
