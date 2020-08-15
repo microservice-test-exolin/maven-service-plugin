@@ -79,7 +79,7 @@ public class ProcessServlet extends HttpServlet
             out.append("<td><a href=\"").append(ListServicesServlet.getUrl(process.getService())).append("\">").append(process.getService()).append("</a></td>");
             out.append("<td>").append(process.getTitle()).append("</td>");
             out.append("<td>").append(String.join(" ", process.getCmd())).append("</td>");
-            out.append("<td>").append(process.getStartedAt()).append("</td>");
+            out.append("<td>").append(process.getStartedAt().toString()).append("</td>");
             out.append("<td>").append(runtime != -1 ? runtime+" s" : "<em>N/A</em>").append("</td>");
             out.append("<td><a href=\"").append(LogFileShowServlet.getFileUrl(process.getService(), logFileName)).append("\">Logfile</a></td>");
             out.append("</tr>");
