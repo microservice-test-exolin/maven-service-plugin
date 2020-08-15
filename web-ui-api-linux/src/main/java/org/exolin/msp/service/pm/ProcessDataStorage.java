@@ -12,6 +12,7 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.Properties;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -27,6 +28,7 @@ public class ProcessDataStorage
     private static final String CMD = "cmd";
     private static final String TITLE = "title";
     private static final String START_TIME = "startTime";
+    private static final String EXIT_CODE = "exitCode";
     
     private final Path directory;
 
@@ -44,8 +46,9 @@ public class ProcessDataStorage
         List<String> cmd = Arrays.asList(properties.getProperty(CMD).split(" "));
         String title = properties.getProperty(TITLE);
         long startTime = Long.parseLong(properties.getProperty(START_TIME));
+        Integer exitCode = Optional.ofNullable(properties.getProperty(EXIT_CODE)).map(Integer::parseInt).orElse(null);
         
-        return new ProcessInfo(service, name, startTime, cmd, title);
+        return new ProcessInfo(service, name, startTime, cmd, title, exitCode);
     }
 
     public Map<String, Path> getProcessLogDirectories(String service) throws IOException
@@ -141,7 +144,7 @@ public class ProcessDataStorage
         return processInfos;
     }
 
-    public void add(ProcessInfo processInfo)
+    public void save(ProcessInfo processInfo)
     {
         try{
             store(processInfo);

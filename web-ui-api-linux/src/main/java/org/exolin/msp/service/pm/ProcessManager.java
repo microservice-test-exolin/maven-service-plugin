@@ -29,9 +29,9 @@ public class ProcessManager
     public synchronized ProcessInfo register(String service, String name, List<String> cmd, String title, long startTime)
     {
         clean();
-        ProcessInfo pi = new ProcessInfo(service, name, startTime, cmd, title);
+        ProcessInfo pi = new ProcessInfo(service, name, startTime, cmd, title, null);
         processes.add(pi);
-        store.add(pi);
+        store.save(pi);
         return pi;
     }
     
@@ -59,6 +59,8 @@ public class ProcessManager
             ProcessInfo o = it.next();
             if(!o.isAlive())
             {
+                o.updateExitCode();
+                store.save(o);
                 it.remove();
                 processesHistory.add(o);
             }

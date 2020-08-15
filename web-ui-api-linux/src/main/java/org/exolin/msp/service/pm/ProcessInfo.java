@@ -15,8 +15,9 @@ public class ProcessInfo
     private Process process;
     private final List<String> cmd;
     private final String title;
+    private Integer exitCode;
     
-    public ProcessInfo(String service, String name, long startTime, List<String> cmd, String title)
+    public ProcessInfo(String service, String name, long startTime, List<String> cmd, String title, Integer exitCode)
     {
         this.service = service;
         this.name = name;
@@ -28,6 +29,17 @@ public class ProcessInfo
     public void setProcess(Process process)
     {
         this.process = process;
+    }
+
+    public Integer getExitCode()
+    {
+        return exitCode;
+    }
+
+    void updateExitCode()
+    {
+        if(process != null && !process.isAlive())
+            exitCode = process.exitValue();
     }
     
     public String getService()
@@ -42,7 +54,7 @@ public class ProcessInfo
     
     public boolean isAlive()
     {
-        return process != null ? process.isAlive() : false;
+        return process != null ? process.isAlive() : true/*um nicht zu früh zu enternt zu werden*/;
     }
 
     void destroyForcibly()
