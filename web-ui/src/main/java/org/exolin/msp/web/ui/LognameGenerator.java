@@ -68,6 +68,8 @@ public class LognameGenerator
         //----------------------------------------------------------------------
         if(filename.equals(serviceName+".log"))
             return "Service Log [old version]";
+        if(filename.equals(serviceName+".error.log"))
+            return "Service Error Log [old version]";
         else if(filename.equals("build.out.log"))
             return "Build Log";
         else if(filename.equals("build.err.log"))
