@@ -10,11 +10,15 @@ import java.nio.file.NoSuchFileException;
 import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Properties;
+import java.util.RandomAccess;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -149,6 +153,8 @@ public class ProcessDataStorage
         }catch(IOException e){
             LOGGER.error("Error while reading {}", directory);
         }
+        
+        processInfos.sort(Comparator.comparing(ProcessInfo::getStartTime));
         
         return processInfos;
     }
