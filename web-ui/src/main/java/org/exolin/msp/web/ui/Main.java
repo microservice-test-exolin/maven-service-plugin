@@ -40,6 +40,7 @@ import org.exolin.msp.web.ui.servlet.service.DeployServlet;
 import org.exolin.msp.web.ui.servlet.service.ListServicesServlet;
 import org.exolin.msp.web.ui.servlet.service.LogFileShowServlet;
 import org.exolin.msp.web.ui.servlet.service.LogServlet;
+import org.exolin.msp.web.ui.servlet.service.ServiceServlet;
 import org.exolin.msp.web.ui.servlet.service.ServiceStatusServlet;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -144,6 +145,7 @@ public class Main
         ResourceServlet.addFile(servletHandler, "favicon.ico", "image/x-icon");
         ResourceServlet.addFile(servletHandler, "dashboard.css", "text/css");
         
+        servletHandler.addServletWithMapping(ServiceServlet.class, ServiceServlet.URL).setServlet(new ServiceServlet(services));
         servletHandler.addServletWithMapping(ListServicesServlet.class, ListServicesServlet.URL).setServlet(new ListServicesServlet(services));
         servletHandler.addServletWithMapping(DeployServlet.class, DeployServlet.URL).setServlet(new DeployServlet(services));
         servletHandler.addServletWithMapping(LogServlet.class, LogServlet.URL).setServlet(new LogServlet(services));

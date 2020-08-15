@@ -55,7 +55,7 @@ public class ListServicesServlet extends HttpServlet
             for(Service service: services.getServices())
             {
                 out.append("<tr id=\"").append(service.getName()).append("\">");
-                out.append("<td>").append(service.getName()).append("</td>");
+                out.append("<td><a href=\"").append(getUrl(service.getName())).append("\">").append(service.getName()).append("</a></td>");
                 
                 out.append("<td>");
                 try{
@@ -140,7 +140,7 @@ public class ListServicesServlet extends HttpServlet
 
     public static String getUrl(String service)
     {
-        return "/services#"+service;
+        return "/service?service="+service;
     }
     
     static void write(Writer out, String action, String title) throws IOException
