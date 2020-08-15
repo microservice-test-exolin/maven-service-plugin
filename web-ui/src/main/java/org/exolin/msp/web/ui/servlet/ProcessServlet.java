@@ -10,6 +10,7 @@ import javax.servlet.http.HttpServletResponse;
 import org.exolin.msp.service.pm.ProcessInfo;
 import org.exolin.msp.service.pm.ProcessManager;
 import org.exolin.msp.web.ui.servlet.service.ListServicesServlet;
+import org.exolin.msp.web.ui.servlet.service.LogFileShowServlet;
 
 /**
  *
@@ -58,6 +59,7 @@ public class ProcessServlet extends HttpServlet
         out.append("<th>Name</th>");
         out.append("<th>Commandline</th>");
         out.append("<th>Runtime</th>");
+        out.append("<th>Log</th>");
         out.append("</tr>");
 
         if(processes.isEmpty())
@@ -67,11 +69,15 @@ public class ProcessServlet extends HttpServlet
         {
             long runtime = process.getRuntime();
             
+            //TODO: passt so nicht
+            String logFileName = process.getName()+" "+process.getStartTime()+".log";
+            
             out.append("<tr>");
             out.append("<td><a href=\"").append(ListServicesServlet.getUrl(process.getService())).append("\">").append(process.getService()).append("</a></td>");
             out.append("<td>").append(process.getTitle()).append("</td>");
             out.append("<td>").append(String.join(" ", process.getCmd())).append("</td>");
             out.append("<td>").append(runtime != -1 ? runtime+" s" : "<em>N/A</em>").append("</td>");
+            out.append("<td><a href=\"").append(LogFileShowServlet.getFileUrl(process.getService(), logFileName)).append("\">Logfile</a></td>");
             out.append("</tr>");
         }
 

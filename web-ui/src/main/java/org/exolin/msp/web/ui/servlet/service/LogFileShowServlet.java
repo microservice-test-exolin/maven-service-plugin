@@ -34,7 +34,7 @@ public class LogFileShowServlet extends HttpServlet
         this.services = services;
     }
 
-    static String getFileUrl(String service, String logfile)
+    public static String getFileUrl(String service, String logfile)
     {
         return getFileUrl(service, logfile, false);
     }
