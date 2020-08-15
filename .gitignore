@@ -8,3 +8,7 @@
 *.log
 /web-ui/nbproject/
 *.token
+/web-ui-api-linux/nbproject/
+/web-ui-api-linux/target/
+/web-ui-api-stub/target/
+/web-ui-api/target/

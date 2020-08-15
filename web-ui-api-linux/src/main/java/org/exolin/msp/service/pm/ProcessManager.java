@@ -1,8 +1,11 @@
 package org.exolin.msp.service.pm;
 
+import java.io.IOException;
+import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -13,21 +16,27 @@ import org.slf4j.LoggerFactory;
 public class ProcessManager
 {
     private static final Logger LOGGER = LoggerFactory.getLogger(ProcessManager.class);
-    private final ProcessStore store;
+    private final ProcessDataStorage store;
     private final List<ProcessInfo> processes = new ArrayList<>();
     private final List<ProcessInfo> processesHistory = new ArrayList<>();
 
-    public ProcessManager(ProcessStore store)
+    public ProcessManager(ProcessDataStorage store)
     {
         this.store = store;
     }
 
-    public synchronized void register(String service, String name, Process process, List<String> cmd, String title, long startTime)
+    public synchronized ProcessInfo register(String service, String name, List<String> cmd, String title, long startTime)
     {
         clean();
-        ProcessInfo pi = new ProcessInfo(service, name, startTime, process, cmd, title);
+        ProcessInfo pi = new ProcessInfo(service, name, startTime, cmd, title);
         processes.add(pi);
         store.add(pi);
+        return pi;
+    }
+    
+    public Path getLogFile(ProcessInfo pi) throws IOException
+    {
+        return store.getLogFile(pi);
     }
 
     public synchronized List<ProcessInfo> getProcesses()
@@ -60,5 +69,10 @@ public class ProcessManager
         processes.parallelStream().forEach(p -> {
             p.getProcess().destroyForcibly();
         });
+    }
+
+    public Map<String, Path> getProcessLogDirectories(String service) throws IOException
+    {
+        return store.getProcessLogDirectories(service);
     }
 }

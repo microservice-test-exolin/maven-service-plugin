@@ -18,7 +18,6 @@ import org.exolin.msp.core.Log;
 import org.exolin.msp.core.SystemAbstraction;
 import org.exolin.msp.service.Services;
 import org.exolin.msp.service.linux.LinuxServices;
-import org.exolin.msp.service.pm.NoProcessStore;
 import org.exolin.msp.service.pm.ProcessDataStorage;
 import org.exolin.msp.service.pm.ProcessManager;
 import org.exolin.msp.web.ui.servlet.IndexServlet;
@@ -46,7 +45,7 @@ public class Main
 {
     public static void main(String[] args) throws Exception
     {
-        ProcessManager pm = new ProcessManager(new NoProcessStore());
+        ProcessManager pm = new ProcessManager(new ProcessDataStorage(Paths.get("../data")));
         
         SystemAbstraction sys = new LinuxAbstraction(new Log()
         {
@@ -58,7 +57,6 @@ public class Main
             
         LinuxServices services = new LinuxServices(
                 Paths.get("/home/exolin/services"),
-                Paths.get("../services"),
                 sys, pm);
         
         run(pm, sys, services, Config.read(Paths.get("../config/config")));

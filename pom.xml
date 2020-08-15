@@ -11,5 +11,8 @@
         <module>system-lib</module>
         <module>web-ui</module>
         <module>core</module>
+        <module>web-ui-api</module>
+        <module>web-ui-api-stub</module>
+        <module>web-ui-api-linux</module>
     </modules>
 </project>

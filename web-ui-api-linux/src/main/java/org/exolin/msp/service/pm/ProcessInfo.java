@@ -12,20 +12,24 @@ public class ProcessInfo
     private final String name;
     private final long startTime;
 
-    private final Process process;
+    private Process process;
     private final List<String> cmd;
     private final String title;
-
-    public ProcessInfo(String service, String name, long startTime, Process process, List<String> cmd, String title)
+    
+    public ProcessInfo(String service, String name, long startTime, List<String> cmd, String title)
     {
         this.service = service;
         this.name = name;
         this.startTime = startTime;
-        this.process = process;
         this.cmd = cmd;
         this.title = title;
     }
 
+    public void setProcess(Process process)
+    {
+        this.process = process;
+    }
+    
     public String getService()
     {
         return service;

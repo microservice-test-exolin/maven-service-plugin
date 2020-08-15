@@ -9,7 +9,9 @@ import java.nio.file.NoSuchFileException;
 import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Properties;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -18,7 +20,7 @@ import org.slf4j.LoggerFactory;
  *
  * @author tomgk
  */
-public class ProcessDataStorage implements ProcessStore
+public class ProcessDataStorage
 {
     private static final Logger LOGGER = LoggerFactory.getLogger(ProcessDataStorage.class);
     
@@ -28,9 +30,12 @@ public class ProcessDataStorage implements ProcessStore
     
     private final Path directory;
 
-    public ProcessDataStorage(Path directory)
+    public ProcessDataStorage(Path directory) throws NoSuchFileException
     {
         this.directory = directory;
+        
+        if(!Files.exists(directory))
+            throw new NoSuchFileException(directory.toAbsolutePath().normalize().toString());
     }
     
     public ProcessInfo load(String service, String name, Path path) throws IOException
@@ -40,8 +45,35 @@ public class ProcessDataStorage implements ProcessStore
         String title = properties.getProperty(TITLE);
         long startTime = Long.parseLong(properties.getProperty(START_TIME));
         
+        return new ProcessInfo(service, name, startTime, cmd, title);
+    }
 
-        return new ProcessInfo(service, name, startTime, null, cmd, title);
+    public Map<String, Path> getProcessLogDirectories(String service) throws IOException
+    {
+        Map<String, Path> dirs = new HashMap<>();
+        try(DirectoryStream<Path> processes = Files.newDirectoryStream(directory.resolve(service)))
+        {
+            for(Path processDir: processes)
+                dirs.put(processDir.getFileName().toString(), processDir);
+        }
+        return dirs;
+    }
+    
+    private Path processDir(String service, String process) throws IOException
+    {
+        if(!Files.exists(directory))
+            throw new NoSuchFileException(directory.toString());
+        
+        Path destDir = directory.resolve(service).resolve(process);
+        if(!Files.exists(destDir))
+            Files.createDirectories(destDir);
+        
+        return destDir;
+    }
+    
+    public Path getLogFile(ProcessInfo pi) throws IOException
+    {
+        return processDir(pi.getService(), pi.getName()).resolve(pi.getStartTime()+".log");
     }
     
     public void store(ProcessInfo pi) throws IOException
@@ -51,12 +83,7 @@ public class ProcessDataStorage implements ProcessStore
         properties.setProperty(TITLE, pi.getTitle());
         properties.setProperty(START_TIME, pi.getStartTime()+"");
         
-        if(!Files.exists(directory))
-            throw new NoSuchFileException(directory.toString());
-        
-        Path destDir = directory.resolve(pi.getService()).resolve(pi.getName());
-        if(!Files.exists(destDir))
-            Files.createDirectories(destDir);
+        Path destDir = processDir(pi.getService(), pi.getName());
         
         try(Writer out = Files.newBufferedWriter(destDir.resolve(pi.getStartTime()+".properties"), StandardCharsets.UTF_8))
         {
@@ -68,6 +95,7 @@ public class ProcessDataStorage implements ProcessStore
     {
         List<ProcessInfo> processInfos = new ArrayList<>();
         
+        //<service>/<process>/<startTime>.info
         try(DirectoryStream<Path> serviceDirs = Files.newDirectoryStream(directory))
         {
             for(Path serviceDir: serviceDirs)
@@ -76,7 +104,7 @@ public class ProcessDataStorage implements ProcessStore
                 {
                     for(Path processDirectory: processDirectories)
                     {
-                        try(DirectoryStream<Path> processFiles = Files.newDirectoryStream(processDirectory))
+                        try(DirectoryStream<Path> processFiles = Files.newDirectoryStream(processDirectory, "*.info"))
                         {
                             for(Path processFile: processFiles)
                             {
@@ -91,7 +119,6 @@ public class ProcessDataStorage implements ProcessStore
         return processInfos;
     }
 
-    @Override
     public void add(ProcessInfo processInfo)
     {
         try{

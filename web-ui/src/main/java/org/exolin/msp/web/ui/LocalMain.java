@@ -10,7 +10,7 @@ import java.util.Map;
 import org.exolin.msp.core.PseudoAbstraction;
 import org.exolin.msp.core.SystemAbstraction;
 import org.exolin.msp.service.Services;
-import org.exolin.msp.service.pm.NoProcessStore;
+import org.exolin.msp.service.pm.ProcessDataStorage;
 import org.exolin.msp.service.pm.ProcessManager;
 import org.exolin.msp.service.stub.StubService;
 import org.exolin.msp.service.stub.StubServices;
@@ -41,7 +41,7 @@ public class LocalMain
             dir.forEach(d -> logFiles.put(d.getFileName().toString(), d));
         }
         
-        ProcessManager pm = new ProcessManager(new NoProcessStore());
+        ProcessManager pm = new ProcessManager(new ProcessDataStorage(logDirectory));
         
         SystemAbstraction sys = new PseudoAbstraction(new LogAdapter(PseudoAbstraction.class));
         Services services = new StubServices(Arrays.asList(

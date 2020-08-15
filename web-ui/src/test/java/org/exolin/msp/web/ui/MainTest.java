@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.nio.file.Paths;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.Properties;
@@ -12,6 +13,7 @@ import org.eclipse.jetty.server.ServerConnector;
 import org.exolin.msp.core.PseudoAbstraction;
 import org.exolin.msp.core.SystemAbstraction;
 import org.exolin.msp.service.Services;
+import org.exolin.msp.service.pm.ProcessDataStorage;
 import org.exolin.msp.service.pm.ProcessManager;
 import org.exolin.msp.service.stub.StubService;
 import org.exolin.msp.service.stub.StubServices;
@@ -32,7 +34,7 @@ public class MainTest
     @BeforeAll
     public static void setup() throws Exception
     {
-        ProcessManager pm = new ProcessManager();
+        ProcessManager pm = new ProcessManager(new ProcessDataStorage(Paths.get(".")));
         
         SystemAbstraction sys = new PseudoAbstraction(new LogAdapter(PseudoAbstraction.class));
         Services services = new StubServices(Arrays.asList(
