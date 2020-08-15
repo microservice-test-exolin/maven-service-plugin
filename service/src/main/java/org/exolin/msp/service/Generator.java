@@ -81,11 +81,11 @@ public class Generator
             
             w.write(" -jar ");
            /**/w.append("$DIR/bin/").append(jarName);
-            w.write(" >> $DIR/log/service.log ");
+            w.write(" >> $DIR/log/service.out.log ");
             w.write("2>&1");
             w.newLine();
             
-            w.write("echo Stopped >> service.log");
+            w.write("echo Stopped >> service.out.log");
             w.newLine();
         }
         

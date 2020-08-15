@@ -80,7 +80,7 @@ public class DeployMojoTest
         assertExists(simDir.resolve("home/exolin/services/test-service/bin/slf4j-api-1.7.25.jar"));
         assertExists(simDir.resolve("home/exolin/services/test-service/bin/log4j-over-slf4j-1.7.25.jar"));
         
-        Path serviceFile = simDir.resolve("etc/systemd/system/test-service.out.service");
+        Path serviceFile = simDir.resolve("etc/systemd/system/test-service.service");
         assertExists(serviceFile);
         
         org.ini4j.Ini a = new Ini(serviceFile.toFile());
@@ -100,13 +100,13 @@ public class DeployMojoTest
                 "NAME=test-service",
                 "DIR=/home/exolin/services/$NAME",
                 "cd $DIR/bin",
-                "echo Starting >> service.log",
+                "echo Starting >> service.out.log",
                 "/usr/bin/java "
                         + "-Dsystem.baseDirectory=$DIR "
                         + "-Dsystem.logDirectory=$DIR/log "
                         + "-Dsystem.configDirectory=$DIR/cfg"
-                        + " -jar $DIR/bin/test-service-1.0-SNAPSHOT.jar >> $DIR/log/service.log 2>&1",
-                "echo Stopped >> service.log"
+                        + " -jar $DIR/bin/test-service-1.0-SNAPSHOT.jar >> $DIR/log/service.out.log 2>&1",
+                "echo Stopped >> service.out.log"
         )), String.join("\n", x));
         
         assertEquals("jar", rule.getVariableValueFromObject(deploy, "packaging"));
