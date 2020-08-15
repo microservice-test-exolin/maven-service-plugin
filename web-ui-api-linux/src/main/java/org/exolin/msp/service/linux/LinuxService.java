@@ -67,14 +67,14 @@ public class LinuxService extends AbstractService
 
     private void read(String prefix, Path dir, Map<String, Path> files) throws IOException
     {
-        LOGGER.info(" Reading logs from {}", dir);
+        //LOGGER.info(" Reading logs from {}", dir);
         
         try{
             for(Path p: Files.newDirectoryStream(dir))
             {
                 //LOGGER.info("- {}", p.getFileName());
                 files.put(prefix+p.getFileName().toString(), p);
-                LOGGER.info("    {}", p);
+                //LOGGER.info("    {}", p);
             }
         }catch(NoSuchFileException e){
             LOGGER.warn("Directory doesn't exist: {}", dir);
@@ -84,7 +84,7 @@ public class LinuxService extends AbstractService
     @Override
     public final Map<String, Path> getLogFiles() throws IOException
     {
-        LOGGER.info("Retriving log files");
+        //LOGGER.info("Retriving log files");
         
         Map<String, Path> files = new TreeMap<>();
         
