@@ -118,25 +118,25 @@ public class ProcessDataStorage
     {
         List<ProcessInfo> processInfos = new ArrayList<>();
         
-        LOGGER.info("Reading {}", directory);
+        LOGGER.debug("Reading {}", directory);
         
         //<service>/<process>/<startTime>.<ext>
         try(DirectoryStream<Path> serviceDirs = Files.newDirectoryStream(directory.toAbsolutePath().normalize()))
         {
             for(Path serviceDir: serviceDirs)
             {
-                LOGGER.info("Reading {}", serviceDir);
+                LOGGER.debug("Reading {}", serviceDir);
                 try(DirectoryStream<Path> processDirectories = Files.newDirectoryStream(serviceDir))
                 {
                     for(Path processDirectory: processDirectories)
                     {
-                        LOGGER.info("  Reading {}/*{}", serviceDir.relativize(processDirectory), FILE_EXTENSION);
+                        LOGGER.debug("  Reading {}/*{}", serviceDir.relativize(processDirectory), FILE_EXTENSION);
                         try(DirectoryStream<Path> processFiles = Files.newDirectoryStream(processDirectory, "*"+FILE_EXTENSION))
                         {
                             for(Path processFile: processFiles)
                             {
                                 try{
-                                    LOGGER.info("    {}", processFile.getFileName());
+                                    LOGGER.debug("    {}", processFile.getFileName());
                                     processInfos.add(load(serviceDir.getFileName().toString(), processDirectory.getFileName().toString(), processFile));
                                 }catch(IOException|RuntimeException e){
                                     LOGGER.error("Error while reading "+processFile, e);
