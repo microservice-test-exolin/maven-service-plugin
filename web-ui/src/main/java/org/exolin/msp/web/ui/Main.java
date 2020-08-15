@@ -5,6 +5,7 @@ import java.nio.file.Files;
 import java.nio.file.NoSuchFileException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.time.LocalDateTime;
 import java.util.EnumSet;
 import java.util.Set;
 import javax.servlet.DispatcherType;
@@ -50,6 +51,7 @@ import org.slf4j.LoggerFactory;
 public class Main
 {
     private static final Logger LOGGER = LoggerFactory.getLogger(Main.class);
+    public static LocalDateTime startedAt = LocalDateTime.now();
     
     public static void main(String[] args) throws Exception
     {

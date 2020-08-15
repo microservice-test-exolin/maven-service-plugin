@@ -3,6 +3,7 @@ package org.exolin.msp.web.ui.servlet;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.io.Writer;
+import org.exolin.msp.web.ui.Main;
 
 /**
  *
@@ -25,7 +26,7 @@ public class Layout
         w.append("</nav>");
     }
     
-    private static void writeMenu(Writer out, String title, String link, String icon, boolean cur) throws IOException
+    private static void writeMenuItem(Writer out, String title, String link, String icon, boolean cur) throws IOException
     {
          out.append("<li class=\"nav-item\">\n");
          out.append("<a class=\"nav-link");
@@ -52,13 +53,14 @@ public class Layout
         w.append("<div class=\"sidebar-sticky\">");
         w.append("<ul class=\"nav flex-column\">");
         
-        writeMenu(w, "Dashboard", "/", "home", current.equals("/"));
-        writeMenu(w, "Services", "/services", SERVICE, current.startsWith("/services"));
-        writeMenu(w, "Processes", "/processes", PROCESS, current.startsWith("/processes"));
-        writeMenu(w, "Logs", "/logs", "file-text", current.startsWith("/logs"));
-        writeMenu(w, "Server Info", "/server-info", "server", current.startsWith("/server-info"));
+        writeMenuItem(w, "Dashboard", "/", "home", current.equals("/"));
+        writeMenuItem(w, "Services", "/services", SERVICE, current.startsWith("/services"));
+        writeMenuItem(w, "Processes", "/processes", PROCESS, current.startsWith("/processes"));
+        writeMenuItem(w, "Logs", "/logs", "file-text", current.startsWith("/logs"));
+        writeMenuItem(w, "Server Info", "/server-info", "server", current.startsWith("/server-info"));
         
         w.write("</ul>");
+        w.write("<div class=\"footer\">Started at "+Main.startedAt+"</div>");
         w.write("</div>");
         w.write("</nav>");
     }
