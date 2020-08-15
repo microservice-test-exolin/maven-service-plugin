@@ -2,6 +2,8 @@ package org.exolin.msp.web.ui.servlet;
 
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.time.Instant;
+import java.time.LocalDateTime;
 import java.util.List;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
@@ -58,6 +60,7 @@ public class ProcessServlet extends HttpServlet
         out.append("<th>Service</th>");
         out.append("<th>Name</th>");
         out.append("<th>Commandline</th>");
+        out.append("<th>Started at</th>");
         out.append("<th>Runtime</th>");
         out.append("<th>Log</th>");
         out.append("</tr>");
@@ -76,6 +79,7 @@ public class ProcessServlet extends HttpServlet
             out.append("<td><a href=\"").append(ListServicesServlet.getUrl(process.getService())).append("\">").append(process.getService()).append("</a></td>");
             out.append("<td>").append(process.getTitle()).append("</td>");
             out.append("<td>").append(String.join(" ", process.getCmd())).append("</td>");
+            out.append("<td>").append(process.getStartedAt()).append("</td>");
             out.append("<td>").append(runtime != -1 ? runtime+" s" : "<em>N/A</em>").append("</td>");
             out.append("<td><a href=\"").append(LogFileShowServlet.getFileUrl(process.getService(), logFileName)).append("\">Logfile</a></td>");
             out.append("</tr>");

@@ -1,5 +1,8 @@
 package org.exolin.msp.service.pm;
 
+import java.time.Instant;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.util.List;
 
 /**
@@ -76,6 +79,11 @@ public class ProcessInfo
     public long getStartTime()
     {
         return startTime;
+    }
+
+    public LocalDateTime getStartedAt()
+    {
+        return LocalDateTime.ofInstant(Instant.ofEpochMilli(startTime), ZoneId.systemDefault());
     }
 
     public String getTitle()
