@@ -48,6 +48,7 @@ public class LinuxService extends AbstractService
         this.pm = pm;
     }
 
+    @Override
     public boolean isBuildOrDeployProcessRunning()
     {
         return runningBuildOrDeployProcess != null && runningBuildOrDeployProcess.isAlive();

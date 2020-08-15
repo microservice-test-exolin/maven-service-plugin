@@ -40,6 +40,12 @@ public class StubService extends AbstractService
     {
         throw new UnsupportedOperationException();
     }
+
+    @Override
+    public boolean isBuildOrDeployProcessRunning()
+    {
+        return false;
+    }
     
     @Override
     public String getRepositoryUrl() throws IOException

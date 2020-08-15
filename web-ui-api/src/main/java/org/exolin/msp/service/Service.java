@@ -22,6 +22,7 @@ public interface Service
     public boolean supportsBuildAndDeployment() throws IOException;
     public void build(boolean async) throws IOException, InterruptedException;
     public void deploy(boolean async) throws IOException, InterruptedException;
+    public boolean isBuildOrDeployProcessRunning();
     
     public Map<String, LogFile> getLogFiles(Optional<String> taskName) throws IOException;
 

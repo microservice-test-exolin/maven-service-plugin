@@ -91,16 +91,16 @@ public class ListServicesServlet extends HttpServlet
                 if(service.supportsBuildAndDeployment())
                 {
                     out.append("<form action=\"/deploy\" method=\"POST\" style=\"display: inline\">");
-                    if(service.supportsBuildAndDeployment())
+                    if(service.isBuildOrDeployProcessRunning())
                     {
                         out.append("<input type=\"hidden\" name=\"service\" value=\"").append(service.getName()).append("\">");
                         write(out, "compile", "Compile");
                         write(out, "deploy", "Deploy");
                         out.append("</form>");
                     }
+                    else
+                        out.append("Build/deploy currently running");
                 }
-                else
-                    out.append("Build/deploy currently running");
                 out.append("</td>");
                 
                 out.append("<td>");
