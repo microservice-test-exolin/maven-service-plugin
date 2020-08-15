@@ -80,7 +80,7 @@ public class ProcessInfo
 
     public long getRuntime()
     {
-        if(!process.isAlive())
+        if(!isAlive())
             return -1;
 
         return System.currentTimeMillis() - startTime;
