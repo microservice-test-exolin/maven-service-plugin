@@ -106,7 +106,7 @@ public class LogServlet extends HttpServlet
                 for(String logFile: service.getLogFiles().keySet())
                 {
                     out.append("<a href=\"").append(ListServicesServlet.getUrl(service.getName())).append("\">").append(service.getName()).append("</a>");
-                    out.append(" / <a href=\"").append(getFileUrl(service.getName(), logFile)).append("\">").append(LognameGenerator.getLogFileTitle(logFile)).append("</a><br>");
+                    out.append(" / <a href=\"").append(getFileUrl(service.getName(), logFile)).append("\">").append(LognameGenerator.getLogFileTitle(service.getName(), logFile)).append("</a><br>");
                 }
             }
             
@@ -140,7 +140,7 @@ public class LogServlet extends HttpServlet
             for(String name: service.getLogFiles().keySet())
             {
                 if(!name.startsWith(prefix))
-                    out.append("<a href=\""+getFileUrl(service.getName(), name)+"\">"+LognameGenerator.getLogFileTitle(name)+"</a><br>");
+                    out.append("<a href=\""+getFileUrl(service.getName(), name)+"\">"+LognameGenerator.getLogFileTitle(service.getName(), name)+"</a><br>");
             }
             
             /*out.append("</body>");
@@ -176,9 +176,9 @@ public class LogServlet extends HttpServlet
         
         try(PrintWriter out = resp.getWriter())
         {
-            Layout.start(LognameGenerator.getLogFileTitle(logFile), req.getRequestURI(), out);
+            Layout.start(LognameGenerator.getLogFileTitle(service.getName(), logFile), req.getRequestURI(), out);
             
-            out.append("<h1>"+LognameGenerator.getLogFileTitle(logFile)+"</h1>");
+            out.append("<h1>"+LognameGenerator.getLogFileTitle(service.getName(), logFile)+"</h1>");
             
             out.append("<a href=\"").append(getFileUrl(service.getName(), logFile, true)).append("\">").append("Raw").append("</a>");
             

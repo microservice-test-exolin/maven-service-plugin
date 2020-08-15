@@ -11,6 +11,8 @@ import org.junit.jupiter.api.Test;
  */
 public class LognameGeneratorTest
 {
+    private static final String SERVICE_NAME = "xyz-abc";
+    
     @Test
     public void testGenerateFilename()
     {
@@ -20,24 +22,25 @@ public class LognameGeneratorTest
     @Test
     public void testGetLogFileTitle_Service()
     {
-        assertEquals("Service Log", LognameGenerator.getLogFileTitle("service.log"));
+        assertEquals("Service Log", LognameGenerator.getLogFileTitle(SERVICE_NAME, "service.log"));
+        assertEquals("Service Log [old version]", LognameGenerator.getLogFileTitle(SERVICE_NAME, SERVICE_NAME+".log"));
     }
     
     @Test
     public void testGetLogFileTitle_GenericGroup()
     {
-        assertEquals("x at 2020-01-02 03:04:05", LognameGenerator.getLogFileTitle("x-2020-01-02-030405.log"));
+        assertEquals("x at 2020-01-02 03:04:05", LognameGenerator.getLogFileTitle(SERVICE_NAME, "x-2020-01-02-030405.log"));
     }
     
     @Test
     public void testGetLogFileTitle_Task()
     {
-        assertEquals("Task x at 2020-01-02 03:04:05", LognameGenerator.getLogFileTitle("task-x-2020-01-02-030405.log"));
+        assertEquals("Task x at 2020-01-02 03:04:05", LognameGenerator.getLogFileTitle(SERVICE_NAME, "task-x-2020-01-02-030405.log"));
     }
     
     @Test
     public void testGetLogFileTitle_Other()
     {
-        assertEquals("abc.log", LognameGenerator.getLogFileTitle("abc.log"));
+        assertEquals("abc.log", LognameGenerator.getLogFileTitle(SERVICE_NAME, "abc.log"));
     }
 }

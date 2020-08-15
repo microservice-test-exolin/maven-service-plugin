@@ -40,7 +40,7 @@ public class LognameGenerator
         return "task-"+taskName;
     }
     
-    public static String getLogFileTitle(String filename)
+    public static String getLogFileTitle(String serviceName, String filename)
     {
         if(filename.equals("service.log"))
             return "Service Log";
@@ -66,6 +66,8 @@ public class LognameGenerator
         //----------------------------------------------------------------------
         //Backwards compatibliity start
         //----------------------------------------------------------------------
+        if(filename.equals(serviceName+".log"))
+            return "Service Log [old version]";
         else if(filename.equals("build.out.log"))
             return "Build Log";
         else if(filename.equals("build.err.log"))
