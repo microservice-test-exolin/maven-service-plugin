@@ -67,16 +67,21 @@ public class LinuxService extends AbstractService
 
     private void read(String prefix, Path dir, Map<String, Path> files) throws IOException
     {
+        LOGGER.info(" Reading logs from {}", dir);
+        
         for(Path p: Files.newDirectoryStream(dir))
         {
             //LOGGER.info("- {}", p.getFileName());
             files.put(prefix+p.getFileName().toString(), p);
+            LOGGER.info("    {}", p);
         }
     }
     
     @Override
     public final Map<String, Path> getLogFiles() throws IOException
     {
+        LOGGER.info("Retriving log files");
+        
         Map<String, Path> files = new TreeMap<>();
         
         read("", logDirectory, files);
