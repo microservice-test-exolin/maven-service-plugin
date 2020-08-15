@@ -31,6 +31,8 @@ public class ProcessDataStorage
     private static final String EXIT_CODE = "exitCode";
     
     private final Path directory;
+    
+    private static final String FILE_EXTENSION = ".properties";
 
     public ProcessDataStorage(Path directory) throws NoSuchFileException
     {
@@ -95,7 +97,7 @@ public class ProcessDataStorage
         
         Path destDir = processDir(pi.getService(), pi.getName());
         
-        try(Writer out = Files.newBufferedWriter(destDir.resolve(pi.getStartTime()+".properties"), StandardCharsets.UTF_8))
+        try(Writer out = Files.newBufferedWriter(destDir.resolve(pi.getStartTime()+FILE_EXTENSION), StandardCharsets.UTF_8))
         {
             properties.store(out, null);
         }
@@ -107,7 +109,7 @@ public class ProcessDataStorage
         
         LOGGER.info("Reading {}", directory);
         
-        //<service>/<process>/<startTime>.info
+        //<service>/<process>/<startTime>.<ext>
         try(DirectoryStream<Path> serviceDirs = Files.newDirectoryStream(directory))
         {
             for(Path serviceDir: serviceDirs)
@@ -117,8 +119,8 @@ public class ProcessDataStorage
                 {
                     for(Path processDirectory: processDirectories)
                     {
-                        LOGGER.info("Reading {}/*.info", processDirectory);
-                        try(DirectoryStream<Path> processFiles = Files.newDirectoryStream(processDirectory, "*.info"))
+                        LOGGER.info("Reading {}/*{}", processDirectory, FILE_EXTENSION);
+                        try(DirectoryStream<Path> processFiles = Files.newDirectoryStream(processDirectory, "*"+FILE_EXTENSION))
                         {
                             for(Path processFile: processFiles)
                             {
