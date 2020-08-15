@@ -31,7 +31,8 @@ public class GithubOAuth
     
     private HttpURLConnection open(String url) throws IOException
     {
-        LOGGER.info("Request {}", url.replace(clientSecret, "${clientSecret}"));
+        if(LOGGER.isDebugEnabled())
+            LOGGER.debug("Request {}", url.replace(clientSecret, "${clientSecret}"));
         
         return (HttpURLConnection)new URL(url).openConnection();
     }
