@@ -19,6 +19,8 @@ public class ProcessServlet extends HttpServlet
 {
     private final ProcessManager pm;
 
+    public static final String URL = "/processes";
+
     public ProcessServlet(ProcessManager pm)
     {
         this.pm = pm;

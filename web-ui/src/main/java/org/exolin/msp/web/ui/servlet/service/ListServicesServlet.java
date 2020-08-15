@@ -22,6 +22,8 @@ import org.exolin.msp.web.ui.servlet.Layout;
 public class ListServicesServlet extends HttpServlet
 {
     private final Services services;
+    
+    public static final String URL = "/services";
 
     public ListServicesServlet(Services services)
     {

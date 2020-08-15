@@ -28,6 +28,8 @@ public class GithubServlet extends HttpServlet
 {
     private static final Logger LOGGER = LoggerFactory.getLogger(GithubServlet.class);
     
+    public static final String URL = "/github";
+    
     private final Services services;
     private final GithubDeployerImpl githubDeployer;
 

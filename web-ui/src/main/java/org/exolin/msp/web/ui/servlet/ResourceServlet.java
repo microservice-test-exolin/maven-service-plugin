@@ -7,6 +7,7 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import org.eclipse.jetty.servlet.ServletHandler;
 
 /**
  *
@@ -21,6 +22,11 @@ public class ResourceServlet extends HttpServlet
     {
         this.contentType = contentType;
         this.path = path;
+    }
+    
+    public static void addFile(ServletHandler servletHandler, String filename, String contentType)
+    {
+        servletHandler.addServletWithMapping(ResourceServlet.class, "/"+filename).setServlet(new ResourceServlet(contentType, "files/"+filename));
     }
     
     @Override

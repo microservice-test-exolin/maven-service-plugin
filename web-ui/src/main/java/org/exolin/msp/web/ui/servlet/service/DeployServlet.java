@@ -20,6 +20,8 @@ import org.slf4j.LoggerFactory;
 public class DeployServlet extends HttpServlet
 {
     private static final Logger LOGGER = LoggerFactory.getLogger(DeployServlet.class);
+
+    public static final String URL = "/deploy";
     
     private final Services services;
 

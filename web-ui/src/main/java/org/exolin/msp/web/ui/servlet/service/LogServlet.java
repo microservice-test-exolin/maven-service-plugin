@@ -22,6 +22,8 @@ public class LogServlet extends HttpServlet
 {
     private final Services services;
 
+    public static final String URL = "/logs";
+
     public LogServlet(Services services)
     {
         this.services = services;

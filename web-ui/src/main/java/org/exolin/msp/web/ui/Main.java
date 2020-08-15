@@ -51,12 +51,28 @@ public class Main
     
     public static void run(ProcessManager pm, SystemAbstraction sys, Services services) throws Exception
     {
+        Server server = create(pm, sys, services, 8090);
+        
+        try{
+            server.start();
+        }catch(IOException e){
+            try{
+                server.stop();
+            }catch(Exception e2){
+                e.addSuppressed(e2);
+            }
+            throw e;
+        }
+    }
+    
+    public static Server create(ProcessManager pm, SystemAbstraction sys, Services services, int port) throws Exception
+    {
         GithubDeployerImpl githubDeployer = new GithubDeployerImpl(new String(Files.readAllBytes(Paths.get("../config/github.token"))).trim());
         
         Server server = new Server();
         ServerConnector connector = new ServerConnector(server);
         connector.setHost("127.0.0.1");
-        connector.setPort(8090);
+        connector.setPort(port);
         server.setConnectors(new Connector[]{connector});
         
         Runtime.getRuntime().addShutdownHook(new Thread("childprocess.kill"){
@@ -72,17 +88,17 @@ public class Main
         
         servletHandler.addServletWithMapping(StatusServlet.class, "/status");
         
-        servletHandler.addServletWithMapping(ResourceServlet.class, "/favicon.png").setServlet(new ResourceServlet("image/png", "files/favicon.png"));
-        servletHandler.addServletWithMapping(ResourceServlet.class, "/favicon.ico").setServlet(new ResourceServlet("image/x-icon", "files/favicon.ico"));
-        servletHandler.addServletWithMapping(ResourceServlet.class, "/dashboard.css").setServlet(new ResourceServlet("text/css", "files/dashboard.css"));
+        ResourceServlet.addFile(servletHandler, "favicon.png", "image/png");
+        ResourceServlet.addFile(servletHandler, "favicon.ico", "image/x-icon");
+        ResourceServlet.addFile(servletHandler, "dashboard.css", "text/css");
         
-        servletHandler.addServletWithMapping(ListServicesServlet.class, "/services").setServlet(new ListServicesServlet(services));
-        servletHandler.addServletWithMapping(DeployServlet.class, "/deploy").setServlet(new DeployServlet(services));
-        servletHandler.addServletWithMapping(LogServlet.class, "/logs").setServlet(new LogServlet(services));
-        servletHandler.addServletWithMapping(ProcessServlet.class, "/processes").setServlet(new ProcessServlet(pm));
+        servletHandler.addServletWithMapping(ListServicesServlet.class, ListServicesServlet.URL).setServlet(new ListServicesServlet(services));
+        servletHandler.addServletWithMapping(DeployServlet.class, DeployServlet.URL).setServlet(new DeployServlet(services));
+        servletHandler.addServletWithMapping(LogServlet.class, LogServlet.URL).setServlet(new LogServlet(services));
+        servletHandler.addServletWithMapping(ProcessServlet.class, ProcessServlet.URL).setServlet(new ProcessServlet(pm));
         servletHandler.addServletWithMapping(ServiceStatusServlet.class, ServiceStatusServlet.URL).setServlet(new ServiceStatusServlet(services));
         
-        servletHandler.addServletWithMapping(GithubServlet.class, "/github").setServlet(new GithubServlet(services, githubDeployer));
+        servletHandler.addServletWithMapping(GithubServlet.class, GithubServlet.URL).setServlet(new GithubServlet(services, githubDeployer));
         
         servletHandler.addServletWithMapping(ServerInfoServlet.class, ServerInfoServlet.URL);
         servletHandler.addServletWithMapping(SystemPropertiesServlet.class, SystemPropertiesServlet.URL);
@@ -90,15 +106,6 @@ public class Main
         
         server.setHandler(servletHandler);
         
-        try{
-            server.start();
-        }catch(IOException e){
-            try{
-                server.stop();
-            }catch(Exception e2){
-                e.addSuppressed(e2);
-            }
-            throw e;
-        }
+        return server;
     }
 }
