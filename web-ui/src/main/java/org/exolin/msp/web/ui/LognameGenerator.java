@@ -44,6 +44,8 @@ public class LognameGenerator
     {
         if(filename.equals("service.log"))
             return "Service Log";
+        else if(filename.equals("service.out.log"))
+            return "Service Output";
         else if(filename.matches(".*-....-..-..-......\\.log"))
         {
             int suffixLen = 22;

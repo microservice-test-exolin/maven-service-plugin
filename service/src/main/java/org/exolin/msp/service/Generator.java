@@ -69,7 +69,7 @@ public class Generator
             w.write("cd $DIR/bin");
             w.newLine();
             
-            w.write("echo Starting >> service.log");
+            w.write("echo Starting >> service.out.log");
             w.newLine();
 
             w.write("/usr/bin/java");
