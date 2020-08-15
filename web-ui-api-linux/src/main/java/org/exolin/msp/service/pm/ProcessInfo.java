@@ -40,9 +40,15 @@ public class ProcessInfo
         return name;
     }
     
-    public Process getProcess()
+    public boolean isAlive()
     {
-        return process;
+        return process != null ? process.isAlive() : false;
+    }
+
+    void destroyForcibly()
+    {
+        if(process != null)
+            process.destroyForcibly();
     }
 
     public List<String> getCmd()

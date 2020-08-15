@@ -56,7 +56,7 @@ public class ProcessManager
         for (Iterator<ProcessInfo> it = processes.iterator(); it.hasNext();)
         {
             ProcessInfo o = it.next();
-            if(!o.getProcess().isAlive())
+            if(!o.isAlive())
             {
                 it.remove();
                 processesHistory.add(o);
@@ -67,7 +67,7 @@ public class ProcessManager
     public void killAll()
     {
         processes.parallelStream().forEach(p -> {
-            p.getProcess().destroyForcibly();
+            p.destroyForcibly();
         });
     }
 
