@@ -57,7 +57,7 @@ public class ProcessManager
         for (Iterator<ProcessInfo> it = processes.iterator(); it.hasNext();)
         {
             ProcessInfo o = it.next();
-            if(!o.isAlive())
+            if(!o.shouldKeepOnList())
             {
                 o.updateExitCode();
                 store.save(o);

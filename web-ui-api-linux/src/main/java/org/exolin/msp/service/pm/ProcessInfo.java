@@ -52,6 +52,11 @@ public class ProcessInfo
         return name;
     }
     
+    public boolean shouldKeepOnList()
+    {
+        return process != null ? process.isAlive() : true/*um nicht zu früh zu enternt zu werden*/;
+    }
+    
     public boolean isAlive()
     {
         return process != null ? process.isAlive() : true/*um nicht zu früh zu enternt zu werden*/;
