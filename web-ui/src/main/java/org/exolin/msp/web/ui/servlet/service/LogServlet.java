@@ -9,6 +9,7 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import org.exolin.msp.service.LogFile;
 import org.exolin.msp.service.Service;
 import org.exolin.msp.service.Services;
 import org.exolin.msp.web.ui.LognameGenerator;
@@ -103,7 +104,7 @@ public class LogServlet extends HttpServlet
             
             for(Service service: services.getServices())
             {
-                for(String logFile: service.getLogFiles().keySet())
+                for(String logFile: service.getLogFiles(null).keySet())
                 {
                     out.append("<a href=\"").append(ListServicesServlet.getUrl(service.getName())).append("\">").append(service.getName()).append("</a>");
                     out.append(" / <a href=\"").append(getFileUrl(service.getName(), logFile)).append("\">").append(LognameGenerator.getLogFileTitle(service.getName(), logFile)).append("</a><br>");
@@ -137,7 +138,7 @@ public class LogServlet extends HttpServlet
             
             out.append("<h1>Logfiles of "+service.getName()+"</h1>");
             
-            for(String name: service.getLogFiles().keySet())
+            for(String name: service.getLogFiles(null).keySet())
             {
                 if(!name.startsWith(prefix))
                     out.append("<a href=\""+getFileUrl(service.getName(), name)+"\">"+LognameGenerator.getLogFileTitle(service.getName(), name)+"</a><br>");
@@ -153,20 +154,20 @@ public class LogServlet extends HttpServlet
     private void showLogFileRaw(Service service, String logFile, HttpServletRequest req, HttpServletResponse resp) throws IOException
     {
         resp.setContentType("text/plain;charset=UTF-8");
-        Path path = service.getLogFiles().get(logFile);
-        if(path == null)
+        LogFile lf = service.getLogFiles(null).get(logFile);
+        if(lf == null)
         {
             resp.sendError(HttpServletResponse.SC_NOT_FOUND, "Logfile "+logFile+" not found");
             return;
         }
         
-        Files.copy(path, resp.getOutputStream());
+        Files.copy(lf.getPath(), resp.getOutputStream());
     }
     
     private void showLogFile(Service service, String logFile, HttpServletRequest req, HttpServletResponse resp) throws IOException
     {
-        Path path = service.getLogFiles().get(logFile);
-        if(path == null)
+        LogFile lf = service.getLogFiles(null).get(logFile);
+        if(lf == null)
         {
             resp.sendError(HttpServletResponse.SC_NOT_FOUND, "Logfile "+logFile+" not found");
             return;
@@ -185,7 +186,7 @@ public class LogServlet extends HttpServlet
             out.append("<pre style=\"border: 1px solid #ccc;padding:0.5em\">");
             
             ByteArrayOutputStream arr = new ByteArrayOutputStream();
-            Files.copy(path, arr);
+            Files.copy(lf.getPath(), arr);
             out.append(arr.toString().replace("<", "&lt;").replace(">", "&gt;"));
             
             out.append("</pre>");

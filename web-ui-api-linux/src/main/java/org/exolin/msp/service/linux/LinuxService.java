@@ -9,9 +9,11 @@ import java.nio.file.Paths;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.TreeMap;
 import org.exolin.msp.core.SystemAbstraction;
 import org.exolin.msp.service.AbstractService;
+import org.exolin.msp.service.LogFile;
 import org.exolin.msp.service.pm.ProcessInfo;
 import org.exolin.msp.service.pm.ProcessManager;
 import org.slf4j.Logger;
@@ -65,15 +67,17 @@ public class LinuxService extends AbstractService
         }
     }
 
-    private void read(String prefix, Path dir, Map<String, Path> files) throws IOException
+    private void read(Optional<String> processName, Path dir, Map<String, LogFile> files) throws IOException
     {
+        String prefix = processName.map(s -> s+" ").orElse("");
+        
         //LOGGER.info(" Reading logs from {}", dir);
         
         try{
             for(Path p: Files.newDirectoryStream(dir))
             {
                 //LOGGER.info("- {}", p.getFileName());
-                files.put(prefix+p.getFileName().toString(), p);
+                files.put(prefix+p.getFileName().toString(), new LogFile(getName(), processName, p));
                 //LOGGER.info("    {}", p);
             }
         }catch(NoSuchFileException e){
@@ -82,15 +86,20 @@ public class LinuxService extends AbstractService
     }
     
     @Override
-    public final Map<String, Path> getLogFiles() throws IOException
+    public final Map<String, LogFile> getLogFiles(Optional<String> taskName) throws IOException
     {
         //LOGGER.info("Retriving log files");
         
-        Map<String, Path> files = new TreeMap<>();
+        Map<String, LogFile> files = new TreeMap<>();
         
-        read("", logDirectory, files);
+        if(taskName == null || !taskName.isPresent())
+            read(Optional.empty(), logDirectory, files);
+        
         for(Map.Entry<String, Path> e: pm.getProcessLogDirectories(getName()).entrySet())
-            read("Task "+e.getKey()+" ", e.getValue(), files);
+        {
+            if(taskName == null || taskName.equals(Optional.of(e.getKey())))
+                read(Optional.of(e.getKey()), e.getValue(), files);
+        }
         
         return files;
     }

@@ -2,9 +2,12 @@ package org.exolin.msp.service.stub;
 
 import java.io.IOException;
 import java.nio.file.Path;
+import java.util.HashMap;
 import java.util.Map;
+import java.util.Optional;
 import org.exolin.msp.core.SystemAbstraction;
 import org.exolin.msp.service.AbstractService;
+import org.exolin.msp.service.LogFile;
 
 /**
  *
@@ -12,9 +15,9 @@ import org.exolin.msp.service.AbstractService;
  */
 public class StubService extends AbstractService
 {
-    private final Map<String, Path> logFiles;
+    private final Map<String, LogFile> logFiles;
     
-    public StubService(String name, SystemAbstraction sys, Map<String, Path> logFiles)
+    public StubService(String name, SystemAbstraction sys, Map<String, LogFile> logFiles)
     {
         super(name, sys);
         this.logFiles = logFiles;
@@ -45,8 +48,13 @@ public class StubService extends AbstractService
     }
 
     @Override
-    public Map<String, Path> getLogFiles() throws IOException
+    public Map<String, LogFile> getLogFiles(Optional<String> taskName) throws IOException
     {
-        return logFiles;
+        if(taskName == null)
+            return logFiles;
+        
+        Map<String, LogFile> filtered = new HashMap<>(logFiles);
+        logFiles.values().removeIf(l -> !l.getProcessName().equals(taskName));
+        return filtered;
     }
 }
