@@ -1,5 +1,6 @@
 package org.exolin.msp.web.ui;
 
+import org.exolin.msp.service.Services;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
@@ -16,8 +17,8 @@ import org.eclipse.jetty.servlet.ServletHandler;
 import org.exolin.msp.core.LinuxAbstraction;
 import org.exolin.msp.core.Log;
 import org.exolin.msp.core.SystemAbstraction;
-import org.exolin.msp.web.ui.linux.LinuxServices;
-import org.exolin.msp.web.ui.pm.ProcessManager;
+import org.exolin.msp.service.linux.LinuxServices;
+import org.exolin.msp.service.pm.ProcessManager;
 import org.exolin.msp.web.ui.servlet.IndexServlet;
 import org.exolin.msp.web.ui.servlet.ProcessServlet;
 import org.exolin.msp.web.ui.servlet.ResourceServlet;

@@ -1,4 +1,4 @@
-package org.exolin.msp.web.ui.linux;
+package org.exolin.msp.service.linux;
 
 import java.io.IOException;
 import java.nio.file.DirectoryStream;
@@ -10,9 +10,9 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import org.exolin.msp.core.SystemAbstraction;
-import org.exolin.msp.web.ui.Service;
-import org.exolin.msp.web.ui.Services;
-import org.exolin.msp.web.ui.pm.ProcessManager;
+import org.exolin.msp.service.Service;
+import org.exolin.msp.service.Services;
+import org.exolin.msp.service.pm.ProcessManager;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

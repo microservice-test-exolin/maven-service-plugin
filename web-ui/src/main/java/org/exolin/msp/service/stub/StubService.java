@@ -1,9 +1,9 @@
-package org.exolin.msp.web.ui.stub;
+package org.exolin.msp.service.stub;
 
 import java.io.IOException;
 import java.nio.file.Path;
 import org.exolin.msp.core.SystemAbstraction;
-import org.exolin.msp.web.ui.AbstractService;
+import org.exolin.msp.service.AbstractService;
 
 /**
  *

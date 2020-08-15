@@ -1,4 +1,4 @@
-package org.exolin.msp.web.ui.pm;
+package org.exolin.msp.service.pm;
 
 import java.util.List;
 

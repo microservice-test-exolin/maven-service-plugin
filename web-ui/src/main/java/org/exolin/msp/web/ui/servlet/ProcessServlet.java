@@ -7,8 +7,8 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import org.exolin.msp.web.ui.pm.ProcessInfo;
-import org.exolin.msp.web.ui.pm.ProcessManager;
+import org.exolin.msp.service.pm.ProcessInfo;
+import org.exolin.msp.service.pm.ProcessManager;
 import org.exolin.msp.web.ui.servlet.service.ListServicesServlet;
 
 /**

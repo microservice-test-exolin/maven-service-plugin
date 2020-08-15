@@ -1,4 +1,4 @@
-package org.exolin.msp.web.ui;
+package org.exolin.msp.service;
 
 import java.io.IOException;
 import java.nio.file.Files;

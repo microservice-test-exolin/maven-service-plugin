@@ -11,8 +11,8 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import org.exolin.msp.core.StatusInfo;
 import org.exolin.msp.core.StatusType;
-import org.exolin.msp.web.ui.Service;
-import org.exolin.msp.web.ui.Services;
+import org.exolin.msp.service.Service;
+import org.exolin.msp.service.Services;
 import org.exolin.msp.web.ui.servlet.Layout;
 
 /**

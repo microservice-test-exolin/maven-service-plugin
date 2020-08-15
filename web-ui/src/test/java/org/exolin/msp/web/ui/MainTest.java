@@ -1,5 +1,6 @@
 package org.exolin.msp.web.ui;
 
+import org.exolin.msp.service.Services;
 import java.io.IOException;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
@@ -12,9 +13,9 @@ import org.eclipse.jetty.server.Server;
 import org.eclipse.jetty.server.ServerConnector;
 import org.exolin.msp.core.PseudoAbstraction;
 import org.exolin.msp.core.SystemAbstraction;
-import org.exolin.msp.web.ui.pm.ProcessManager;
-import org.exolin.msp.web.ui.stub.StubService;
-import org.exolin.msp.web.ui.stub.StubServices;
+import org.exolin.msp.service.pm.ProcessManager;
+import org.exolin.msp.service.stub.StubService;
+import org.exolin.msp.service.stub.StubServices;
 import org.junit.jupiter.api.AfterAll;
 import static org.junit.jupiter.api.Assertions.*;
 import org.junit.jupiter.api.BeforeAll;

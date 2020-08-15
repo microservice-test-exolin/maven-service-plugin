@@ -1,5 +1,6 @@
 package org.exolin.msp.web.ui;
 
+import org.exolin.msp.service.Services;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -7,9 +8,9 @@ import java.util.Arrays;
 import org.exolin.msp.core.PseudoAbstraction;
 import org.exolin.msp.core.SystemAbstraction;
 import static org.exolin.msp.web.ui.Main.run;
-import org.exolin.msp.web.ui.pm.ProcessManager;
-import org.exolin.msp.web.ui.stub.StubService;
-import org.exolin.msp.web.ui.stub.StubServices;
+import org.exolin.msp.service.pm.ProcessManager;
+import org.exolin.msp.service.stub.StubService;
+import org.exolin.msp.service.stub.StubServices;
 
 /**
  *

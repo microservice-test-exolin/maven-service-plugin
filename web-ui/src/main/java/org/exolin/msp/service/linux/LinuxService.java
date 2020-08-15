@@ -1,4 +1,4 @@
-package org.exolin.msp.web.ui.linux;
+package org.exolin.msp.service.linux;
 
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
@@ -10,9 +10,9 @@ import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.List;
 import org.exolin.msp.core.SystemAbstraction;
-import org.exolin.msp.web.ui.AbstractService;
+import org.exolin.msp.service.AbstractService;
 import org.exolin.msp.web.ui.LognameGenerator;
-import org.exolin.msp.web.ui.pm.ProcessManager;
+import org.exolin.msp.service.pm.ProcessManager;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

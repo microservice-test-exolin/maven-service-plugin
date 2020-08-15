@@ -1,10 +1,10 @@
-package org.exolin.msp.web.ui.stub;
+package org.exolin.msp.service.stub;
 
 import java.io.IOException;
 import java.util.Collections;
 import java.util.List;
-import org.exolin.msp.web.ui.Service;
-import org.exolin.msp.web.ui.Services;
+import org.exolin.msp.service.Service;
+import org.exolin.msp.service.Services;
 
 /**
  *
