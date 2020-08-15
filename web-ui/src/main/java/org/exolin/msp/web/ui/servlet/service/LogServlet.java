@@ -13,6 +13,8 @@ import org.exolin.msp.service.Service;
 import org.exolin.msp.service.Services;
 import org.exolin.msp.web.ui.LognameGenerator;
 import org.exolin.msp.web.ui.servlet.Layout;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  *
@@ -20,6 +22,8 @@ import org.exolin.msp.web.ui.servlet.Layout;
  */
 public class LogServlet extends HttpServlet
 {
+    private static final Logger LOGGER = LoggerFactory.getLogger(LogServlet.class);
+    
     private final Services services;
 
     public static final String URL = "/logs";
@@ -38,33 +42,38 @@ public class LogServlet extends HttpServlet
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException
     {
-        String serviceName = req.getParameter("service");
-        if(serviceName == null)
-        {
-            showLogFileIndex(services, req, resp);//resp.sendError(HttpServletResponse.SC_BAD_REQUEST, "Missing parameter service");
-            return;
-        }
-        
-        Service service;
         try{
-            service = services.getService(serviceName);
-        }catch(IOException e){
-            throw new ServletException(e);
+            String serviceName = req.getParameter("service");
+            if(serviceName == null)
+            {
+                showLogFileIndex(services, req, resp);//resp.sendError(HttpServletResponse.SC_BAD_REQUEST, "Missing parameter service");
+                return;
+            }
+
+            Service service;
+            try{
+                service = services.getService(serviceName);
+            }catch(IOException e){
+                throw new ServletException(e);
+            }
+            if(service == null)
+            {
+                resp.sendError(HttpServletResponse.SC_NOT_FOUND, "Service "+serviceName+" not found");
+                return;
+            }
+
+            String logFile = req.getParameter(LOGFILE);
+            String group = req.getParameter(GROUP);
+            if(logFile == null)
+                showLogFileIndex(service, req, resp, group != null ? group : "");
+            else if(TYPE_RAW.equals(req.getParameter(TYPE)))
+                showLogFileRaw(service, logFile, req, resp);
+            else
+                showLogFile(service, logFile, req, resp);
+        }catch(IOException|RuntimeException e){
+            LOGGER.error("Error", e);
+            throw e;
         }
-        if(service == null)
-        {
-            resp.sendError(HttpServletResponse.SC_NOT_FOUND, "Service "+serviceName+" not found");
-            return;
-        }
-        
-        String logFile = req.getParameter(LOGFILE);
-        String group = req.getParameter(GROUP);
-        if(logFile == null)
-            showLogFileIndex(service, req, resp, group != null ? group : "");
-        else if(TYPE_RAW.equals(req.getParameter(TYPE)))
-            showLogFileRaw(service, logFile, req, resp);
-        else
-            showLogFile(service, logFile, req, resp);
     }
 
     static String getFileUrl(String service, String logfile)
