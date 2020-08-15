@@ -50,8 +50,15 @@ public class ProcessDataStorage
 
     public Map<String, Path> getProcessLogDirectories(String service) throws IOException
     {
+        Path serviceDir = directory.resolve(service);
+        if(!Files.exists(serviceDir))
+        {
+            LOGGER.warn("Directory doesn't exist: {}", serviceDir);
+            return new HashMap<>();
+        }
+        
         Map<String, Path> dirs = new HashMap<>();
-        try(DirectoryStream<Path> processes = Files.newDirectoryStream(directory.resolve(service)))
+        try(DirectoryStream<Path> processes = Files.newDirectoryStream(serviceDir))
         {
             for(Path processDir: processes)
                 dirs.put(processDir.getFileName().toString(), processDir);
