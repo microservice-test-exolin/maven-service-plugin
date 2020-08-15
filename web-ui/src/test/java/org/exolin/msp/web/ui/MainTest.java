@@ -1,18 +1,17 @@
 package org.exolin.msp.web.ui;
 
-import org.exolin.msp.service.Services;
 import java.io.IOException;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.Properties;
 import org.eclipse.jetty.server.Server;
 import org.eclipse.jetty.server.ServerConnector;
 import org.exolin.msp.core.PseudoAbstraction;
 import org.exolin.msp.core.SystemAbstraction;
+import org.exolin.msp.service.Services;
 import org.exolin.msp.service.pm.ProcessManager;
 import org.exolin.msp.service.stub.StubService;
 import org.exolin.msp.service.stub.StubServices;
@@ -33,14 +32,13 @@ public class MainTest
     @BeforeAll
     public static void setup() throws Exception
     {
-        Path logDirectory = Paths.get("log");
         ProcessManager pm = new ProcessManager();
         
         SystemAbstraction sys = new PseudoAbstraction(new LogAdapter(PseudoAbstraction.class));
         Services services = new StubServices(Arrays.asList(
-                    new StubService("test-mittens-discord", sys, logDirectory),
-                    new StubService("test-milkboi-discord", sys, logDirectory),
-                    new StubService("test-milkboi-telegram", sys, logDirectory)
+                    new StubService("test-mittens-discord", sys, Collections.emptyMap()),
+                    new StubService("test-milkboi-discord", sys, Collections.emptyMap()),
+                    new StubService("test-milkboi-telegram", sys, Collections.emptyMap())
             ));
         
         Properties properties = new Properties();

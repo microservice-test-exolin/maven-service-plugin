@@ -9,18 +9,21 @@ import java.util.List;
 public class ProcessInfo
 {
     private final String service;
+    private final String name;
+    private final long startTime;
+
     private final Process process;
     private final List<String> cmd;
     private final String title;
-    private final long startTime;
 
-    public ProcessInfo(String service, Process process, List<String> cmd, String title, long startTime)
+    public ProcessInfo(String service, String name, long startTime, Process process, List<String> cmd, String title)
     {
         this.service = service;
+        this.name = name;
+        this.startTime = startTime;
         this.process = process;
         this.cmd = cmd;
         this.title = title;
-        this.startTime = startTime;
     }
 
     public String getService()
@@ -28,6 +31,11 @@ public class ProcessInfo
         return service;
     }
 
+    public String getName()
+    {
+        return name;
+    }
+    
     public Process getProcess()
     {
         return process;
@@ -36,6 +44,11 @@ public class ProcessInfo
     public List<String> getCmd()
     {
         return cmd;
+    }
+
+    public long getStartTime()
+    {
+        return startTime;
     }
 
     public String getTitle()

@@ -7,12 +7,15 @@ import java.nio.file.NoSuchFileException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
+import java.util.TreeMap;
 import org.exolin.msp.core.SystemAbstraction;
 import org.exolin.msp.service.AbstractService;
-import org.exolin.msp.web.ui.LognameGenerator;
 import org.exolin.msp.service.pm.ProcessManager;
+import org.exolin.msp.web.ui.LognameGenerator;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -23,6 +26,8 @@ import org.slf4j.LoggerFactory;
 public class LinuxService extends AbstractService
 {
     private final Path serviceDirectory;
+    private final Path logDirectory;
+    private final Path serviceManagementLogDirectory;
     
     private final ProcessManager pm;
     
@@ -31,13 +36,24 @@ public class LinuxService extends AbstractService
     public LinuxService(
             Path serviceDirectory,
             Path logDirectory,
+            Path serviceManagementLogDirectory,
             String name,
             SystemAbstraction sys,
             ProcessManager pm)
     {
-        super(name, sys, logDirectory);
+        super(name, sys);
         this.serviceDirectory = serviceDirectory;
+        this.logDirectory = logDirectory;
+        this.serviceManagementLogDirectory = serviceManagementLogDirectory;
         this.pm = pm;
+    }
+
+    private Path requireServiceManagementLogDirectory() throws IOException
+    {
+        if(!Files.exists(serviceManagementLogDirectory))
+            Files.createDirectory(serviceManagementLogDirectory);
+        
+        return serviceManagementLogDirectory;
     }
     
     @Override
@@ -60,6 +76,33 @@ public class LinuxService extends AbstractService
         }catch(NoSuchFileException e){
             throw new UnsupportedOperationException("Can't determine original path of "+getName(), e);
         }
+    }
+
+    protected List<Path> getLogDirectory()
+    {
+        List<Path> logDirectories = new ArrayList<>();
+        logDirectories.add(logDirectory);
+        logDirectories.add(serviceManagementLogDirectory);
+        return logDirectories;
+    }
+    
+    @Override
+    public final Map<String, Path> getLogFiles() throws IOException
+    {
+        Map<String, Path> files = new TreeMap<>();
+        
+        //LOGGER.info("Reading log file list for {} from {}", getName(), logDir);
+        
+        for(Path dir: getLogDirectory())
+        {
+            for(Path p: Files.newDirectoryStream(dir))
+            {
+                //LOGGER.info("- {}", p.getFileName());
+                files.put(p.getFileName().toString(), p);
+            }
+        }
+        
+        return files;
     }
     
     public Path getGitRoot() throws IOException
@@ -88,7 +131,7 @@ public class LinuxService extends AbstractService
         
         String[] cmd = {"/bin/bash", "-c", "git pull && mvn package"};
         
-        Path logFile = getLogDirectory().resolve(LognameGenerator.generateFilename(BUILD_LOG_GROUP, LocalDateTime.now()));
+        Path logFile = requireServiceManagementLogDirectory().resolve(LognameGenerator.generateFilename(BUILD_LOG_GROUP, LocalDateTime.now()));
         
         long startTime = System.currentTimeMillis();
         Process p = new ProcessBuilder(cmd)
@@ -98,7 +141,7 @@ public class LinuxService extends AbstractService
                 .redirectError(ProcessBuilder.Redirect.to(logFile.toFile()))
                 .start();
         
-        pm.register(getName(), p, Arrays.asList(cmd), "Building "+getName(), startTime);
+        pm.register(getName(), "build", p, Arrays.asList(cmd), "Building "+getName(), startTime);
         
         if(!asynch)
         {
@@ -115,7 +158,7 @@ public class LinuxService extends AbstractService
         
         String[] cmd = {"/bin/bash", "-c", "/root/repos/deploy.sh"};
         
-        Path logFile = getLogDirectory().resolve(LognameGenerator.generateFilename(BUILD_LOG_GROUP, LocalDateTime.now()));
+        Path logFile = requireServiceManagementLogDirectory().resolve(LognameGenerator.generateFilename(BUILD_LOG_GROUP, LocalDateTime.now()));
         
         long startTime = System.currentTimeMillis();
         Process p = new ProcessBuilder(cmd)
@@ -125,7 +168,7 @@ public class LinuxService extends AbstractService
                 .redirectError(ProcessBuilder.Redirect.to(logFile.toFile()))
                 .start();
         
-        pm.register(getName(), p, Arrays.asList(cmd), "Deploying "+getName(), startTime);
+        pm.register(getName(), "deploy", p, Arrays.asList(cmd), "Deploying "+getName(), startTime);
         
         if(!asynch)
         {

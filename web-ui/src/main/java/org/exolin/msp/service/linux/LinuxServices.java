@@ -25,15 +25,21 @@ public class LinuxServices implements Services
     private static final Logger LOGGER = LoggerFactory.getLogger(LinuxServices.class);
     
     private final Path servicesDirectory;
+    private final Path servicesManagementDirectory;
     private final SystemAbstraction sys;
     private final ProcessManager pm;
     private final Map<String, LinuxService> serviceCache = new HashMap<>();
 
-    public LinuxServices(Path servicesDirectory, SystemAbstraction sys, ProcessManager pm)
+    public LinuxServices(Path servicesDirectory, Path servicesManagementDirectory, SystemAbstraction sys, ProcessManager pm) throws IOException
     {
         this.servicesDirectory = servicesDirectory;
+        this.servicesManagementDirectory = servicesManagementDirectory;
         this.sys = sys;
         this.pm = pm;
+        
+        //TODO: no
+        if(!Files.exists(servicesManagementDirectory))
+            Files.createDirectory(servicesManagementDirectory);
     }
 
     @Override
@@ -70,8 +76,12 @@ public class LinuxServices implements Services
     
     private LinuxService service(Path serviceDirectory)
     {
-        return serviceCache.computeIfAbsent(serviceDirectory.getFileName().toString(), serviceName ->
-            new LinuxService(serviceDirectory, serviceDirectory.resolve("log"), serviceName, sys, pm)
+        return serviceCache.computeIfAbsent(serviceDirectory.getFileName().toString(), serviceName -> 
+            new LinuxService(
+                    serviceDirectory,
+                    serviceDirectory.resolve("log"),
+                    servicesManagementDirectory.resolve(serviceName),
+                    serviceName, sys, pm)
         );
     }
 

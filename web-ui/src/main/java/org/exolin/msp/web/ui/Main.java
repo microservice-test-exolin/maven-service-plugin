@@ -1,6 +1,5 @@
 package org.exolin.msp.web.ui;
 
-import org.exolin.msp.service.Services;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
@@ -17,7 +16,10 @@ import org.eclipse.jetty.servlet.ServletHandler;
 import org.exolin.msp.core.LinuxAbstraction;
 import org.exolin.msp.core.Log;
 import org.exolin.msp.core.SystemAbstraction;
+import org.exolin.msp.service.Services;
 import org.exolin.msp.service.linux.LinuxServices;
+import org.exolin.msp.service.pm.NoProcessStore;
+import org.exolin.msp.service.pm.ProcessDataStorage;
 import org.exolin.msp.service.pm.ProcessManager;
 import org.exolin.msp.web.ui.servlet.IndexServlet;
 import org.exolin.msp.web.ui.servlet.ProcessServlet;
@@ -44,7 +46,7 @@ public class Main
 {
     public static void main(String[] args) throws Exception
     {
-        ProcessManager pm = new ProcessManager();
+        ProcessManager pm = new ProcessManager(new NoProcessStore());
         
         SystemAbstraction sys = new LinuxAbstraction(new Log()
         {
@@ -54,7 +56,10 @@ public class Main
             public void info(String string){}
         });//new LogAdapter(LinuxAbstraction.class));
             
-        LinuxServices services = new LinuxServices(Paths.get("/home/exolin/services"), sys, pm);
+        LinuxServices services = new LinuxServices(
+                Paths.get("/home/exolin/services"),
+                Paths.get("../services"),
+                sys, pm);
         
         run(pm, sys, services, Config.read(Paths.get("../config/config")));
     }

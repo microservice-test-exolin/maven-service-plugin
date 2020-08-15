@@ -2,6 +2,7 @@ package org.exolin.msp.service.stub;
 
 import java.io.IOException;
 import java.nio.file.Path;
+import java.util.Map;
 import org.exolin.msp.core.SystemAbstraction;
 import org.exolin.msp.service.AbstractService;
 
@@ -11,9 +12,12 @@ import org.exolin.msp.service.AbstractService;
  */
 public class StubService extends AbstractService
 {
-    public StubService(String name, SystemAbstraction sys, Path logDirectory)
+    private final Map<String, Path> logFiles;
+    
+    public StubService(String name, SystemAbstraction sys, Map<String, Path> logFiles)
     {
-        super(name, sys, logDirectory);
+        super(name, sys);
+        this.logFiles = logFiles;
     }
 
     @Override
@@ -38,5 +42,11 @@ public class StubService extends AbstractService
     public String getRepositoryUrl() throws IOException
     {
         throw new UnsupportedOperationException();
+    }
+
+    @Override
+    public Map<String, Path> getLogFiles() throws IOException
+    {
+        return logFiles;
     }
 }
