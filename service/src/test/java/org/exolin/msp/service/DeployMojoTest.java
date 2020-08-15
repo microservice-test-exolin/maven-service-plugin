@@ -80,7 +80,7 @@ public class DeployMojoTest
         assertExists(simDir.resolve("home/exolin/services/test-service/bin/slf4j-api-1.7.25.jar"));
         assertExists(simDir.resolve("home/exolin/services/test-service/bin/log4j-over-slf4j-1.7.25.jar"));
         
-        Path serviceFile = simDir.resolve("etc/systemd/system/test-service.service");
+        Path serviceFile = simDir.resolve("etc/systemd/system/test-service.out.service");
         assertExists(serviceFile);
         
         org.ini4j.Ini a = new Ini(serviceFile.toFile());
