@@ -2,6 +2,8 @@ package org.exolin.msp.web.ui;
 
 import java.io.IOException;
 import java.nio.file.Files;
+import java.nio.file.NoSuchFileException;
+import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.EnumSet;
 import java.util.Set;
@@ -24,6 +26,7 @@ import org.exolin.msp.web.ui.servlet.IndexServlet;
 import org.exolin.msp.web.ui.servlet.ProcessServlet;
 import org.exolin.msp.web.ui.servlet.ResourceServlet;
 import org.exolin.msp.web.ui.servlet.StatusServlet;
+import org.exolin.msp.web.ui.servlet.UnsupportedServlet;
 import org.exolin.msp.web.ui.servlet.auth.AuthFilter;
 import org.exolin.msp.web.ui.servlet.auth.GithubOAuth;
 import org.exolin.msp.web.ui.servlet.auth.GithubOAuthServlet;
@@ -36,6 +39,8 @@ import org.exolin.msp.web.ui.servlet.service.DeployServlet;
 import org.exolin.msp.web.ui.servlet.service.ListServicesServlet;
 import org.exolin.msp.web.ui.servlet.service.LogServlet;
 import org.exolin.msp.web.ui.servlet.service.ServiceStatusServlet;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  *
@@ -43,6 +48,8 @@ import org.exolin.msp.web.ui.servlet.service.ServiceStatusServlet;
  */
 public class Main
 {
+    private static final Logger LOGGER = LoggerFactory.getLogger(Main.class);
+    
     public static void main(String[] args) throws Exception
     {
         ProcessManager pm = new ProcessManager(new ProcessDataStorage(Paths.get("../data")));
@@ -80,7 +87,14 @@ public class Main
     
     public static Server create(ProcessManager pm, SystemAbstraction sys, Services services, Config config, int port) throws Exception
     {
-        GithubDeployerImpl githubDeployer = new GithubDeployerImpl(new String(Files.readAllBytes(Paths.get("../config/github.token"))).trim());
+        Path githubTokenFile = Paths.get("../config/github.token");
+        
+        GithubDeployerImpl githubDeployer = null;
+        try{
+            githubDeployer = new GithubDeployerImpl(new String(Files.readAllBytes(githubTokenFile)).trim());
+        }catch(NoSuchFileException e){
+            LOGGER.warn("No github webhook because there's no {}", githubTokenFile.toAbsolutePath().normalize());
+        }
         
         Server server = new Server();
         ServerConnector connector = new ServerConnector(server);
@@ -128,7 +142,10 @@ public class Main
         servletHandler.addServletWithMapping(ProcessServlet.class, ProcessServlet.URL).setServlet(new ProcessServlet(pm));
         servletHandler.addServletWithMapping(ServiceStatusServlet.class, ServiceStatusServlet.URL).setServlet(new ServiceStatusServlet(services));
         
-        servletHandler.addServletWithMapping(GithubWebhookServlet.class, GithubWebhookServlet.URL).setServlet(new GithubWebhookServlet(services, githubDeployer));
+        if(githubDeployer != null)
+            servletHandler.addServletWithMapping(GithubWebhookServlet.class, GithubWebhookServlet.URL).setServlet(new GithubWebhookServlet(services, githubDeployer));
+        else
+            servletHandler.addServletWithMapping(UnsupportedServlet.class, GithubWebhookServlet.URL);
         
         servletHandler.addServletWithMapping(ServerInfoServlet.class, ServerInfoServlet.URL);
         servletHandler.addServletWithMapping(SystemPropertiesServlet.class, SystemPropertiesServlet.URL);
