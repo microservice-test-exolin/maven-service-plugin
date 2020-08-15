@@ -17,7 +17,7 @@ import org.exolin.msp.web.ui.stub.StubServices;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.*;
-import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.BeforeAll;
 
 /**
  *
@@ -28,8 +28,8 @@ public class MainTest
     private static Server server;
     private static int port;
     
-    @BeforeEach
-    public void setup() throws Exception
+    @BeforeAll
+    public static void setup() throws Exception
     {
         Path logDirectory = Paths.get("log");
         ProcessManager pm = new ProcessManager();
@@ -62,6 +62,12 @@ public class MainTest
     public void testAccessible() throws Exception
     {
         assertEquals(200, open("").getResponseCode());
+    }
+    
+    @Test
+    public void testWrongPath() throws Exception
+    {
+        assertEquals(404, open("unmapped").getResponseCode());
     }
     
     @Test

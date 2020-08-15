@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import org.eclipse.jetty.server.Connector;
+import org.eclipse.jetty.server.ResourceService;
 import org.eclipse.jetty.server.Server;
 import org.eclipse.jetty.server.ServerConnector;
 import org.eclipse.jetty.servlet.ServletHandler;
@@ -84,7 +85,8 @@ public class Main
         });
         
         ServletHandler servletHandler = new ServletHandler();
-        servletHandler.addServletWithMapping(IndexServlet.class, "/");
+        
+        servletHandler.addServletWithMapping(IndexServlet.class, "/*");
         
         servletHandler.addServletWithMapping(StatusServlet.class, "/status");
         
