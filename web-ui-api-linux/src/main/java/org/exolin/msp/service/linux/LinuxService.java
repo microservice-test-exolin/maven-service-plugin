@@ -14,6 +14,7 @@ import java.util.TreeMap;
 import org.exolin.msp.core.SystemAbstraction;
 import org.exolin.msp.service.AbstractService;
 import org.exolin.msp.service.LogFile;
+import org.exolin.msp.service.pm.BuildOrDeployAlreadyRunningException;
 import org.exolin.msp.service.pm.ProcessInfo;
 import org.exolin.msp.service.pm.ProcessManager;
 import org.slf4j.Logger;
@@ -148,7 +149,7 @@ public class LinuxService extends AbstractService
         synchronized(this)
         {
             if(runningBuildOrDeployProcess != null && runningBuildOrDeployProcess.isAlive())
-                throw new IllegalStateException("There is already a build/deploy running for the service "+getName());
+                throw new BuildOrDeployAlreadyRunningException("There is already a build/deploy running for the service "+getName());
             
             long startTime = System.currentTimeMillis();
             

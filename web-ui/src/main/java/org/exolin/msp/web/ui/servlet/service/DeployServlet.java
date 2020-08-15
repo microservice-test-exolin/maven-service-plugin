@@ -8,6 +8,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import org.exolin.msp.service.Service;
 import org.exolin.msp.service.Services;
+import org.exolin.msp.service.pm.BuildOrDeployAlreadyRunningException;
 import org.exolin.msp.web.ui.servlet.Layout;
 import static org.exolin.msp.web.ui.servlet.service.ListServicesServlet.write;
 import org.slf4j.Logger;
@@ -104,7 +105,9 @@ public class DeployServlet extends HttpServlet
             {
                 try{
                     service.build(true);
-                }catch(IOException|InterruptedException|UnsupportedOperationException e){
+                }catch(BuildOrDeployAlreadyRunningException e){
+                    resp.sendError(HttpServletResponse.SC_BAD_REQUEST, "Build or deploy already running");
+                }catch(IOException|InterruptedException|RuntimeException e){
                     LOGGER.error("Error while deploying", e);
                     resp.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
                     return;
@@ -116,7 +119,9 @@ public class DeployServlet extends HttpServlet
             {
                 try{
                     service.deploy(true);
-                }catch(IOException|InterruptedException|UnsupportedOperationException e){
+                }catch(BuildOrDeployAlreadyRunningException e){
+                    resp.sendError(HttpServletResponse.SC_BAD_REQUEST, "Build or deploy already running");
+                }catch(IOException|InterruptedException|RuntimeException e){
                     LOGGER.error("Error while deploying", e);
                     resp.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
                     return;
