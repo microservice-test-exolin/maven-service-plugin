@@ -121,7 +121,7 @@ public class ProcessDataStorage
         LOGGER.info("Reading {}", directory);
         
         //<service>/<process>/<startTime>.<ext>
-        try(DirectoryStream<Path> serviceDirs = Files.newDirectoryStream(directory))
+        try(DirectoryStream<Path> serviceDirs = Files.newDirectoryStream(directory.toAbsolutePath().normalize()))
         {
             for(Path serviceDir: serviceDirs)
             {
@@ -130,13 +130,13 @@ public class ProcessDataStorage
                 {
                     for(Path processDirectory: processDirectories)
                     {
-                        LOGGER.info("Reading {}/*{}", processDirectory, FILE_EXTENSION);
+                        LOGGER.info("  Reading {}/*{}", serviceDir.relativize(processDirectory), FILE_EXTENSION);
                         try(DirectoryStream<Path> processFiles = Files.newDirectoryStream(processDirectory, "*"+FILE_EXTENSION))
                         {
                             for(Path processFile: processFiles)
                             {
                                 try{
-                                    LOGGER.info("  {}", processFile);
+                                    LOGGER.info("    {}", processFile.getFileName());
                                     processInfos.add(load(serviceDir.getFileName().toString(), processDirectory.getFileName().toString(), processFile));
                                 }catch(IOException|RuntimeException e){
                                     LOGGER.error("Error while reading "+processFile, e);
