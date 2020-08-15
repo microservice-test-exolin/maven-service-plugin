@@ -1,6 +1,7 @@
 package org.exolin.msp.service.pm;
 
 import java.io.IOException;
+import java.io.Reader;
 import java.io.Writer;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.DirectoryStream;
@@ -45,6 +46,12 @@ public class ProcessDataStorage
     public ProcessInfo load(String service, String name, Path path) throws IOException
     {
         Properties properties = new Properties();
+        
+        try(Reader in = Files.newBufferedReader(path))
+        {
+            properties.load(in);
+        }
+        
         List<String> cmd = Arrays.asList(properties.getProperty(CMD).split(" "));
         String title = properties.getProperty(TITLE);
         long startTime = Long.parseLong(properties.getProperty(START_TIME));
