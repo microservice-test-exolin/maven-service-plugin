@@ -18,11 +18,12 @@ public class ProcessManager
     private static final Logger LOGGER = LoggerFactory.getLogger(ProcessManager.class);
     private final ProcessDataStorage store;
     private final List<ProcessInfo> processes = new ArrayList<>();
-    private final List<ProcessInfo> processesHistory = new ArrayList<>();
+    private final List<ProcessInfo> processesHistory;
 
     public ProcessManager(ProcessDataStorage store)
     {
         this.store = store;
+        this.processesHistory = store.getProcessInfos();
     }
 
     public synchronized ProcessInfo register(String service, String name, List<String> cmd, String title, long startTime)

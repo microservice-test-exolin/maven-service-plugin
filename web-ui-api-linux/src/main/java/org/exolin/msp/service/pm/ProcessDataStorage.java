@@ -98,29 +98,43 @@ public class ProcessDataStorage
         }
     }
     
-    public List<ProcessInfo> getProcessInfos() throws IOException
+    public List<ProcessInfo> getProcessInfos()
     {
         List<ProcessInfo> processInfos = new ArrayList<>();
+        
+        LOGGER.info("Reading {}", directory);
         
         //<service>/<process>/<startTime>.info
         try(DirectoryStream<Path> serviceDirs = Files.newDirectoryStream(directory))
         {
             for(Path serviceDir: serviceDirs)
             {
+                LOGGER.info("Reading {}", serviceDir);
                 try(DirectoryStream<Path> processDirectories = Files.newDirectoryStream(serviceDir))
                 {
                     for(Path processDirectory: processDirectories)
                     {
+                        LOGGER.info("Reading {}/*.info", processDirectory);
                         try(DirectoryStream<Path> processFiles = Files.newDirectoryStream(processDirectory, "*.info"))
                         {
                             for(Path processFile: processFiles)
                             {
-                                processInfos.add(load(serviceDir.getFileName().toString(), processDirectory.getFileName().toString(), processFile));
+                                try{
+                                    processInfos.add(load(serviceDir.getFileName().toString(), processDirectory.getFileName().toString(), processFile));
+                                }catch(IOException e){
+                                    LOGGER.error("Error while reading {}", processFile);
+                                }
                             }
+                        }catch(IOException e){
+                            LOGGER.error("Error while reading {}", processDirectory);
                         }
                     }
+                }catch(IOException e){
+                    LOGGER.error("Error while reading {}", serviceDir);
                 }
             }
+        }catch(IOException e){
+            LOGGER.error("Error while reading {}", directory);
         }
         
         return processInfos;
