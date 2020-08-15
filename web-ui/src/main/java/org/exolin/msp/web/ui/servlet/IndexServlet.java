@@ -32,26 +32,13 @@ public class IndexServlet extends HttpServlet
         
         try(PrintWriter out = resp.getWriter())
         {
-            /*out.append("<html>");
-            out.append("<head>");
-            out.append("<title>Services</title>");
-            out.append("<link rel=\"stylesheet\" href=\"https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css\" integrity=\"sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm\" crossorigin=\"anonymous\">");
-            out.append("<link rel=\"icon\" type=\"image/png\" href=\"/favicon.png\"/>");
-            out.append("</head>");
-            
-            out.append("<body>");
-            
-            out.append("<div class=\"container\">");*/
             Layout.start("Service Web UI", req.getRequestURI(), out);
             
             out.append("<h1>Service Web UI</h1>");
             
             out.append("<p><a href=\"/services\"><span data-feather=\""+Layout.SERVICE+"\"></span> Services</a></p>");
             out.append("<p><a href=\"/processes\"><span data-feather=\""+Layout.PROCESS+"\"></span> Processes</a></p>");
-                        
-            /*out.append("</div>");
-            out.append("</body>");
-            out.append("</html>");*/
+            
             Layout.end(out);
         }
     }
