@@ -1,0 +1,4 @@
+auth.type=github
+github.client_id=60b77ac27264da4ce0ee
+github.client_secret=050ed73c58a2b1a052f2d4b254a065a47a497d63
+allowedUsers=tomgk

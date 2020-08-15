@@ -1,7 +1,5 @@
 package org.exolin.msp.web.ui.servlet.github;
 
-import org.exolin.msp.web.ui.servlet.github.api.GithubPayload;
-import org.exolin.msp.web.ui.servlet.github.api.GithubDeployerImpl;
 import com.fasterxml.jackson.annotation.JsonAutoDetect;
 import com.fasterxml.jackson.annotation.PropertyAccessor;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -19,6 +17,8 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import org.exolin.msp.web.ui.Service;
 import org.exolin.msp.web.ui.Services;
+import org.exolin.msp.web.ui.servlet.github.api.GithubDeployerImpl;
+import org.exolin.msp.web.ui.servlet.github.api.GithubPayload;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

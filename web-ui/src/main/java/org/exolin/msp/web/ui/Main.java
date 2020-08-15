@@ -3,10 +3,16 @@ package org.exolin.msp.web.ui;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
+import java.util.EnumSet;
+import java.util.Set;
+import javax.servlet.DispatcherType;
 import org.eclipse.jetty.server.Connector;
-import org.eclipse.jetty.server.ResourceService;
 import org.eclipse.jetty.server.Server;
 import org.eclipse.jetty.server.ServerConnector;
+import org.eclipse.jetty.server.SessionIdManager;
+import org.eclipse.jetty.server.session.DefaultSessionIdManager;
+import org.eclipse.jetty.server.session.SessionHandler;
+import org.eclipse.jetty.servlet.ServletContextHandler;
 import org.eclipse.jetty.servlet.ServletHandler;
 import org.exolin.msp.core.LinuxAbstraction;
 import org.exolin.msp.core.Log;
@@ -17,8 +23,11 @@ import org.exolin.msp.web.ui.servlet.IndexServlet;
 import org.exolin.msp.web.ui.servlet.ProcessServlet;
 import org.exolin.msp.web.ui.servlet.ResourceServlet;
 import org.exolin.msp.web.ui.servlet.StatusServlet;
-import org.exolin.msp.web.ui.servlet.github.api.GithubDeployerImpl;
+import org.exolin.msp.web.ui.servlet.auth.AuthFilter;
+import org.exolin.msp.web.ui.servlet.auth.GithubOAuth;
+import org.exolin.msp.web.ui.servlet.auth.GithubOAuthServlet;
 import org.exolin.msp.web.ui.servlet.github.GithubWebhookServlet;
+import org.exolin.msp.web.ui.servlet.github.api.GithubDeployerImpl;
 import org.exolin.msp.web.ui.servlet.serverinfo.ServerInfoServlet;
 import org.exolin.msp.web.ui.servlet.serverinfo.SystemEnvironmentServlet;
 import org.exolin.msp.web.ui.servlet.serverinfo.SystemPropertiesServlet;
@@ -47,12 +56,12 @@ public class Main
             
         LinuxServices services = new LinuxServices(Paths.get("/home/exolin/services"), sys, pm);
         
-        run(pm, sys, services);
+        run(pm, sys, services, Config.read(Paths.get("../config/config")));
     }
     
-    public static void run(ProcessManager pm, SystemAbstraction sys, Services services) throws Exception
+    public static void run(ProcessManager pm, SystemAbstraction sys, Services services, Config config) throws Exception
     {
-        Server server = create(pm, sys, services, 8090);
+        Server server = create(pm, sys, services, config, 8090);
         
         try{
             server.start();
@@ -66,7 +75,7 @@ public class Main
         }
     }
     
-    public static Server create(ProcessManager pm, SystemAbstraction sys, Services services, int port) throws Exception
+    public static Server create(ProcessManager pm, SystemAbstraction sys, Services services, Config config, int port) throws Exception
     {
         GithubDeployerImpl githubDeployer = new GithubDeployerImpl(new String(Files.readAllBytes(Paths.get("../config/github.token"))).trim());
         
@@ -85,6 +94,22 @@ public class Main
         });
         
         ServletHandler servletHandler = new ServletHandler();
+        
+        switch(config.get(Config.KEY_AUTH_TYPE, Config.AuthType.class))
+        {
+            case github:
+                GithubOAuth githubOAuth = new GithubOAuth(config.get(Config.KEY_GITHUB_CLIENT_ID), config.get(Config.KEY_GITHUB_CLIENT_SECRET));
+                Set<String> allowedUsers = config.getStringSet(Config.ALLOWED_USERS);
+                servletHandler.addFilterWithMapping(AuthFilter.class, "/", EnumSet.of(DispatcherType.REQUEST)).setFilter(new AuthFilter(githubOAuth, allowedUsers));
+                servletHandler.addServletWithMapping(GithubOAuthServlet.class, GithubOAuthServlet.URL).setServlet(new GithubOAuthServlet(githubOAuth));
+                break;
+                
+            case none:
+                break;
+                
+            default:
+                throw new UnsupportedOperationException();
+        }
         
         servletHandler.addServletWithMapping(IndexServlet.class, "/*");
         
@@ -107,6 +132,12 @@ public class Main
         servletHandler.addServletWithMapping(SystemEnvironmentServlet.class, SystemEnvironmentServlet.URL);
         
         server.setHandler(servletHandler);
+        
+        SessionIdManager idmanager = new DefaultSessionIdManager(server);
+        server.setSessionIdManager(idmanager);
+        // Specify the session handler
+        SessionHandler sessionsHandler = new SessionHandler();       
+        servletHandler.setHandler(sessionsHandler);           
         
         return server;
     }

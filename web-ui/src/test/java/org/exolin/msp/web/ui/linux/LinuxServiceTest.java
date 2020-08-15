@@ -2,10 +2,7 @@ package org.exolin.msp.web.ui.linux;
 
 import java.io.IOException;
 import java.nio.file.Paths;
-import java.time.LocalDateTime;
-import org.exolin.msp.web.ui.LognameGenerator;
 import org.junit.jupiter.api.Assertions;
-import static org.junit.jupiter.api.Assertions.assertEquals;
 import org.junit.jupiter.api.Test;
 
 /**

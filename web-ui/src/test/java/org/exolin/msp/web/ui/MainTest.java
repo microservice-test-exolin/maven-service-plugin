@@ -7,6 +7,7 @@ import java.net.URL;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Arrays;
+import java.util.Properties;
 import org.eclipse.jetty.server.Server;
 import org.eclipse.jetty.server.ServerConnector;
 import org.exolin.msp.core.PseudoAbstraction;
@@ -15,9 +16,9 @@ import org.exolin.msp.web.ui.pm.ProcessManager;
 import org.exolin.msp.web.ui.stub.StubService;
 import org.exolin.msp.web.ui.stub.StubServices;
 import org.junit.jupiter.api.AfterAll;
-import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.*;
 import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Test;
 
 /**
  *
@@ -41,7 +42,9 @@ public class MainTest
                     new StubService("test-milkboi-telegram", sys, logDirectory)
             ));
         
-        server = Main.create(pm, sys, services, 0);
+        Properties properties = new Properties();
+        properties.setProperty(Config.KEY_AUTH_TYPE, Config.AuthType.none.name());
+        server = Main.create(pm, sys, services, new Config(properties), 0);
         server.start();
         
         port = ((ServerConnector)server.getConnectors()[0]).getLocalPort();

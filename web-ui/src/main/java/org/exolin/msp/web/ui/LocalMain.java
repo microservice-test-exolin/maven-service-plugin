@@ -38,6 +38,6 @@ public class LocalMain
                     new StubService("test-milkboi-telegram", sys, logDirectory)
             ));
         
-        run(pm, sys, services);
+        run(pm, sys, services, Config.read(Paths.get("../config/config")));
     }
 }

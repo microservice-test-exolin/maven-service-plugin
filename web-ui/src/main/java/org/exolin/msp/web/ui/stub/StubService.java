@@ -2,13 +2,8 @@ package org.exolin.msp.web.ui.stub;
 
 import java.io.IOException;
 import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.util.Collections;
-import java.util.Map;
 import org.exolin.msp.core.SystemAbstraction;
 import org.exolin.msp.web.ui.AbstractService;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /**
  *
