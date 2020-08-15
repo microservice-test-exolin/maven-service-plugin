@@ -59,7 +59,7 @@ public class ProcessInfo
     
     public boolean isAlive()
     {
-        return process != null ? process.isAlive() : true/*um nicht zu früh zu enternt zu werden*/;
+        return process != null ? process.isAlive() : false;
     }
 
     void destroyForcibly()
