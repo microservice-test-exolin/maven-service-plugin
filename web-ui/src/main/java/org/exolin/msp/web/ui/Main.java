@@ -12,7 +12,6 @@ import org.eclipse.jetty.server.ServerConnector;
 import org.eclipse.jetty.server.SessionIdManager;
 import org.eclipse.jetty.server.session.DefaultSessionIdManager;
 import org.eclipse.jetty.server.session.SessionHandler;
-import org.eclipse.jetty.servlet.ServletContextHandler;
 import org.eclipse.jetty.servlet.ServletHandler;
 import org.exolin.msp.core.LinuxAbstraction;
 import org.exolin.msp.core.Log;
@@ -133,9 +132,9 @@ public class Main
         
         server.setHandler(servletHandler);
         
+        //enable sessions
         SessionIdManager idmanager = new DefaultSessionIdManager(server);
         server.setSessionIdManager(idmanager);
-        // Specify the session handler
         SessionHandler sessionsHandler = new SessionHandler();       
         servletHandler.setHandler(sessionsHandler);           
         
