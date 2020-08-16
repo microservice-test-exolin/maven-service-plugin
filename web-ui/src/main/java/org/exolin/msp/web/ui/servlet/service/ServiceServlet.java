@@ -115,7 +115,7 @@ public class ServiceServlet extends HttpServlet
             out.append("<div class=\"card-body\">");
             out.append("<a href=\""+LogServlet.getFilesOfTask(service.getName(), "build")+"\">Build Logfiles</a><br>");
             out.append("<a href=\""+LogServlet.getFilesOfTask(service.getName(), "deploy")+"\">Deploy Logfiles</a><br>");
-            if(true || service.supportsBuildAndDeployment())
+            if(service.supportsBuildAndDeployment())
             {
                 out.append("<form action=\"/deploy\" method=\"POST\" style=\"display: inline\">");
                 if(!service.isBuildOrDeployProcessRunning())
