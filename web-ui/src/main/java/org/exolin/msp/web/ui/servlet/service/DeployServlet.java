@@ -100,7 +100,7 @@ public class DeployServlet extends HttpServlet
             return;
         }
         
-        String user = req.getAttribute(AuthFilter.USER);
+        String user = (String)req.getAttribute(AuthFilter.USER);
         String initiator = "service-web-ui";
         if(user != null)
             initiator += "[user"+user+"]";
