@@ -156,6 +156,8 @@ public class LinuxService extends AbstractService
             
             ProcessInfo pi = pm.register(getName(), name, Arrays.asList(cmd), workingDirectory, name+" "+getName(), startTime, initiator);
             Path logFile = pm.getLogFile(pi);
+            
+            LOGGER.info("Starting: {}", String.join(" ", cmd));
 
             p = new ProcessBuilder(cmd)
                     .directory(workingDirectory.toFile())
@@ -170,6 +172,7 @@ public class LinuxService extends AbstractService
         if(!asynch)
         {
             int code = p.waitFor();
+            LOGGER.info("Finished with {}", code);
             pm.notifyProcessFinished();
             if(code != 0)
                 throw new IOException("Deploy process for "+getName()+" returned "+code);
