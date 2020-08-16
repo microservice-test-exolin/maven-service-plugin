@@ -61,7 +61,7 @@ public class ProcessInfo
     {
         if(process == null)
             LOGGER.warn("{} {}: No associated process", service, name);
-        else if(!process.isAlive() && exitCode != null)
+        else if(!process.isAlive() && exitCode == null)
         {
             exitCode = process.exitValue();
             endTime = System.currentTimeMillis();
