@@ -105,8 +105,9 @@ public class LogServlet extends HttpServlet
             out.append("<h1>Logfiles"+taskName.map(t -> " "+t).orElse("")+" of "+service.getName()+"</h1>");
             
             Map<String, LogFile> files = service.getLogFiles(taskName);
-            for(String name: files.keySet())
-                out.append("<a href=\""+LogFileShowServlet.getFileUrl(service.getName(), name)+"\">"+LognameGenerator.getLogFileTitle(service.getName(), name)+"</a><br>");
+            files.forEach((name, lf) -> {
+                out.append("<a href=\""+LogFileShowServlet.getFileUrl(service.getName(), name)+"\">"+LognameGenerator.getLogFileTitle(lf)+"</a><br>");
+            });
             if(files.isEmpty())
                 out.append("<em>No files found</em>");
             

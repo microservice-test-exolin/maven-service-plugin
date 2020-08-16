@@ -78,17 +78,11 @@ public class LinuxService extends AbstractService
 
     private void read(Optional<String> processName, Path dir, Map<String, LogFile> files) throws IOException
     {
-        String prefix = processName.map(s -> s+" ").orElse("");
-        
-        //LOGGER.info(" Reading logs from {}", dir);
+        String prefix = processName.map(s -> "task/"+s+"/").orElse("service/");
         
         try{
             for(Path p: Files.newDirectoryStream(dir))
-            {
-                //LOGGER.info("- {}", p.getFileName());
                 files.put(prefix+p.getFileName().toString(), new LogFile(getName(), processName, p));
-                //LOGGER.info("    {}", p);
-            }
         }catch(NoSuchFileException e){
             LOGGER.warn("Directory doesn't exist: {}", dir);
         }
