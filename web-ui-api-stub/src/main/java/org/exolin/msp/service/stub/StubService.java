@@ -1,7 +1,6 @@
 package org.exolin.msp.service.stub;
 
 import java.io.IOException;
-import java.nio.file.Path;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
@@ -32,19 +31,19 @@ public class StubService extends AbstractService
     @Override
     public void build(boolean asynch) throws IOException, InterruptedException
     {
-        throw new UnsupportedOperationException();
+        
     }
     
     @Override
     public void deploy(boolean asynch) throws IOException, InterruptedException
     {
-        throw new UnsupportedOperationException();
+        
     }
 
     @Override
     public boolean isBuildOrDeployProcessRunning()
     {
-        return false;
+        return true;
     }
     
     @Override
