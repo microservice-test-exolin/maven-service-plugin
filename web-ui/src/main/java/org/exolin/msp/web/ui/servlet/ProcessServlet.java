@@ -94,7 +94,7 @@ public class ProcessServlet extends HttpServlet
             out.append("<td>").append(String.join(" ", process.getCmd())).append("</td>");
             out.append("<td>").append(Optional.ofNullable(process.getWorkingDirectory()).map(Path::toString).orElse("<em>unknown</em>")).append("</td>");
             out.append("<td>").append(process.getStartedAt().toString()).append("</td>");
-            out.append("<td>").append(runtime != -1 ? runtime+" s" : "<em>N/A</em>").append("</td>");
+            out.append("<td>").append(runtime != -1 ? runtime/1000.+" s" : "<em>N/A</em>").append("</td>");
             out.append("<td><a href=\"").append(LogFileShowServlet.getFileUrl(process.getService(), logFileName)).append("\">Logfile</a></td>");
             out.append("<td>").append(Optional.ofNullable(process.getExitCode()).map(Object::toString).orElse("<em>unknown</em>")).append("</td>");
             out.append("</tr>");
