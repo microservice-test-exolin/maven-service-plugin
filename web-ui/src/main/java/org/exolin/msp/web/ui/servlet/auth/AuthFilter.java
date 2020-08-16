@@ -43,6 +43,8 @@ public class AuthFilter implements Filter
         doFilter((HttpServletRequest)request, (HttpServletResponse)response, fc);
     }
     
+    public static final String USER = "user";
+    
     public void doFilter(HttpServletRequest request, HttpServletResponse response, FilterChain fc) throws IOException, ServletException
     {
         LOGGER.debug("Requesting {}", request.getRequestURI());
@@ -57,6 +59,7 @@ public class AuthFilter implements Filter
                 response.sendRedirect(githubOAuth.getLoginUrl());
             
             String user = githubOAuth.getUser(token).getLogin();
+            request.setAttribute(USER, user);
             LOGGER.debug("Auth with {}", user);
             if(allowedUsers.contains(user))
                 fc.doFilter(request, response);

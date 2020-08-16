@@ -21,14 +21,16 @@ public class ProcessInfo
     private final List<String> cmd;
     private final String title;
     private Integer exitCode;
+    private final String initiator;
     
-    public ProcessInfo(String service, String name, long startTime, Path workingDirectory, List<String> cmd, String title, Integer exitCode)
+    public ProcessInfo(String service, String name, long startTime, Path workingDirectory, List<String> cmd, String title, String initiator, Integer exitCode)
     {
         this.service = service;
         this.name = name;
         this.startTime = startTime;
         this.workingDirectory = workingDirectory;
         this.cmd = cmd;
+        this.initiator = initiator;
         this.title = title;
         this.exitCode = exitCode;
     }
@@ -41,6 +43,11 @@ public class ProcessInfo
     public Integer getExitCode()
     {
         return exitCode;
+    }
+
+    public String getInitiator()
+    {
+        return initiator;
     }
 
     void updateExitCode()

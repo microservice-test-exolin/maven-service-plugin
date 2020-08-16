@@ -10,6 +10,7 @@ import org.exolin.msp.service.Service;
 import org.exolin.msp.service.Services;
 import org.exolin.msp.service.pm.BuildOrDeployAlreadyRunningException;
 import org.exolin.msp.web.ui.servlet.Layout;
+import org.exolin.msp.web.ui.servlet.auth.AuthFilter;
 import static org.exolin.msp.web.ui.servlet.service.ListServicesServlet.write;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -99,12 +100,17 @@ public class DeployServlet extends HttpServlet
             return;
         }
         
+        String user = req.getAttribute(AuthFilter.USER);
+        String initiator = "service-web-ui";
+        if(user != null)
+            initiator += "[user"+user+"]";
+        
         switch(action)
         {
             case "compile":
             {
                 try{
-                    service.build(true);
+                    service.build(true, initiator);
                 }catch(BuildOrDeployAlreadyRunningException e){
                     resp.sendError(HttpServletResponse.SC_BAD_REQUEST, "Build or deploy already running");
                 }catch(IOException|InterruptedException|RuntimeException e){
@@ -118,7 +124,7 @@ public class DeployServlet extends HttpServlet
             case "deploy":
             {
                 try{
-                    service.deploy(true);
+                    service.deploy(true, initiator);
                 }catch(BuildOrDeployAlreadyRunningException e){
                     resp.sendError(HttpServletResponse.SC_BAD_REQUEST, "Build or deploy already running");
                 }catch(IOException|InterruptedException|RuntimeException e){

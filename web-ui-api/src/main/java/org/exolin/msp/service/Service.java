@@ -20,8 +20,8 @@ public interface Service
     public void restart() throws IOException;
     
     public boolean supportsBuildAndDeployment() throws IOException;
-    public void build(boolean async) throws IOException, InterruptedException;
-    public void deploy(boolean async) throws IOException, InterruptedException;
+    public void build(boolean async, String initiator) throws IOException, InterruptedException;
+    public void deploy(boolean async, String initiator) throws IOException, InterruptedException;
     public boolean isBuildOrDeployProcessRunning();
     
     public Map<String, LogFile> getLogFiles(Optional<String> taskName) throws IOException;

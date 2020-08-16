@@ -73,6 +73,11 @@ public class GithubWebhookServlet extends HttpServlet
             for(Service service: serviceList)
                 deployments.put(service.getName(), githubDeployer.fromRepoUrl(service.getRepositoryUrl()).createDeployment(payload.getLatest().getId(), "service "+service.getName()));
             
+            String initiator = "github-webhook[repo="+payload.getRepository().getHtml_url();
+            if(payload.getLatest() != null)
+                initiator += ",sha1=" + payload.getLatest().getId();
+            initiator += "]";
+            
             String error = null;
             try{
                 for(Service service: serviceList)
@@ -80,11 +85,11 @@ public class GithubWebhookServlet extends HttpServlet
                     if(build.add(service.getLocalGitRoot()))
                     {
                         LOGGER.info("Building {} (remote {})", service.getLocalGitRoot(), service.getRepositoryUrl());
-                        service.build(false);
+                        service.build(false, initiator);
                     }
                     
                     LOGGER.info("Deploying {}", service.getName());
-                    service.deploy(false);
+                    service.deploy(false, initiator);
                     
                     GithubDeployerImpl.Repo.Deployment deployment = deployments.get(service.getName());
                     if(deployment != null)

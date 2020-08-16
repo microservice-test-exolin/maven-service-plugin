@@ -82,6 +82,7 @@ public class ProcessServlet extends HttpServlet
         out.append("<tr>");
         out.append("<th>Service</th>");
         out.append("<th>Name</th>");
+        out.append("<th>Initiater</th>");
         out.append("<th>Commandline</th>");
         out.append("<th>Working directory</th>");
         out.append("<th>Started at</th>");
@@ -102,6 +103,7 @@ public class ProcessServlet extends HttpServlet
             out.append("<tr>");
             out.append("<td><a href=\"").append(ListServicesServlet.getUrl(process.getService())).append("\">").append(process.getService()).append("</a></td>");
             out.append("<td>").append(process.getTitle()).append("</td>");
+            out.append("<td>").append(Optional.ofNullable(process.getInitiator()).orElse("<em>unknown</em>")).append("</td>");
             out.append("<td>").append(String.join(" ", process.getCmd())).append("</td>");
             out.append("<td>").append(Optional.ofNullable(process.getWorkingDirectory()).map(Path::toString).orElse("<em>unknown</em>")).append("</td>");
             out.append("<td>").append(process.getStartedAt().toString()).append("</td>");

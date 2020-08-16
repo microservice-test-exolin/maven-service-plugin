@@ -125,26 +125,26 @@ public class LinuxService extends AbstractService
     }
     
     @Override
-    public void build(boolean asynch) throws IOException, InterruptedException
+    public void build(boolean asynch, String initiator) throws IOException, InterruptedException
     {
         Path gitRoot = getLocalGitRoot();
         
         String[] cmd = {"/bin/bash", "-c", "git pull && mvn package"};
         
-        start(gitRoot, "build", cmd, asynch);
+        start(gitRoot, "build", cmd, asynch, initiator);
     }
     
     @Override
-    public void deploy(boolean asynch) throws IOException, InterruptedException
+    public void deploy(boolean asynch, String initiator) throws IOException, InterruptedException
     {
         Path serviceSrcDirectory = getOriginalPath();
         
         String[] cmd = {"/bin/bash", "-c", "/root/repos/deploy.sh"};
         
-        start(serviceSrcDirectory, "deploy", cmd, asynch);
+        start(serviceSrcDirectory, "deploy", cmd, asynch, initiator);
     }
     
-    private void start(Path workingDirectory, String name, String[] cmd, boolean asynch) throws IOException, InterruptedException
+    private void start(Path workingDirectory, String name, String[] cmd, boolean asynch, String initiator) throws IOException, InterruptedException
     {
         Process p;
         synchronized(this)
@@ -154,7 +154,7 @@ public class LinuxService extends AbstractService
             
             long startTime = System.currentTimeMillis();
             
-            ProcessInfo pi = pm.register(getName(), name, Arrays.asList(cmd), workingDirectory, name+" "+getName(), startTime);
+            ProcessInfo pi = pm.register(getName(), name, Arrays.asList(cmd), workingDirectory, name+" "+getName(), startTime, initiator);
             Path logFile = pm.getLogFile(pi);
 
             p = new ProcessBuilder(cmd)

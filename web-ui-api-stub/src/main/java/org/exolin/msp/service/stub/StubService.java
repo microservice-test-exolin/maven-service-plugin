@@ -32,13 +32,13 @@ public class StubService extends AbstractService
     private long processStart;
     
     @Override
-    public void build(boolean asynch) throws IOException, InterruptedException
+    public void build(boolean asynch, String initiator) throws IOException, InterruptedException
     {
         processStart = System.currentTimeMillis();
     }
     
     @Override
-    public void deploy(boolean asynch) throws IOException, InterruptedException
+    public void deploy(boolean asynch, String initiator) throws IOException, InterruptedException
     {
         processStart = System.currentTimeMillis();
     }
