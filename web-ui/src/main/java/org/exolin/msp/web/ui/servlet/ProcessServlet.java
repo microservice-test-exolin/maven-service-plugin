@@ -59,29 +59,6 @@ public class ProcessServlet extends HttpServlet
         }
     }
     
-    private static class ReverseList<T> extends AbstractList<T>
-    {
-        private final List<T> list;
-
-        public ReverseList(List<T> list)
-        {
-            this.list = list;
-        }
-        
-        @Override
-        public T get(int index)
-        {
-            return list.get(list.size()-1-index);
-        }
-
-        @Override
-        public int size()
-        {
-            return list.size();
-        }
-    }
-    
-    private void list(PrintWriter out, List<ProcessInfo> processes)
     {
         out.append("<table class=\"table table-striped table-sm\">");
 
