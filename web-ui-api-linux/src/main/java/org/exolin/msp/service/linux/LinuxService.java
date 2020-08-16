@@ -76,12 +76,12 @@ public class LinuxService extends AbstractService
         }
     }
 
-    private void read(Optional<String> processName, Path dir, Map<String, LogFile> files) throws IOException
+    private void readLogFiles(Optional<String> processName, Path dir, Map<String, LogFile> files) throws IOException
     {
         String prefix = processName.map(s -> "task/"+s+"/").orElse("service/");
         
         try{
-            for(Path p: Files.newDirectoryStream(dir))
+            for(Path p: Files.newDirectoryStream(dir, "*.log"))
                 files.put(prefix+p.getFileName().toString(), new LogFile(getName(), processName, p));
         }catch(NoSuchFileException e){
             LOGGER.warn("Directory doesn't exist: {}", dir);
@@ -96,12 +96,12 @@ public class LinuxService extends AbstractService
         Map<String, LogFile> files = new TreeMap<>();
         
         if(taskName == null || !taskName.isPresent())
-            read(Optional.empty(), logDirectory, files);
+            readLogFiles(Optional.empty(), logDirectory, files);
         
         for(Map.Entry<String, Path> e: pm.getProcessLogDirectories(getName()).entrySet())
         {
             if(taskName == null || taskName.equals(Optional.of(e.getKey())))
-                read(Optional.of(e.getKey()), e.getValue(), files);
+                readLogFiles(Optional.of(e.getKey()), e.getValue(), files);
         }
         
         return files;
