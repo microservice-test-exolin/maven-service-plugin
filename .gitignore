@@ -12,3 +12,5 @@
 /web-ui-api-linux/target/
 /web-ui-api-stub/target/
 /web-ui-api/target/
+web-ui/log/*
+
