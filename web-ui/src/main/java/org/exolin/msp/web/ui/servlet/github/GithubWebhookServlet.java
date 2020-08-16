@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonAutoDetect;
 import com.fasterxml.jackson.annotation.PropertyAccessor;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import java.io.IOException;
+import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -66,7 +67,7 @@ public class GithubWebhookServlet extends HttpServlet
             List<Service> serviceList = getServices(req.getParameterValues("service"), payload.getRepository().getHtml_url());
             map.put("services", serviceList.stream().map(Service::getName).collect(Collectors.toList()));
 
-            Set<String> build = new HashSet<>();
+            Set<Path> build = new HashSet<>();
             
             Map<String, GithubDeployerImpl.Repo.Deployment> deployments = new HashMap<>();
             for(Service service: serviceList)
@@ -76,9 +77,9 @@ public class GithubWebhookServlet extends HttpServlet
             try{
                 for(Service service: serviceList)
                 {
-                    if(build.add(service.getRepositoryUrl()))
+                    if(build.add(service.getLocalGitRoot()))
                     {
-                        LOGGER.info("Building {}", service.getRepositoryUrl());
+                        LOGGER.info("Building {} (remote {})", service.getLocalGitRoot(), service.getRepositoryUrl());
                         service.build(false);
                     }
                     

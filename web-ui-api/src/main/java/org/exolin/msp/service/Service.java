@@ -1,6 +1,7 @@
 package org.exolin.msp.service;
 
 import java.io.IOException;
+import java.nio.file.Path;
 import java.util.Map;
 import java.util.Optional;
 import org.exolin.msp.core.StatusInfo;
@@ -25,5 +26,6 @@ public interface Service
     
     public Map<String, LogFile> getLogFiles(Optional<String> taskName) throws IOException;
 
+    public Path getLocalGitRoot() throws IOException;
     public String getRepositoryUrl() throws IOException;
 }

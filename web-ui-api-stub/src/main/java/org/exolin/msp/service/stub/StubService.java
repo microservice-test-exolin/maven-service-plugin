@@ -1,6 +1,7 @@
 package org.exolin.msp.service.stub;
 
 import java.io.IOException;
+import java.nio.file.Path;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
@@ -49,6 +50,12 @@ public class StubService extends AbstractService
             return false;
         
         return System.currentTimeMillis() - processStart < 3000;  //3 s simulierter Lauf
+    }
+    
+    @Override
+    public Path getLocalGitRoot() throws IOException
+    {
+        throw new UnsupportedOperationException();
     }
     
     @Override

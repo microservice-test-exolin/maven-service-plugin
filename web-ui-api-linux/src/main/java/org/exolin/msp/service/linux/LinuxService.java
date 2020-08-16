@@ -107,7 +107,8 @@ public class LinuxService extends AbstractService
         return files;
     }
     
-    public Path getGitRoot() throws IOException
+    @Override
+    public Path getLocalGitRoot() throws IOException
     {
         return getGitRoot(getOriginalPath());
     }
@@ -126,7 +127,7 @@ public class LinuxService extends AbstractService
     @Override
     public void build(boolean asynch) throws IOException, InterruptedException
     {
-        Path gitRoot = getGitRoot();
+        Path gitRoot = getLocalGitRoot();
         
         String[] cmd = {"/bin/bash", "-c", "git pull && mvn package"};
         
@@ -178,7 +179,7 @@ public class LinuxService extends AbstractService
     @Override
     public String getRepositoryUrl() throws IOException
     {
-        return getRepositoryUrl(getGitRoot());
+        return getRepositoryUrl(getLocalGitRoot());
     }
     
     private static int findFirstStartingWith(List<String> list, String startString, int start, int end)
