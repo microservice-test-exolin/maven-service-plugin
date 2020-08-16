@@ -66,15 +66,20 @@ public class ProcessManager
         return list;
     }
     
-    private void clean()
+    public synchronized void clean()
     {
         for (Iterator<ProcessInfo> it = processes.iterator(); it.hasNext();)
         {
             ProcessInfo o = it.next();
             if(!o.shouldKeepOnList())
             {
-                o.updateExitCode();
-                store.save(o);
+                try{
+                    o.updateExitCode();
+                    store.save(o);
+                }catch(RuntimeException e){
+                    LOGGER.error("Error updating process info", e);
+                }
+                
                 it.remove();
                 processesHistory.add(o);
             }

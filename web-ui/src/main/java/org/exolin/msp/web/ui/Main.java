@@ -8,6 +8,9 @@ import java.nio.file.Paths;
 import java.time.LocalDateTime;
 import java.util.EnumSet;
 import java.util.Set;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.TimeUnit;
 import javax.servlet.DispatcherType;
 import org.eclipse.jetty.server.Connector;
 import org.eclipse.jetty.server.Server;
@@ -80,6 +83,14 @@ public class Main
     
     public static void run(ProcessManager pm, SystemAbstraction sys, Services services, Config config) throws Exception
     {
+        ScheduledExecutorService deamonScheduler = Executors.newScheduledThreadPool(1, (Runnable r) -> {
+            Thread t = new Thread(r);
+            t.setDaemon(true);
+            return t;
+        });
+    
+        deamonScheduler.scheduleWithFixedDelay(pm::clean, 1, 1, TimeUnit.SECONDS);
+        
         Server server = create(pm, sys, services, config, 8090);
         
         try{
