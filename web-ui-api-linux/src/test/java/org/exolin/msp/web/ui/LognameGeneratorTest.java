@@ -68,6 +68,12 @@ public class LognameGeneratorTest
     }
     
     @Test
+    public void testGetLogFileTitle2_Service_New_Timed()
+    {
+        assertEquals("Service Log 2020-08-16-00-07", LognameGenerator.getLogFileTitle(serviceLogFile(SERVICE_NAME, "service.2020-08-16-00-07.log")));
+    }
+    
+    @Test
     public void testGetLogFileTitle2_Service_Old()
     {
         assertEquals("Service Log [old version]", LognameGenerator.getLogFileTitle(serviceLogFile(SERVICE_NAME, SERVICE_NAME+".log")));

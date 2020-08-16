@@ -58,22 +58,23 @@ public class LognameGenerator
     
     public static String getLogFileTitle(LogFile logFile)
     {
+        String filename = logFile.getPath().getFileName().toString();
+        
         if(logFile.getProcessName().isPresent())
         {
             String title;
-            title = getOldProcessLogFileTitle(logFile.getPath().getFileName().toString());
+            title = getOldProcessLogFileTitle(filename);
             if(title != null)
                 return title;
-            title = x(logFile.getPath().getFileName().toString(), logFile.getProcessName());
+            title = x(filename, logFile.getProcessName());
             if(title != null)
                 return title;
             
-            if(logFile.getPath().getFileName().toString().endsWith(".log"))
+            if(filename.endsWith(".log"))
             {
-                String fn = logFile.getPath().getFileName().toString();
-                if(fn.endsWith(".log"))
+                if(filename.endsWith(".log"))
                 {
-                    String ts = fn.substring(0, fn.length()-4);
+                    String ts = filename.substring(0, filename.length()-4);
                     try{
                         long timeMillis = Long.parseLong(ts);
                         return "Task "+logFile.getProcessName().get()+" at "+Instant.ofEpochMilli(timeMillis).atZone(ZoneId.systemDefault()).toLocalDateTime().toString().replace('T', ' ');
@@ -86,13 +87,15 @@ public class LognameGenerator
         }
         else
         {
-            String title = getOldServiceLogFileTitle(logFile.getServiceName(), logFile.getPath().getFileName().toString());
+            String title = getOldServiceLogFileTitle(logFile.getServiceName(), filename);
             if(title != null)
                 return title;
-            else if(logFile.getPath().getFileName().toString().equals("service.log"))
+            else if(filename.equals("service.log"))
                 return "Service Log";
+            else if(filename.startsWith("service.") && filename.endsWith(".log"))
+                return "Service Log "+filename.substring("service.".length(), filename.length()-".log".length());
             
-            return logFile.getPath().getFileName().toString();
+            return filename;
         }
     }
     
