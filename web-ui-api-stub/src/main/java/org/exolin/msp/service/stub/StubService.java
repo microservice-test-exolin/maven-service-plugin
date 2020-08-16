@@ -45,6 +45,9 @@ public class StubService extends AbstractService
     @Override
     public boolean isBuildOrDeployProcessRunning()
     {
+        if(processStart == 0)
+            return false;
+        
         return System.currentTimeMillis() - processStart < 3000;  //3 s simulierter Lauf
     }
     
