@@ -55,9 +55,12 @@ public class ServiceServlet extends HttpServlet
             
             Layout.start("Service "+serviceName, req.getRequestURI(), out);
             
-            out.append("<h1>Services "+serviceName+"</h1>");
+            out.append("<h1>Service "+serviceName+"</h1>");
             
-            out.append("<table class=\"table table-striped table-sm\">");
+            out.append("<div class=\"card\">");
+            out.append("<div class=\"card-header\">Service</div>\n");
+            
+            out.append("<table class=\"table table-sm\">");
             
             out.append("<tr>");
             out.append("<th>Name</th>");
@@ -86,53 +89,46 @@ public class ServiceServlet extends HttpServlet
             out.append("</tr>");
             
             out.append("<tr>");
-            out.append("<th>");
-            out.append("</th>");
+            out.append("<th>Links</th>");
             out.append("<td>");
-            out.append("<form action=\"#\" method=\"POST\" style=\"display: inline\">");
+            out.append("<a href=\""+ServiceStatusServlet.getUrl(service.getName())+"\">Status</a>");
+            out.append("<br>");
+            out.append("<a href=\""+LogServlet.getFilesOfService(service.getName())+"\">Service Logfiles</a><br>");
+            out.append("</td>");
+            out.append("</tr>");
+            out.append("</table>");
+            
+            out.append("<div class=\"card-body\">");
+            out.append("<form action=\""+ListServicesServlet.URL+"\" method=\"POST\" style=\"display: inline\">");
             out.append("<input type=\"hidden\" name=\"service\" value=\"").append(service.getName()).append("\">");
             write(out, "start", "Start");
             write(out, "stop", "Stop");
             write(out, "restart", "Restart");
             out.append("</form>");
-
-            out.append("<a href=\""+ServiceStatusServlet.getUrl(service.getName())+"\">Status</a>");
-
-            out.append("</td>");
-            out.append("</tr>");
             
-            out.append("<tr>");
-            out.append("<th>");
-            out.append("</th>");
-            out.append("<td>");
-            if(service.supportsBuildAndDeployment())
+            out.append("</div></div>");
+            
+            out.append("<br>");
+            
+            out.append("<div class=\"card\">");
+            out.append("<div class=\"card-header\">Build/Deployment</div>\n");
+            out.append("<div class=\"card-body\">");
+            out.append("<a href=\""+LogServlet.getFilesOfTask(service.getName(), "build")+"\">Build Logfiles</a><br>");
+            out.append("<a href=\""+LogServlet.getFilesOfTask(service.getName(), "deploy")+"\">Deploy Logfiles</a><br>");
+            if(true || service.supportsBuildAndDeployment())
             {
                 out.append("<form action=\"/deploy\" method=\"POST\" style=\"display: inline\">");
-                if(service.supportsBuildAndDeployment())
+                if(!service.isBuildOrDeployProcessRunning())
                 {
                     out.append("<input type=\"hidden\" name=\"service\" value=\"").append(service.getName()).append("\">");
                     write(out, "compile", "Compile");
                     write(out, "deploy", "Deploy");
                     out.append("</form>");
                 }
+                else
+                    out.append("Build/deploy currently running");
             }
-            else
-                out.append("Build/deploy currently running");
-            out.append("</td>");
-            out.append("</tr>");
-            
-            out.append("<tr>");
-            out.append("<th>");
-            out.append("</th>");
-            out.append("<td>");
-            out.append("<a href=\""+LogServlet.getFilesOfService(service.getName())+"\">Service Logfiles</a><br>");
-            out.append("<a href=\""+LogServlet.getFilesOfTask(service.getName(), "build")+"\">Build Logfiles</a><br>");
-            out.append("<a href=\""+LogServlet.getFilesOfTask(service.getName(), "deploy")+"\">Deploy Logfiles</a><br>");
-
-            out.append("</td>");
-            out.append("</tr>");
-            
-            out.append("</table>");
+            out.append("</div></div>");
             
             if(!exceptions.isEmpty())
             {
