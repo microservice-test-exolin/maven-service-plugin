@@ -3,6 +3,7 @@ package org.exolin.msp.web.ui.servlet;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.nio.file.Path;
+import java.util.AbstractList;
 import java.util.List;
 import java.util.Optional;
 import javax.servlet.ServletException;
@@ -45,10 +46,32 @@ public class ProcessServlet extends HttpServlet
             if(!processesHistory.isEmpty())
             {
                 out.append("<h2>History</h2>");
-                list(out, processesHistory);
+                list(out, new ReverseList<>(processesHistory));
             }
             
             Layout.end(out);
+        }
+    }
+    
+    private static class ReverseList<T> extends AbstractList<T>
+    {
+        private final List<T> list;
+
+        public ReverseList(List<T> list)
+        {
+            this.list = list;
+        }
+        
+        @Override
+        public T get(int index)
+        {
+            return list.get(list.size()-1-index);
+        }
+
+        @Override
+        public int size()
+        {
+            return list.size();
         }
     }
     
