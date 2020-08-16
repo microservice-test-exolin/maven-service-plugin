@@ -66,13 +66,16 @@ public class ProcessManager
         return list;
     }
     
-    public synchronized void clean()
+    public synchronized boolean clean()
     {
-        for (Iterator<ProcessInfo> it = processes.iterator(); it.hasNext();)
+        boolean foundAny = false;
+        
+        for(Iterator<ProcessInfo> it = processes.iterator(); it.hasNext();)
         {
             ProcessInfo o = it.next();
             if(!o.shouldKeepOnList())
             {
+                foundAny = true;
                 try{
                     o.updateExitCode();
                     store.save(o);
@@ -84,6 +87,8 @@ public class ProcessManager
                 processesHistory.add(o);
             }
         }
+        
+        return foundAny;
     }
 
     public void killAll()
@@ -100,6 +105,7 @@ public class ProcessManager
     
     public synchronized void notifyProcessFinished()
     {
-        clean();
+        if(clean())
+            LOGGER.warn("Didn't find any process that finished");
     }
 }
