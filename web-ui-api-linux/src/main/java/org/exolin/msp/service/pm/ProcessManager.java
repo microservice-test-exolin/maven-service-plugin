@@ -75,6 +75,7 @@ public class ProcessManager
             ProcessInfo o = it.next();
             if(!o.shouldKeepOnList())
             {
+                LOGGER.info("Removing {} {}", o.getService(), o.getName());
                 foundAny = true;
                 try{
                     o.updateExitCode();
