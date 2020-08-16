@@ -3,7 +3,6 @@ package org.exolin.msp.web.ui.servlet;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.nio.file.Path;
-import java.util.AbstractList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;

@@ -1,7 +1,7 @@
 package org.exolin.msp.web.ui.servlet;
 
-import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.*;
+import org.junit.jupiter.api.Test;
 
 /**
  *
