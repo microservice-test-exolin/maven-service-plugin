@@ -52,6 +52,7 @@ public class Layout
     public static final String RESTART = "circle";
     public static final String COMPILE = "code";
     public static final String DEPLOY = "chevrons-right";
+    public static final String CODE = "code";
     
     private static void writeSidebar(Writer w, String current) throws IOException
     {

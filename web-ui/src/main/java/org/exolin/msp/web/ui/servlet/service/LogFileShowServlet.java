@@ -98,7 +98,9 @@ public class LogFileShowServlet extends HttpServlet
             
             out.append("<h1>"+LognameGenerator.getLogFileTitle(service.getName(), logFile)+"</h1>");
             
-            out.append("<a href=\"").append(getFileUrl(service.getName(), logFile, true)).append("\">").append("Raw").append("</a>");
+            out.append("<a href=\"").append(getFileUrl(service.getName(), logFile, true)).append("\">");
+            out.append("<span data-feather=\""+Layout.CODE+"\"></span> ");
+            out.append("Raw").append("</a>");
             
             out.append("<pre style=\"border: 1px solid #ccc;padding:0.5em\">");
             

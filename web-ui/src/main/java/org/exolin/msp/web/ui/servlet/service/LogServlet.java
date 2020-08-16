@@ -88,7 +88,11 @@ public class LogServlet extends HttpServlet
             out.append("<h1>Logfiles</h1>");
             
             for(Service service: services.getServices())
-                out.append("<a href=\"").append(getFilesOfService(service.getName())).append("\">").append(service.getName()).append("</a><br>");
+            {
+                out.append("<a href=\"").append(getFilesOfService(service.getName())).append("\">");
+                out.append("<span data-feather=\""+Layout.SERVICE+"\"></span> ");
+                out.append(service.getName()).append("</a><br>");
+            }
             
             Layout.end(out);
         }
@@ -106,7 +110,9 @@ public class LogServlet extends HttpServlet
             
             Map<String, LogFile> files = service.getLogFiles(taskName);
             files.forEach((name, lf) -> {
-                out.append("<a href=\""+LogFileShowServlet.getFileUrl(service.getName(), name)+"\">"+LognameGenerator.getLogFileTitle(lf)+"</a><br>");
+                out.append("<a href=\""+LogFileShowServlet.getFileUrl(service.getName(), name)+"\">");
+                out.append("<span data-feather=\""+Layout.LOG+"\"></span> ");
+                out.append(LognameGenerator.getLogFileTitle(lf)+"</a><br>");
             });
             if(files.isEmpty())
                 out.append("<em>No files found</em>");
