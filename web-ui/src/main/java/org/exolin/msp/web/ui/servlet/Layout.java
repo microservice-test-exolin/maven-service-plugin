@@ -46,6 +46,7 @@ public class Layout
     
     public static final String SERVICE = "layers";
     public static final String PROCESS = "loader";
+    public static final String LOG = "file-text";
     
     private static void writeSidebar(Writer w, String current) throws IOException
     {
@@ -56,7 +57,7 @@ public class Layout
         writeMenuItem(w, "Dashboard", "/", "home", current.equals("/"));
         writeMenuItem(w, "Services", "/services", SERVICE, current.startsWith("/services"));
         writeMenuItem(w, "Processes", "/processes", PROCESS, current.startsWith("/processes"));
-        writeMenuItem(w, "Logs", "/logs", "file-text", current.startsWith("/logs"));
+        writeMenuItem(w, "Logs", "/logs", LOG, current.startsWith("/logs"));
         writeMenuItem(w, "Server Info", "/server-info", "server", current.startsWith("/server-info"));
         
         w.write("</ul>");

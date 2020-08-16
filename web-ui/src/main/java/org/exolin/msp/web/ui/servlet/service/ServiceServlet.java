@@ -86,9 +86,13 @@ public class ServiceServlet extends HttpServlet
             out.append("<tr>");
             out.append("<th>Links</th>");
             out.append("<td>");
-            out.append("<a href=\""+ServiceStatusServlet.getUrl(service.getName())+"\">Status</a>");
+            out.append("<a href=\""+ServiceStatusServlet.getUrl(service.getName())+"\">");
+            out.append("<span data-feather=\"info\"></span> ");
+            out.append("Status</a>");
             out.append("<br>");
-            out.append("<a href=\""+LogServlet.getFilesOfService(service.getName())+"\">Service Logfiles</a><br>");
+            out.append("<a href=\""+LogServlet.getFilesOfService(service.getName())+"\">");
+            out.append("<span data-feather=\""+Layout.LOG+"\"></span> ");
+            out.append("Service Logfiles</a><br>");
             out.append("</td>");
             out.append("</tr>");
             out.append("</table>");
@@ -108,8 +112,12 @@ public class ServiceServlet extends HttpServlet
             out.append("<div class=\"card\">");
             out.append("<div class=\"card-header\">Build/Deployment</div>\n");
             out.append("<div class=\"card-body\">");
-            out.append("<a href=\""+LogServlet.getFilesOfTask(service.getName(), "build")+"\">Build Logfiles</a><br>");
-            out.append("<a href=\""+LogServlet.getFilesOfTask(service.getName(), "deploy")+"\">Deploy Logfiles</a><br>");
+            out.append("<a href=\""+LogServlet.getFilesOfTask(service.getName(), "build")+"\">");
+            out.append("<span data-feather=\""+Layout.LOG+"\"></span> ");
+            out.append("Build Logfiles</a><br>");
+            out.append("<a href=\""+LogServlet.getFilesOfTask(service.getName(), "deploy")+"\">");
+            out.append("<span data-feather=\""+Layout.LOG+"\"></span> ");
+            out.append("Deploy Logfiles</a><br>");
             if(service.supportsBuildAndDeployment())
             {
                 out.append("<form action=\"/deploy\" method=\"POST\" style=\"display: inline\">");
