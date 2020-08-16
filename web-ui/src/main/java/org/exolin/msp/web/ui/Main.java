@@ -8,6 +8,7 @@ import java.nio.file.Paths;
 import java.time.LocalDateTime;
 import java.util.EnumSet;
 import java.util.Set;
+import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
@@ -108,6 +109,7 @@ public class Main
     
     public static Server create(ProcessManager pm, SystemAbstraction sys, Services services, Config config, int port) throws Exception
     {
+        ExecutorService executorService = Executors.newCachedThreadPool();
         Path githubTokenFile = Paths.get("../config/github.token");
         
         GithubDeployerImpl githubDeployer = null;
@@ -167,7 +169,7 @@ public class Main
         servletHandler.addServletWithMapping(ServiceStatusServlet.class, ServiceStatusServlet.URL).setServlet(new ServiceStatusServlet(services));
         
         if(githubDeployer != null)
-            servletHandler.addServletWithMapping(GithubWebhookServlet.class, GithubWebhookServlet.URL).setServlet(new GithubWebhookServlet(services, githubDeployer));
+            servletHandler.addServletWithMapping(GithubWebhookServlet.class, GithubWebhookServlet.URL).setServlet(new GithubWebhookServlet(services, githubDeployer, executorService));
         else
             servletHandler.addServletWithMapping(UnsupportedServlet.class, GithubWebhookServlet.URL);
         

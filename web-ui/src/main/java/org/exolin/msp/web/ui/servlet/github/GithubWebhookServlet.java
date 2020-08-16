@@ -11,6 +11,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.concurrent.ExecutorService;
 import java.util.stream.Collectors;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
@@ -35,13 +36,15 @@ public class GithubWebhookServlet extends HttpServlet
     
     private final Services services;
     private final GithubDeployerImpl githubDeployer;
+    private final ExecutorService executorService;
 
-    public GithubWebhookServlet(Services services, GithubDeployerImpl githubDeployer)
+    public GithubWebhookServlet(Services services, GithubDeployerImpl githubDeployer, ExecutorService executorService)
     {
         this.services = services;
         this.githubDeployer = githubDeployer;
+        this.executorService = executorService;
     }
-    
+
     public static ObjectMapper createObjectMapper()
     {
         ObjectMapper mapper = new ObjectMapper();
@@ -67,58 +70,61 @@ public class GithubWebhookServlet extends HttpServlet
             List<Service> serviceList = getServices(req.getParameterValues("service"), payload.getRepository().getHtml_url());
             map.put("services", serviceList.stream().map(Service::getName).collect(Collectors.toList()));
 
-            Set<Path> build = new HashSet<>();
-            
             Map<String, GithubDeployerImpl.Repo.Deployment> deployments = new HashMap<>();
             for(Service service: serviceList)
                 deployments.put(service.getName(), githubDeployer.fromRepoUrl(service.getRepositoryUrl()).createDeployment(payload.getLatest().getId(), "service "+service.getName()));
             
-            String initiator = "github-webhook[repo="+payload.getRepository().getHtml_url();
-            if(payload.getLatest() != null)
-                initiator += ",sha1=" + payload.getLatest().getId();
-            initiator += "]";
-            
-            String error = null;
-            try{
-                for(Service service: serviceList)
-                {
-                    if(build.add(service.getLocalGitRoot()))
-                    {
-                        LOGGER.info("Building {} (remote {})", service.getLocalGitRoot(), service.getRepositoryUrl());
-                        service.build(false, initiator);
-                    }
-                    
-                    LOGGER.info("Deploying {}", service.getName());
-                    service.deploy(false, initiator);
-                    
-                    GithubDeployerImpl.Repo.Deployment deployment = deployments.get(service.getName());
-                    if(deployment != null)
-                    {
-                        deployment.createDeploymentStatus(GithubDeployerImpl.DeploymentStatus.success, null);
-                        deployments.remove(service.getName());
-                    }
-                    else
-                        LOGGER.error("No deployment for {}", service.getName());
-                }
-            }catch(IOException|InterruptedException e){
-                error = e.getMessage();
-            }
-                
-            //set all non finished to error
-            for(GithubDeployerImpl.Repo.Deployment dep: deployments.values())
-                dep.createDeploymentStatus(GithubDeployerImpl.DeploymentStatus.error, null);
-
-            if(error != null)
-            {
-                resp.setStatus(HttpServletResponse.SC_BAD_REQUEST);
-                map.put("error", error);
-            }
+            map.put("status", "queued");
+            executorService.execute(() -> execute(serviceList, payload, deployments));
 
             mapper.writeValue(resp.getWriter(), map);
         //}catch(IOException|RuntimeException e){
         }catch(Throwable e){
             LOGGER.error("Error in doPost", e);
             throw e;
+        }
+    }
+    
+    private void execute(List<Service> serviceList, GithubPayload payload, Map<String, GithubDeployerImpl.Repo.Deployment> deployments)
+    {
+        String initiator = "github-webhook[repo="+payload.getRepository().getHtml_url();
+        if(payload.getLatest() != null)
+            initiator += ",sha1=" + payload.getLatest().getId();
+        initiator += "]";
+
+        Set<Path> build = new HashSet<>();
+
+        try{
+            for(Service service: serviceList)
+            {
+                if(build.add(service.getLocalGitRoot()))
+                {
+                    LOGGER.info("Building {} (remote {})", service.getLocalGitRoot(), service.getRepositoryUrl());
+                    service.build(false, initiator);
+                }
+
+                LOGGER.info("Deploying {}", service.getName());
+                service.deploy(false, initiator);
+
+                GithubDeployerImpl.Repo.Deployment deployment = deployments.get(service.getName());
+                if(deployment != null)
+                {
+                    deployment.createDeploymentStatus(GithubDeployerImpl.DeploymentStatus.success, null);
+                    deployments.remove(service.getName());
+                }
+                else
+                    LOGGER.error("No deployment for {}", service.getName());
+            }
+        }catch(IOException|InterruptedException e){
+            LOGGER.error("Failed to build/deploy", e);
+        }
+
+        //set all non finished to error
+        try{
+            for(GithubDeployerImpl.Repo.Deployment dep: deployments.values())
+                dep.createDeploymentStatus(GithubDeployerImpl.DeploymentStatus.error, null);
+        }catch(IOException e){
+            LOGGER.error("Failed to set deployment status", e);
         }
     }
     
