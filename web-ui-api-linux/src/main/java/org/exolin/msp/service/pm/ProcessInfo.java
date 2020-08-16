@@ -87,7 +87,9 @@ public class ProcessInfo
             return true/*um nicht zu früh zu enternt zu werden*/;
         }
         
-        return process.isAlive();
+        boolean alive = process.isAlive();
+        LOGGER.info("{} {} alive: ", service, name, alive);
+        return alive;
     }
     
     public boolean isAlive()
