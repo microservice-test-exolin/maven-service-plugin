@@ -32,6 +32,7 @@ import org.exolin.msp.web.ui.servlet.ResourceServlet;
 import org.exolin.msp.web.ui.servlet.StatusServlet;
 import org.exolin.msp.web.ui.servlet.UnsupportedServlet;
 import org.exolin.msp.web.ui.servlet.auth.AuthFilter;
+import org.exolin.msp.web.ui.servlet.auth.GithubLogoutServlet;
 import org.exolin.msp.web.ui.servlet.auth.GithubOAuth;
 import org.exolin.msp.web.ui.servlet.auth.GithubOAuthServlet;
 import org.exolin.msp.web.ui.servlet.github.GithubWebhookServlet;
@@ -139,6 +140,7 @@ public class Main
                 Set<String> allowedUsers = config.getStringSet(Config.ALLOWED_USERS);
                 servletHandler.addFilterWithMapping(AuthFilter.class, "/", EnumSet.of(DispatcherType.REQUEST)).setFilter(new AuthFilter(githubOAuth, allowedUsers));
                 servletHandler.addServletWithMapping(GithubOAuthServlet.class, GithubOAuthServlet.URL).setServlet(new GithubOAuthServlet(githubOAuth));
+                servletHandler.addServletWithMapping(GithubLogoutServlet.class, GithubLogoutServlet.URL);
                 break;
                 
             case none:
