@@ -62,8 +62,8 @@ public class DeployServlet extends HttpServlet
             out.append("<h1>Services</h1>");
             out.append("<form action=\"#\" method=\"POST\">");
             out.append("<input type=\"hidden\" name=\"service\" value=\"").append(service.getName()).append("\">");
-            write(out, "compile", "Compile");
-            write(out, "deploy", "Deploy");
+            write(out, "compile", Layout.COMPILE, "Compile");
+            write(out, "deploy", Layout.DEPLOY, "Deploy");
             out.append("</form>");
             
             Layout.end(out);

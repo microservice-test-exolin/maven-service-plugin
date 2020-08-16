@@ -47,6 +47,11 @@ public class Layout
     public static final String SERVICE = "layers";
     public static final String PROCESS = "loader";
     public static final String LOG = "file-text";
+    public static final String START = "play";
+    public static final String STOP = "stop-circle";
+    public static final String RESTART = "circle";
+    public static final String COMPILE = "code";
+    public static final String DEPLOY = "chevrons-right";
     
     private static void writeSidebar(Writer w, String current) throws IOException
     {

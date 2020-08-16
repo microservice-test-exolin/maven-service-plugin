@@ -100,9 +100,9 @@ public class ServiceServlet extends HttpServlet
             out.append("<div class=\"card-body\">");
             out.append("<form action=\""+ListServicesServlet.URL+"\" method=\"POST\" style=\"display: inline\">");
             out.append("<input type=\"hidden\" name=\"service\" value=\"").append(service.getName()).append("\">");
-            write(out, "start", "Start");
-            write(out, "stop", "Stop");
-            write(out, "restart", "Restart");
+            write(out, "start", Layout.START, "Start");
+            write(out, "stop", Layout.STOP, "Stop");
+            write(out, "restart", Layout.RESTART, "Restart");
             out.append("</form>");
             
             out.append("</div></div>");
@@ -124,8 +124,8 @@ public class ServiceServlet extends HttpServlet
                 if(!service.isBuildOrDeployProcessRunning())
                 {
                     out.append("<input type=\"hidden\" name=\"service\" value=\"").append(service.getName()).append("\">");
-                    write(out, "compile", "Compile");
-                    write(out, "deploy", "Deploy");
+                    write(out, "compile", Layout.COMPILE, "Compile");
+                    write(out, "deploy", Layout.DEPLOY, "Deploy");
                     out.append("</form>");
                 }
                 else

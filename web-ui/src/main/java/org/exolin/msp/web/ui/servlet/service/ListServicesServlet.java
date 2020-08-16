@@ -9,8 +9,6 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import org.exolin.msp.core.StatusInfo;
-import org.exolin.msp.core.StatusType;
 import org.exolin.msp.service.Service;
 import org.exolin.msp.service.Services;
 import org.exolin.msp.web.ui.servlet.Layout;
@@ -69,9 +67,9 @@ public class ListServicesServlet extends HttpServlet
                 out.append("<td>");
                 out.append("<form action=\"#\" method=\"POST\" style=\"display: inline\">");
                 out.append("<input type=\"hidden\" name=\"service\" value=\"").append(service.getName()).append("\">");
-                write(out, "start", "Start");
-                write(out, "stop", "Stop");
-                write(out, "restart", "Restart");
+                write(out, "start", Layout.START, "Start");
+                write(out, "stop", Layout.STOP, "Stop");
+                write(out, "restart", Layout.RESTART, "Restart");
                 out.append("</form>");
                 
                 out.append("<a href=\""+ServiceStatusServlet.getUrl(service.getName())+"\">Status</a>");
@@ -85,8 +83,8 @@ public class ListServicesServlet extends HttpServlet
                     if(service.isBuildOrDeployProcessRunning())
                     {
                         out.append("<input type=\"hidden\" name=\"service\" value=\"").append(service.getName()).append("\">");
-                        write(out, "compile", "Compile");
-                        write(out, "deploy", "Deploy");
+                        write(out, "compile", Layout.COMPILE, "Compile");
+                        write(out, "deploy", Layout.DEPLOY, "Deploy");
                         out.append("</form>");
                     }
                     else
@@ -134,9 +132,11 @@ public class ListServicesServlet extends HttpServlet
         return "/service?service="+service;
     }
     
-    static void write(Writer out, String action, String title) throws IOException
+    static void write(Writer out, String action, String icon, String title) throws IOException
     {
-        out.append("<button name=\"action\" value=\""+action+"\" class=\"btn btn-secondary\">").append(title).append("</button> ");
+        out.append("<button name=\"action\" value=\""+action+"\" class=\"btn btn-secondary\">");
+        out.append("<span data-feather=\""+icon+"\"></span> ");
+        out.append(title).append("</button> ");
     }
 
     @Override
