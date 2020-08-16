@@ -105,6 +105,10 @@ public class ProcessDataStorage
     
     public void store(ProcessInfo pi) throws IOException
     {
+        Path destDir = processDir(pi.getService(), pi.getName());
+        
+        Path dest = destDir.resolve(pi.getStartTime()+FILE_EXTENSION);
+        
         Properties properties = new Properties();
         properties.setProperty(CMD, String.join(" ", pi.getCmd()));
         properties.setProperty(TITLE, pi.getTitle());
@@ -118,9 +122,9 @@ public class ProcessDataStorage
         if(pi.getInitiator() != null)
             properties.setProperty(INITIATOR, pi.getInitiator());
         
-        Path destDir = processDir(pi.getService(), pi.getName());
+        LOGGER.info("Saving PI to {}: {}", dest, properties);
         
-        try(Writer out = Files.newBufferedWriter(destDir.resolve(pi.getStartTime()+FILE_EXTENSION), StandardCharsets.UTF_8))
+        try(Writer out = Files.newBufferedWriter(dest, StandardCharsets.UTF_8))
         {
             properties.store(out, null);
         }
