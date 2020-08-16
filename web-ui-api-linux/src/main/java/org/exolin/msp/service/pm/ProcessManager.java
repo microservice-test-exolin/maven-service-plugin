@@ -86,6 +86,8 @@ public class ProcessManager
                 it.remove();
                 processesHistory.add(o);
             }
+            else
+                LOGGER.info("Keep {} {}", o.getService(), o.getName());
         }
         
         return foundAny;

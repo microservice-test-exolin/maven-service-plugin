@@ -5,6 +5,7 @@ import java.time.Instant;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.util.List;
+import java.util.Objects;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -43,7 +44,7 @@ public class ProcessInfo
 
     public void setProcess(Process process)
     {
-        this.process = process;
+        this.process = Objects.requireNonNull(process);
     }
 
     public Integer getExitCode()
@@ -80,7 +81,13 @@ public class ProcessInfo
     
     public boolean shouldKeepOnList()
     {
-        return process != null ? process.isAlive() : true/*um nicht zu früh zu enternt zu werden*/;
+        if(process == null)
+        {
+            LOGGER.info("No process associated (yet)");
+            return true/*um nicht zu früh zu enternt zu werden*/;
+        }
+        
+        return process.isAlive();
     }
     
     public boolean isAlive()
