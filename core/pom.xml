@@ -8,6 +8,7 @@
     </parent>
     <artifactId>core</artifactId>
     <packaging>jar</packaging>
+    <name>services-core</name>
     <dependencies>
         <dependency>
             <groupId>org.junit.jupiter</groupId>
