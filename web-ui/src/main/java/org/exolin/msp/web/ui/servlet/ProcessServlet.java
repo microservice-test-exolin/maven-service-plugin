@@ -91,7 +91,7 @@ public class ProcessServlet extends HttpServlet
         out.append("</tr>");
 
         if(processes.isEmpty())
-            out.append("<tr><td style=\"text-align: center\" colspan=\"4\"><em>No running processes</em></td></tr>");
+            out.append("<tr><td style=\"text-align: center\" colspan=\"8\"><em>No running processes</em></td></tr>");
 
         for(ProcessInfo process: processes)
         {
