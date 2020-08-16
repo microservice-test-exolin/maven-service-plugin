@@ -30,6 +30,7 @@ public class ProcessInfo
         this.workingDirectory = workingDirectory;
         this.cmd = cmd;
         this.title = title;
+        this.exitCode = exitCode;
     }
 
     public void setProcess(Process process)
