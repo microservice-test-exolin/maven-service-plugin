@@ -106,7 +106,7 @@ public class ProcessManager
     
     public synchronized void notifyProcessFinished()
     {
-        if(clean())
+        if(!clean())
             LOGGER.warn("Didn't find any process that finished");
     }
 }
