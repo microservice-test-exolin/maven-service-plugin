@@ -12,6 +12,8 @@ import javax.servlet.http.HttpServletResponse;
 import org.exolin.msp.service.Service;
 import org.exolin.msp.service.Services;
 import org.exolin.msp.web.ui.servlet.Layout;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  *
@@ -19,6 +21,8 @@ import org.exolin.msp.web.ui.servlet.Layout;
  */
 public class ListServicesServlet extends HttpServlet
 {
+    private static final Logger LOGGER = LoggerFactory.getLogger(ListServicesServlet.class);
+    
     private final Services services;
     
     public static final String URL = "/services";
@@ -35,8 +39,6 @@ public class ListServicesServlet extends HttpServlet
         
         try(PrintWriter out = resp.getWriter())
         {
-            Map<String, Exception> exceptions = new HashMap<>();
-            
             Layout.start("Services", req.getRequestURI(), out);
             //out.append("<div class=\"d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom\">");
             
@@ -59,7 +61,7 @@ public class ListServicesServlet extends HttpServlet
                 try{
                     ServiceServlet.writeStatus(out, service.getStatus());
                 }catch(IOException e){
-                    exceptions.put(service.getName(), e);
+                    LOGGER.error("Couldn't be determined", e);
                     out.append("Couldn't be determined");
                 }
                 out.append("</td>");
@@ -103,24 +105,6 @@ public class ListServicesServlet extends HttpServlet
             }
             
             out.append("</table>");
-            
-            if(!exceptions.isEmpty())
-            {
-                out.append("<h2>Errors</h2>");
-                out.append("<table class=\"table table-striped table-sm\">");
-                for(Map.Entry<String, Exception> e: exceptions.entrySet())
-                {
-                    out.append("<tr>");
-                    out.append("<td>");
-                    out.append(e.getKey());
-                    out.append("</td>");
-                    out.append("<td><pre>");
-                    e.getValue().printStackTrace(out);
-                    out.append("</pre></td>");
-                    out.append("</tr>");
-                }
-                out.append("</table>");
-            }
             
             //out.append("</div>");
             Layout.end(out);

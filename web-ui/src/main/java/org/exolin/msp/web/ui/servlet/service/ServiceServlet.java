@@ -56,8 +56,6 @@ public class ServiceServlet extends HttpServlet
         
         try(PrintWriter out = resp.getWriter())
         {
-            Map<String, Exception> exceptions = new HashMap<>();
-            
             Service service = services.getService(serviceName);
             if(service == null)
             {
@@ -85,7 +83,7 @@ public class ServiceServlet extends HttpServlet
             try{
                 writeStatus(out, service.getStatus());
             }catch(IOException e){
-                exceptions.put(service.getName(), e);
+                LOGGER.error("Couldn't be determined", e);
                 out.append("Couldn't be determined");
             }
             out.append("</td>");
@@ -143,24 +141,6 @@ public class ServiceServlet extends HttpServlet
             
             out.append("<h2>Builds/deploys</h2>");
             ProcessServlet.list(out, new ReverseList<>(pm.getProcessesHistory()));
-            
-            if(!exceptions.isEmpty())
-            {
-                out.append("<h2>Errors</h2>");
-                out.append("<table class=\"table table-striped table-sm\">");
-                for(Map.Entry<String, Exception> e: exceptions.entrySet())
-                {
-                    out.append("<tr>");
-                    out.append("<td>");
-                    out.append(e.getKey());
-                    out.append("</td>");
-                    out.append("<td><pre>");
-                    e.getValue().printStackTrace(out);
-                    out.append("</pre></td>");
-                    out.append("</tr>");
-                }
-                out.append("</table>");
-            }
             
             //out.append("</div>");
             Layout.end(out);
