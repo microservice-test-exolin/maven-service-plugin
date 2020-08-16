@@ -107,6 +107,8 @@ public class ProcessDataStorage
         properties.setProperty(CMD, String.join(" ", pi.getCmd()));
         properties.setProperty(TITLE, pi.getTitle());
         properties.setProperty(START_TIME, pi.getStartTime()+"");
+        if(pi.getExitCode() != null)
+            properties.setProperty(EXIT_CODE, pi.getExitCode()+"");
         if(pi.getWorkingDirectory() != null)
             properties.setProperty(WORKING_DIRECTORY, pi.getWorkingDirectory()+"");
         if(pi.getInitiator() != null)
