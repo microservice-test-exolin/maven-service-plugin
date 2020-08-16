@@ -20,10 +20,11 @@ public class ProcessInfo
     private final Path workingDirectory;
     private final List<String> cmd;
     private final String title;
+    private Long endTime;
     private Integer exitCode;
     private final String initiator;
     
-    public ProcessInfo(String service, String name, long startTime, Path workingDirectory, List<String> cmd, String title, String initiator, Integer exitCode)
+    public ProcessInfo(String service, String name, long startTime, Path workingDirectory, List<String> cmd, String title, String initiator, Long endTime, Integer exitCode)
     {
         this.service = service;
         this.name = name;
@@ -32,6 +33,7 @@ public class ProcessInfo
         this.cmd = cmd;
         this.initiator = initiator;
         this.title = title;
+        this.endTime = endTime;
         this.exitCode = exitCode;
     }
 
@@ -52,8 +54,11 @@ public class ProcessInfo
 
     void updateExitCode()
     {
-        if(process != null && !process.isAlive())
+        if(process != null && !process.isAlive() && exitCode != null)
+        {
             exitCode = process.exitValue();
+            endTime = System.currentTimeMillis();
+        }
     }
     
     public String getService()
@@ -97,6 +102,11 @@ public class ProcessInfo
         return startTime;
     }
 
+    public Long getEndTime()
+    {
+        return endTime;
+    }
+    
     public LocalDateTime getStartedAt()
     {
         return LocalDateTime.ofInstant(Instant.ofEpochMilli(startTime), ZoneId.systemDefault());
@@ -109,9 +119,11 @@ public class ProcessInfo
 
     public long getRuntime()
     {
-        if(!isAlive())
+        if(endTime != null)
+            return endTime - startTime;
+        else if(!isAlive())
             return -1;
-
-        return System.currentTimeMillis() - startTime;
+        else
+            return System.currentTimeMillis() - startTime;
     }
 }
