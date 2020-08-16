@@ -14,6 +14,8 @@ import org.exolin.msp.service.Service;
 import org.exolin.msp.service.Services;
 import org.exolin.msp.web.ui.servlet.Layout;
 import static org.exolin.msp.web.ui.servlet.service.ListServicesServlet.write;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  *
@@ -21,6 +23,8 @@ import static org.exolin.msp.web.ui.servlet.service.ListServicesServlet.write;
  */
 public class ServiceServlet extends HttpServlet
 {
+    private static final Logger LOGGER = LoggerFactory.getLogger(ServiceServlet.class);
+    
     private final Services services;
     
     public static final String URL = "/service";
@@ -71,16 +75,7 @@ public class ServiceServlet extends HttpServlet
             out.append("<th>Status</th>");
             out.append("<td>");
             try{
-                StatusInfo status = service.getStatus();
-                try{
-                    StatusType statusType = status.getStatus();
-
-                    out.append(statusType.toString());
-
-                }catch(UnsupportedOperationException e){
-                    exceptions.put(service.getName(), e);
-                    out.append("Couldn't be determined");
-                }
+                writeStatus(out, service.getStatus());
             }catch(IOException e){
                 exceptions.put(service.getName(), e);
                 out.append("Couldn't be determined");
@@ -150,6 +145,35 @@ public class ServiceServlet extends HttpServlet
             
             //out.append("</div>");
             Layout.end(out);
+        }
+    }
+
+    static void writeStatus(PrintWriter out, StatusInfo status)
+    {
+        try{
+            StatusType statusType = status.getStatus();
+            
+            switch(statusType)
+            {
+                case ACTIVE:
+                    out.append("<span title=\"running\" class=\"badge badge-success\">running</span>");
+                    break;
+                    
+                case FAILED:
+                    out.append("<span title=\"failed to start\" class=\"badge badge-danger\">failed</span>");
+                    break;
+                    
+                case INACTIVE:
+                    out.append("<span title=\"not started\" class=\"badge badge-secondary\">inactive</span>");
+                    break;
+                    
+                default:
+                    out.append("<span class=\"badge badge-secondary\">"+statusType+"</span>");
+                    break;
+            }
+        }catch(UnsupportedOperationException e){
+            LOGGER.warn("Couldn't determine status", e);
+            out.append("<span title=\"unknown because failed to fetch status\" class=\"badge badge-secondary\">unknown</span>");
         }
     }
 }

@@ -59,16 +59,7 @@ public class ListServicesServlet extends HttpServlet
                 
                 out.append("<td>");
                 try{
-                    StatusInfo status = service.getStatus();
-                    try{
-                        StatusType statusType = status.getStatus();
-                        
-                        out.append(statusType.toString());
-                        
-                    }catch(UnsupportedOperationException e){
-                        exceptions.put(service.getName(), e);
-                        out.append("Couldn't be determined");
-                    }
+                    ServiceServlet.writeStatus(out, service.getStatus());
                 }catch(IOException e){
                     exceptions.put(service.getName(), e);
                     out.append("Couldn't be determined");
