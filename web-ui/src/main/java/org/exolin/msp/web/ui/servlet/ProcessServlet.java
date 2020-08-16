@@ -65,16 +65,18 @@ public class ProcessServlet extends HttpServlet
         out.append("<tr>");
         out.append("<th>Service</th>");
         out.append("<th>Name</th>");
+        out.append("<th>Title</th>");
         out.append("<th>Initiater</th>");
         out.append("<th>Commandline</th>");
         out.append("<th>Working directory</th>");
         out.append("<th>Started at</th>");
         out.append("<th>Runtime</th>");
         out.append("<th>Log</th>");
+        out.append("<th>Exit Code</th>");
         out.append("</tr>");
 
         if(processes.isEmpty())
-            out.append("<tr><td style=\"text-align: center\" colspan=\"8\"><em>No running processes</em></td></tr>");
+            out.append("<tr><td style=\"text-align: center\" colspan=\"9\"><em>No running processes</em></td></tr>");
 
         for(ProcessInfo process: processes)
         {
@@ -85,6 +87,7 @@ public class ProcessServlet extends HttpServlet
             
             out.append("<tr>");
             out.append("<td><a href=\"").append(ListServicesServlet.getUrl(process.getService())).append("\">").append(process.getService()).append("</a></td>");
+            out.append("<td>").append(process.getName()).append("</td>");
             out.append("<td>").append(process.getTitle()).append("</td>");
             out.append("<td>").append(Optional.ofNullable(process.getInitiator()).map(ProcessServlet::displayInitiator).orElse("<em>unknown</em>")).append("</td>");
             out.append("<td>").append(String.join(" ", process.getCmd())).append("</td>");
@@ -92,6 +95,7 @@ public class ProcessServlet extends HttpServlet
             out.append("<td>").append(process.getStartedAt().toString()).append("</td>");
             out.append("<td>").append(runtime != -1 ? runtime+" s" : "<em>N/A</em>").append("</td>");
             out.append("<td><a href=\"").append(LogFileShowServlet.getFileUrl(process.getService(), logFileName)).append("\">Logfile</a></td>");
+            out.append("<td>").append(Optional.ofNullable(process.getExitCode()).map(Object::toString).orElse("<em>unknown</em>")).append("</td>");
             out.append("</tr>");
         }
 
