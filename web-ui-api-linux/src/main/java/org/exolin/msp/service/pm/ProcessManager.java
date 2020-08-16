@@ -6,6 +6,7 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.function.Consumer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -50,6 +51,19 @@ public class ProcessManager
     {
         clean();
         return new ArrayList<>(processesHistory);
+    }
+
+    public synchronized List<ProcessInfo> getProcessesIncludingHistory(String service)
+    {
+        clean();
+        List<ProcessInfo> list = new ArrayList<>();
+        Consumer<ProcessInfo> consumer = pi -> {
+            if(pi.getService().equals(service))
+                list.add(pi);
+        };
+        processes.forEach(consumer);
+        processesHistory.forEach(consumer);
+        return list;
     }
     
     private void clean()

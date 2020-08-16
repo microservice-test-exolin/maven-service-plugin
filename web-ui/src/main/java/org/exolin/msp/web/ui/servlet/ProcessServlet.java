@@ -59,6 +59,7 @@ public class ProcessServlet extends HttpServlet
         }
     }
     
+    public static void list(PrintWriter out, List<ProcessInfo> processes)
     {
         out.append("<table class=\"table table-striped table-sm\">");
 

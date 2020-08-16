@@ -145,7 +145,7 @@ public class Main
         ResourceServlet.addFile(servletHandler, "favicon.ico", "image/x-icon");
         ResourceServlet.addFile(servletHandler, "dashboard.css", "text/css");
         
-        servletHandler.addServletWithMapping(ServiceServlet.class, ServiceServlet.URL).setServlet(new ServiceServlet(services));
+        servletHandler.addServletWithMapping(ServiceServlet.class, ServiceServlet.URL).setServlet(new ServiceServlet(services, pm));
         servletHandler.addServletWithMapping(ListServicesServlet.class, ListServicesServlet.URL).setServlet(new ListServicesServlet(services));
         servletHandler.addServletWithMapping(DeployServlet.class, DeployServlet.URL).setServlet(new DeployServlet(services));
         servletHandler.addServletWithMapping(LogServlet.class, LogServlet.URL).setServlet(new LogServlet(services));

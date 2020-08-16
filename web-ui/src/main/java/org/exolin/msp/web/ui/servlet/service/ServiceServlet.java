@@ -1,8 +1,10 @@
 package org.exolin.msp.web.ui.servlet.service;
 
+import com.sun.org.apache.xpath.internal.axes.ReverseAxesWalker;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
@@ -12,7 +14,11 @@ import org.exolin.msp.core.StatusInfo;
 import org.exolin.msp.core.StatusType;
 import org.exolin.msp.service.Service;
 import org.exolin.msp.service.Services;
+import org.exolin.msp.service.pm.ProcessInfo;
+import org.exolin.msp.service.pm.ProcessManager;
 import org.exolin.msp.web.ui.servlet.Layout;
+import org.exolin.msp.web.ui.servlet.ProcessServlet;
+import org.exolin.msp.web.ui.servlet.ReverseList;
 import static org.exolin.msp.web.ui.servlet.service.ListServicesServlet.write;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -26,12 +32,14 @@ public class ServiceServlet extends HttpServlet
     private static final Logger LOGGER = LoggerFactory.getLogger(ServiceServlet.class);
     
     private final Services services;
+    private final ProcessManager pm;
     
     public static final String URL = "/service";
 
-    public ServiceServlet(Services services)
+    public ServiceServlet(Services services, ProcessManager pm)
     {
         this.services = services;
+        this.pm = pm;
     }
 
     @Override
@@ -132,6 +140,9 @@ public class ServiceServlet extends HttpServlet
                     out.append("Build/deploy currently running");
             }
             out.append("</div></div>");
+            
+            out.append("<h2>Builds/deploys</h2>");
+            ProcessServlet.list(out, new ReverseList<>(pm.getProcessesHistory()));
             
             if(!exceptions.isEmpty())
             {
