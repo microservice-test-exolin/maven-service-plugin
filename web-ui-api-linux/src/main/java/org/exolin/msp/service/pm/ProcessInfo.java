@@ -88,7 +88,7 @@ public class ProcessInfo
         }
         
         boolean alive = process.isAlive();
-        LOGGER.info("{} {} alive: ", service, name, alive);
+        LOGGER.info("{} {} alive: {}", service, name, alive);
         return alive;
     }
     
