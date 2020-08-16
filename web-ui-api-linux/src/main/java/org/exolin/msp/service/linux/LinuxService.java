@@ -126,24 +126,24 @@ public class LinuxService extends AbstractService
     @Override
     public void build(boolean asynch) throws IOException, InterruptedException
     {
-        Path dir = getGitRoot();
+        Path gitRoot = getGitRoot();
         
         String[] cmd = {"/bin/bash", "-c", "git pull && mvn package"};
         
-        start(dir, "build", cmd, asynch);
+        start(gitRoot, "build", cmd, asynch);
     }
     
     @Override
     public void deploy(boolean asynch) throws IOException, InterruptedException
     {
-        Path dir = getOriginalPath();
+        Path serviceSrcDirectory = getOriginalPath();
         
         String[] cmd = {"/bin/bash", "-c", "/root/repos/deploy.sh"};
         
-        start(dir, "deploy", cmd, asynch);
+        start(serviceSrcDirectory, "deploy", cmd, asynch);
     }
     
-    private void start(Path dir, String name, String[] cmd, boolean asynch) throws IOException, InterruptedException
+    private void start(Path workingDirectory, String name, String[] cmd, boolean asynch) throws IOException, InterruptedException
     {
         Process p;
         synchronized(this)
@@ -153,11 +153,11 @@ public class LinuxService extends AbstractService
             
             long startTime = System.currentTimeMillis();
             
-            ProcessInfo pi = pm.register(getName(), name, Arrays.asList(cmd), name+" "+getName(), startTime);
+            ProcessInfo pi = pm.register(getName(), name, Arrays.asList(cmd), workingDirectory, name+" "+getName(), startTime);
             Path logFile = pm.getLogFile(pi);
 
             p = new ProcessBuilder(cmd)
-                    .directory(dir.toFile())
+                    .directory(workingDirectory.toFile())
                     .redirectInput(ProcessBuilder.Redirect.INHERIT)
                     .redirectOutput(ProcessBuilder.Redirect.to(logFile.toFile()))
                     .redirectError(ProcessBuilder.Redirect.to(logFile.toFile()))

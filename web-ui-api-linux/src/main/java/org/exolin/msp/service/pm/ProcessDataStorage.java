@@ -8,17 +8,15 @@ import java.nio.file.DirectoryStream;
 import java.nio.file.Files;
 import java.nio.file.NoSuchFileException;
 import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Properties;
-import java.util.RandomAccess;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -34,6 +32,7 @@ public class ProcessDataStorage
     private static final String TITLE = "title";
     private static final String START_TIME = "startTime";
     private static final String EXIT_CODE = "exitCode";
+    private static final String WORKING_DIRECTORY = "workingDirectory";
     
     private final Path directory;
     
@@ -60,8 +59,9 @@ public class ProcessDataStorage
         String title = properties.getProperty(TITLE);
         long startTime = Long.parseLong(properties.getProperty(START_TIME));
         Integer exitCode = Optional.ofNullable(properties.getProperty(EXIT_CODE)).map(Integer::parseInt).orElse(null);
+        Path workingDirectory = Optional.ofNullable(properties.getProperty(WORKING_DIRECTORY)).map(Paths::get).orElse(null);
         
-        return new ProcessInfo(service, name, startTime, cmd, title, exitCode);
+        return new ProcessInfo(service, name, startTime, workingDirectory, cmd, title, exitCode);
     }
 
     public Map<String, Path> getProcessLogDirectories(String service) throws IOException
@@ -105,6 +105,8 @@ public class ProcessDataStorage
         properties.setProperty(CMD, String.join(" ", pi.getCmd()));
         properties.setProperty(TITLE, pi.getTitle());
         properties.setProperty(START_TIME, pi.getStartTime()+"");
+        if(pi.getWorkingDirectory() != null)
+            properties.setProperty(WORKING_DIRECTORY, pi.getWorkingDirectory()+"");
         
         Path destDir = processDir(pi.getService(), pi.getName());
         

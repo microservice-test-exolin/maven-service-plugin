@@ -1,5 +1,6 @@
 package org.exolin.msp.service.pm;
 
+import java.nio.file.Path;
 import java.time.Instant;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
@@ -16,15 +17,17 @@ public class ProcessInfo
     private final long startTime;
 
     private Process process;
+    private final Path workingDirectory;
     private final List<String> cmd;
     private final String title;
     private Integer exitCode;
     
-    public ProcessInfo(String service, String name, long startTime, List<String> cmd, String title, Integer exitCode)
+    public ProcessInfo(String service, String name, long startTime, Path workingDirectory, List<String> cmd, String title, Integer exitCode)
     {
         this.service = service;
         this.name = name;
         this.startTime = startTime;
+        this.workingDirectory = workingDirectory;
         this.cmd = cmd;
         this.title = title;
     }
@@ -71,6 +74,11 @@ public class ProcessInfo
             process.destroyForcibly();
     }
 
+    public Path getWorkingDirectory()
+    {
+        return workingDirectory;
+    }
+    
     public List<String> getCmd()
     {
         return cmd;

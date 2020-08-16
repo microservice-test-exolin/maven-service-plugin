@@ -12,7 +12,6 @@ import java.util.Optional;
 import org.exolin.msp.core.PseudoAbstraction;
 import org.exolin.msp.core.SystemAbstraction;
 import org.exolin.msp.service.LogFile;
-import org.exolin.msp.service.Service;
 import org.exolin.msp.service.Services;
 import org.exolin.msp.service.pm.ProcessDataStorage;
 import org.exolin.msp.service.pm.ProcessManager;
@@ -64,8 +63,8 @@ public class LocalMain
                     new StubService("test-milkboi-telegram", sys, Collections.emptyMap())
             ));
         
-        pm.register(services.getServices().get(0).getName(), "build", Arrays.asList("mvn", "build"), "Build", System.currentTimeMillis());
-        pm.register(services.getServices().get(1).getName(), "build", Arrays.asList("mvn", "build"), "Build", System.currentTimeMillis());
+        pm.register(services.getServices().get(0).getName(), "build", Arrays.asList("mvn", "build"), Paths.get("."), "Build", System.currentTimeMillis());
+        pm.register(services.getServices().get(1).getName(), "build", Arrays.asList("mvn", "build"), Paths.get("."), "Build", System.currentTimeMillis());
         
         run(pm, sys, services, Config.read(Paths.get("../config/config")));
     }
