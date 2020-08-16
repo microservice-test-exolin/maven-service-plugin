@@ -74,7 +74,9 @@ public class ServiceStatusServlet extends HttpServlet
             
             if(status != null)
             {
-                out.append("Status: ").append(status.getStatus().toString()).append("<br>");
+                out.append("Status: ");
+                ServiceServlet.writeStatus(out, status);
+                out.append("<br>");
 
                 out.append("<pre>");
                 out.append(status.getInfo());
