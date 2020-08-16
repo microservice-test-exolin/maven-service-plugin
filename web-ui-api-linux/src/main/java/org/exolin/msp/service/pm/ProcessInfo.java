@@ -5,6 +5,8 @@ import java.time.Instant;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.util.List;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  *
@@ -12,6 +14,8 @@ import java.util.List;
  */
 public class ProcessInfo
 {
+    private static final Logger LOGGER = LoggerFactory.getLogger(ProcessInfo.class);
+    
     private final String service;
     private final String name;
     private final long startTime;
@@ -58,6 +62,7 @@ public class ProcessInfo
         {
             exitCode = process.exitValue();
             endTime = System.currentTimeMillis();
+            LOGGER.info("{} {} exited with {}", service, name, exitCode);
         }
     }
     
