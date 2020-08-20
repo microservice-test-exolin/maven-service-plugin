@@ -60,6 +60,7 @@ public class ProcessServlet extends HttpServlet
     
     public static void list(PrintWriter out, List<ProcessInfo> processes, boolean showServiceTitle)
     {
+        out.append("<div class=\"table-responsive\">");
         out.append("<table class=\"table table-striped table-sm\">");
 
         out.append("<tr>");
@@ -104,6 +105,7 @@ public class ProcessServlet extends HttpServlet
         }
 
         out.append("</table>");
+        out.append("</div>");
     }
     
     static class Initiator
