@@ -135,7 +135,7 @@ public class ServiceServlet extends HttpServlet
             out.append("</div></div>");
             
             out.append("<h2>Builds/deploys</h2>");
-            ProcessServlet.list(out, new ReverseList<>(pm.getProcessesIncludingHistory(service.getName())));
+            ProcessServlet.list(out, new ReverseList<>(pm.getProcessesIncludingHistory(service.getName())), false);
             
             //out.append("</div>");
             Layout.end(out);

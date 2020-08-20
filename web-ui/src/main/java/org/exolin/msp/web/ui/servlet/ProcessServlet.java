@@ -46,24 +46,27 @@ public class ProcessServlet extends HttpServlet
             
             out.append("<h1>Processes</h1>");
             
-            list(out, pm.getProcesses());
+            list(out, pm.getProcesses(), true);
             List<ProcessInfo> processesHistory = pm.getProcessesHistory();
             if(!processesHistory.isEmpty())
             {
                 out.append("<h2>History</h2>");
-                list(out, new ReverseList<>(processesHistory));
+                list(out, new ReverseList<>(processesHistory), true);
             }
             
             Layout.end(out);
         }
     }
     
-    public static void list(PrintWriter out, List<ProcessInfo> processes)
+    public static void list(PrintWriter out, List<ProcessInfo> processes, boolean showServiceTitle)
     {
         out.append("<table class=\"table table-striped table-sm\">");
 
         out.append("<tr>");
-        out.append("<th>Service</th>");
+        
+        if(showServiceTitle)
+            out.append("<th>Service</th>");
+        
         out.append("<th>Name</th>");
         out.append("<th>Initiater</th>");
         out.append("<th>Commandline</th>");
@@ -85,7 +88,10 @@ public class ProcessServlet extends HttpServlet
             String logFileName = process.getName()+" "+process.getStartTime()+".log";
             
             out.append("<tr>");
-            out.append("<td><a href=\"").append(ListServicesServlet.getUrl(process.getService())).append("\">").append(process.getService()).append("</a></td>");
+            
+            if(showServiceTitle)
+                out.append("<td><a href=\"").append(ListServicesServlet.getUrl(process.getService())).append("\">").append(process.getService()).append("</a></td>");
+            
             out.append("<td>").append(process.getName()).append("</td>");
             out.append("<td>").append(Optional.ofNullable(process.getInitiator()).map(ProcessServlet::displayInitiator).orElse("<em>unknown</em>")).append("</td>");
             out.append("<td>").append(String.join(" ", process.getCmd())).append("</td>");
