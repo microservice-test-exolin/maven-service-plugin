@@ -116,7 +116,7 @@ public class ListServicesServlet extends HttpServlet
     
     static void write(Writer out, String action, String icon, String title) throws IOException
     {
-        out.append("<button name=\"action\" value=\""+action+"\" class=\"btn btn-secondary\">");
+        out.append("<button name=\"action\" value=\""+action+"\" class=\"btn btn-secondary btn-sm\">");
         out.append("<span data-feather=\""+icon+"\"></span> ");
         out.append(title).append("</button> ");
     }
