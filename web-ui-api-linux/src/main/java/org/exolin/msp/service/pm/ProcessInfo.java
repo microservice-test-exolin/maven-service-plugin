@@ -128,7 +128,7 @@ public class ProcessInfo
         return LocalDateTime.ofInstant(Instant.ofEpochMilli(startTime), ZoneId.systemDefault());
     }
 
-    public String getTitle()
+    String getTitle()
     {
         return title;
     }
