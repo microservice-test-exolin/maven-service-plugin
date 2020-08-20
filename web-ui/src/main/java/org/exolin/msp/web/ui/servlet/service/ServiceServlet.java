@@ -62,7 +62,7 @@ public class ServiceServlet extends HttpServlet
             
             out.append("<h1>Service "+serviceName+"</h1>");
             
-            out.append("<div class=\"card\">");
+            out.append("<div class=\"card\" style=\"max-width: 25rem;\">");
             out.append("<div class=\"card-header\">Service</div>\n");
             
             out.append("<table class=\"table table-sm\">");
@@ -110,7 +110,7 @@ public class ServiceServlet extends HttpServlet
             
             out.append("<br>");
             
-            out.append("<div class=\"card\">");
+            out.append("<div class=\"card\" style=\"max-width: 25rem;\">");
             out.append("<div class=\"card-header\">Build/Deployment</div>\n");
             out.append("<div class=\"card-body\">");
             out.append("<a href=\""+LogServlet.getFilesOfTask(service.getName(), "build")+"\">");
