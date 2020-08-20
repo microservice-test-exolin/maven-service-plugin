@@ -154,7 +154,7 @@ public class LinuxService extends AbstractService
             
             long startTime = System.currentTimeMillis();
             
-            ProcessInfo pi = pm.register(getName(), name, Arrays.asList(cmd), workingDirectory, name+" "+getName(), startTime, initiator);
+            ProcessInfo pi = pm.register(getName(), name, Arrays.asList(cmd), workingDirectory, startTime, initiator);
             Path logFile = pm.getLogFile(pi);
             
             LOGGER.info("Starting: {}", String.join(" ", cmd));

@@ -27,10 +27,10 @@ public class ProcessManager
         this.processesHistory = store.getProcessInfos();
     }
 
-    public synchronized ProcessInfo register(String service, String name, List<String> cmd, Path workingDirectory, String title, long startTime, String initiator)
+    public synchronized ProcessInfo register(String service, String name, List<String> cmd, Path workingDirectory, long startTime, String initiator)
     {
         clean();
-        ProcessInfo pi = new ProcessInfo(service, name, startTime, workingDirectory.toAbsolutePath().normalize(), cmd, title, initiator, null, null);
+        ProcessInfo pi = new ProcessInfo(service, name, startTime, workingDirectory.toAbsolutePath().normalize(), cmd, initiator, null, null);
         processes.add(pi);
         store.save(pi);
         return pi;

@@ -29,7 +29,6 @@ public class ProcessDataStorage
     private static final Logger LOGGER = LoggerFactory.getLogger(ProcessDataStorage.class);
     
     private static final String CMD = "cmd";
-    private static final String TITLE = "title";
     private static final String START_TIME = "startTime";
     private static final String END_TIME = "endTime";
     private static final String EXIT_CODE = "exitCode";
@@ -58,14 +57,13 @@ public class ProcessDataStorage
         }
         
         List<String> cmd = Arrays.asList(properties.getProperty(CMD).split(" "));
-        String title = properties.getProperty(TITLE);
         long startTime = Long.parseLong(properties.getProperty(START_TIME));
         Long endTime = Optional.ofNullable(properties.getProperty(END_TIME)).map(Long::parseLong).orElse(null);
         Integer exitCode = Optional.ofNullable(properties.getProperty(EXIT_CODE)).map(Integer::parseInt).orElse(null);
         Path workingDirectory = Optional.ofNullable(properties.getProperty(WORKING_DIRECTORY)).map(Paths::get).orElse(null);
         String initiator = properties.getProperty(INITIATOR);
         
-        return new ProcessInfo(service, name, startTime, workingDirectory, cmd, title, initiator, endTime, exitCode);
+        return new ProcessInfo(service, name, startTime, workingDirectory, cmd, initiator, endTime, exitCode);
     }
 
     public Map<String, Path> getProcessLogDirectories(String service) throws IOException
@@ -111,7 +109,6 @@ public class ProcessDataStorage
         
         Properties properties = new Properties();
         properties.setProperty(CMD, String.join(" ", pi.getCmd()));
-        properties.setProperty(TITLE, pi.getTitle());
         properties.setProperty(START_TIME, pi.getStartTime()+"");
         if(pi.getEndTime() != null)
             properties.setProperty(END_TIME, pi.getEndTime()+"");

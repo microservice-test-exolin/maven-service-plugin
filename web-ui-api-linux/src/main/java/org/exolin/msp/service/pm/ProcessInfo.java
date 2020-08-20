@@ -24,12 +24,11 @@ public class ProcessInfo
     private Process process;
     private final Path workingDirectory;
     private final List<String> cmd;
-    private final String title;
     private Long endTime;
     private Integer exitCode;
     private final String initiator;
     
-    public ProcessInfo(String service, String name, long startTime, Path workingDirectory, List<String> cmd, String title, String initiator, Long endTime, Integer exitCode)
+    public ProcessInfo(String service, String name, long startTime, Path workingDirectory, List<String> cmd, String initiator, Long endTime, Integer exitCode)
     {
         this.service = service;
         this.name = name;
@@ -37,7 +36,6 @@ public class ProcessInfo
         this.workingDirectory = workingDirectory;
         this.cmd = cmd;
         this.initiator = initiator;
-        this.title = title;
         this.endTime = endTime;
         this.exitCode = exitCode;
     }
@@ -126,11 +124,6 @@ public class ProcessInfo
     public LocalDateTime getStartedAt()
     {
         return LocalDateTime.ofInstant(Instant.ofEpochMilli(startTime), ZoneId.systemDefault());
-    }
-
-    String getTitle()
-    {
-        return title;
     }
 
     public long getRuntime()
