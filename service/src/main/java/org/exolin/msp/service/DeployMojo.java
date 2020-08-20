@@ -7,6 +7,7 @@ import java.nio.file.Files;
 import java.nio.file.NoSuchFileException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.Collections;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugins.annotations.LifecyclePhase;
 import org.apache.maven.plugins.annotations.Mojo;
@@ -95,7 +96,7 @@ public class DeployMojo extends BaseMojo
         
         //Copy JAR and dependencies
         files.copy(jar, jarDest);
-        files.copyDirectoryContent(libDir, serviceBinDir);
+        files.replaceDirectoryContent(libDir, serviceBinDir, Collections.singleton(jarDest));
         files.copy(startScript, serviceDir.resolve(ServiceInfo.START_SH));
         getLog().info("Copied jar file to "+jarDest);
     }

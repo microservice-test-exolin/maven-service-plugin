@@ -5,6 +5,8 @@ import java.nio.file.DirectoryStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.StandardCopyOption;
+import java.util.HashSet;
+import java.util.Set;
 import org.apache.maven.plugin.logging.Log;
 import org.exolin.msp.core.SystemAbstraction;
 
@@ -46,9 +48,10 @@ public class FileUtils
         }
     }
     
-    public void copyDirectoryContent(Path src, Path dest) throws IOException
+    public void replaceDirectoryContent(Path src, Path dest, Set<Path> keep) throws IOException
     {
         log.info("Copy "+src+"/* to "+dest);
+        Set<String> found = new HashSet<>();
         
         try(DirectoryStream<Path> dir = Files.newDirectoryStream(src))
         {
@@ -57,6 +60,19 @@ public class FileUtils
                 log.info("  Copy "+src.relativize(f));
                 
                 _copy(f, dest.resolve(f.getFileName()));
+                found.add(f.getFileName().toString());
+            }
+        }
+        
+        try(DirectoryStream<Path> dir = Files.newDirectoryStream(dest))
+        {
+            for(Path f: dir)
+            {
+                if(!found.contains(f.getFileName().toString()) && !keep.contains(f))
+                {
+                    log.info("  Delete old "+dest.relativize(f));
+                    Files.delete(f);
+                }
             }
         }
     }

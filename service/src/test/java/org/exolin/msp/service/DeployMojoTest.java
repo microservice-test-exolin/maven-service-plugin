@@ -3,16 +3,20 @@ package org.exolin.msp.service;
 
 import java.io.File;
 import java.io.IOException;
+import java.nio.file.AccessDeniedException;
+import java.nio.file.DirectoryNotEmptyException;
+import java.nio.file.DirectoryStream;
 import java.nio.file.Files;
 import java.nio.file.NoSuchFileException;
 import java.nio.file.Path;
 import java.util.Arrays;
-import java.util.Collections;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.testing.MojoRule;
-import org.apache.maven.plugin.testing.WithoutMojo;
 import org.exolin.msp.core.PseudoAbstraction;
 import org.ini4j.Ini;
 import org.junit.After;
@@ -54,19 +58,57 @@ public class DeployMojoTest
     {
         if(Files.exists(simDir))
         {
-            List<Path> files = Files.walk(simDir).collect(Collectors.toList());
-            Collections.reverse(files);
-
-            for(Path p: files)
-                Files.delete(p);
+            try{
+                deleteRecursivly(simDir);
+            }catch(IOException|RuntimeException e){
+                e.printStackTrace();
+                throw e;
+            }
         }
     }
     
-    /**
-     * @throws Exception if any
-     */
+    private void deleteRecursivly(Path path) throws IOException
+    {
+        if(Files.isDirectory(path))
+        {
+            System.err.println("Reading directory "+path);
+            try(DirectoryStream<Path> files = Files.newDirectoryStream(path))
+            {
+                for(Path p: files)
+                    deleteRecursivly(p);
+            }
+        }
+        
+        System.err.println("Deleting "+path);
+        try{
+            Files.delete(path);
+        }catch(DirectoryNotEmptyException e){
+            throw new IOException(path+" contains "+Files.walk(path)
+                    .map(d -> d.relativize(path).toString())
+                    .collect(Collectors.joining(",")), e);
+        }catch(AccessDeniedException e){
+            
+        }
+    }
+    
     @Test
-    public void testDeploy() throws Exception
+    public void testCleanDeploy() throws Exception
+    {
+        testDeploy0();
+    }
+    
+    @Test
+    public void testReDeployWithOldJar() throws Exception
+    {
+        Path pseudoOldJar = simDir.resolve("home/exolin/services/test-service/bin/xy.jar");
+        Files.createDirectories(pseudoOldJar.getParent());
+        assertExists(pseudoOldJar.getParent());
+        Files.newOutputStream(pseudoOldJar).close();
+        
+        testDeploy0();
+    }
+    
+    private void testDeploy0() throws Exception
     {
         assertTrue(pom.exists());
         
@@ -76,9 +118,11 @@ public class DeployMojoTest
         
         assertExists(simDir.resolve("home/exolin/services/test-service"));
         assertExists(simDir.resolve("home/exolin/services/test-service/start.sh"));
-        assertExists(simDir.resolve("home/exolin/services/test-service/bin/test-service-1.0-SNAPSHOT.jar"));
-        assertExists(simDir.resolve("home/exolin/services/test-service/bin/slf4j-api-1.7.25.jar"));
-        assertExists(simDir.resolve("home/exolin/services/test-service/bin/log4j-over-slf4j-1.7.25.jar"));
+        assertEquals(new HashSet<>(Arrays.asList(
+                "test-service-1.0-SNAPSHOT.jar",
+                "slf4j-api-1.7.25.jar",
+                "log4j-over-slf4j-1.7.25.jar"
+        )), list(simDir.resolve("home/exolin/services/test-service/bin")));
         
         Path serviceFile = simDir.resolve("etc/systemd/system/test-service.service");
         assertExists(serviceFile);
@@ -117,6 +161,19 @@ public class DeployMojoTest
         assertTrue(path.toAbsolutePath().toString()+" not existing", Files.exists(path));
     }
     
+    private void assertNotExists(Path path)
+    {
+        assertFalse(path.toAbsolutePath().toString()+" exists", Files.exists(path));
+    }
+    
+    private Set<String> list(Path dir) throws IOException
+    {
+        try(Stream<Path> i = Files.list(dir))
+        {
+            return i.map(p -> p.getFileName().toString()).collect(Collectors.toSet());
+        }
+    }
+    
     @Test
     public void testDeployWithMissingServiceDir() throws Exception
     {
@@ -131,13 +188,5 @@ public class DeployMojoTest
             assertEquals(NoSuchFileException.class, e.getCause().getClass());
             assertEquals("missing etc/systemd/system", ((NoSuchFileException)e.getCause()).getReason());
         }
-    }
-
-    /** Do not need the MojoRule. */
-    @WithoutMojo
-    @Test
-    public void testSomethingWhichDoesNotNeedTheMojoAndProbablyShouldBeExtractedIntoANewClassOfItsOwn()
-    {
-        assertTrue(true);
     }
 }
