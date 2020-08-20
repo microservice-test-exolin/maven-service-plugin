@@ -43,7 +43,7 @@ public class ServiceServlet extends HttpServlet
         String serviceName = req.getParameter("service");
         if(serviceName == null)
         {
-            resp.sendError(HttpServletResponse.SC_BAD_GATEWAY, "Missing parameter service");
+            resp.sendError(HttpServletResponse.SC_BAD_REQUEST, "Missing parameter service");
             return;
         }
         
@@ -54,7 +54,7 @@ public class ServiceServlet extends HttpServlet
             Service service = services.getService(serviceName);
             if(service == null)
             {
-                resp.sendError(HttpServletResponse.SC_BAD_GATEWAY, "Service not found");
+                resp.sendError(HttpServletResponse.SC_BAD_REQUEST, "Service not found");
                 return;
             }
             
