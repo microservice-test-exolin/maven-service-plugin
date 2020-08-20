@@ -76,14 +76,14 @@ public class Main
                     Paths.get("/home/exolin/services"),
                     sys, pm);
 
-            run(pm, sys, services, Config.read(Paths.get("../config/config")));
+            run(pm, sys, services, Config.read(Paths.get("../config/config")), true);
         }catch(Exception e){
             LOGGER.error("Error starting", e);
             throw e;
         }
     }
     
-    public static void run(ProcessManager pm, SystemAbstraction sys, Services services, Config config) throws Exception
+    public static void run(ProcessManager pm, SystemAbstraction sys, Services services, Config config, boolean localhost) throws Exception
     {
         ScheduledExecutorService deamonScheduler = Executors.newScheduledThreadPool(1, (Runnable r) -> {
             Thread t = new Thread(r);
@@ -93,7 +93,7 @@ public class Main
     
         deamonScheduler.scheduleWithFixedDelay(pm::clean, 1, 1, TimeUnit.SECONDS);
         
-        Server server = create(pm, sys, services, config, 8090);
+        Server server = create(pm, sys, services, config, 8090, localhost);
         
         try{
             server.start();
@@ -107,7 +107,7 @@ public class Main
         }
     }
     
-    public static Server create(ProcessManager pm, SystemAbstraction sys, Services services, Config config, int port) throws Exception
+    public static Server create(ProcessManager pm, SystemAbstraction sys, Services services, Config config, int port, boolean localhost) throws Exception
     {
         ExecutorService executorService = Executors.newCachedThreadPool();
         Path githubTokenFile = Paths.get("../config/github.token");
@@ -121,7 +121,8 @@ public class Main
         
         Server server = new Server();
         ServerConnector connector = new ServerConnector(server);
-        connector.setHost("127.0.0.1");
+        if(localhost)
+            connector.setHost("127.0.0.1");
         connector.setPort(port);
         server.setConnectors(new Connector[]{connector});
         
