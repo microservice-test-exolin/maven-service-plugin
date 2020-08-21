@@ -59,7 +59,7 @@ public class LocalMain
         ProcessManager pm = new ProcessManager(new ProcessDataStorage(logDirectory));
         
         Path gitRoot = Paths.get("repos").toAbsolutePath();
-        String prefix = "http://github.test/a/";
+        String prefix = "http://github.com/a/";
         
         SystemAbstraction sys = new PseudoAbstraction(new LogAdapter(PseudoAbstraction.class));
         

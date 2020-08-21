@@ -191,8 +191,19 @@ public class ServiceServlet extends HttpServlet
         out.append("<div class=\"card-body\">");
         
         String repoUrl = service.getRepositoryUrl();
+        String host = new URL(repoUrl).getHost();
+        String name = host;
         
-        out.append("<a href=\"").append(repoUrl).append("\">").append(new URL(repoUrl).getHost()).append("</a>");
+        out.append("<a href=\"").append(repoUrl).append("\"");
+        
+        if(host.equals("github.com"))
+        {
+            out.append(" style=\"background-image: url('/GitHub_Logo_small.png'); background-repeat: no-repeat; background-position: left; padding-left: 36px\"");
+            name = new URL(repoUrl).getPath().substring(1);
+        }
+        
+        out.append(">");
+        out.append(name).append("</a>");
         
         /*out.append("<table>");// class=\"table\">");
         out.append("<tr><th>Repository URL:</th><td>").append(service.getRepositoryUrl()).append("</td></tr>");
