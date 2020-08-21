@@ -13,12 +13,15 @@ import java.net.SocketException;
 import java.net.URL;
 import java.net.URLConnection;
 import java.net.UnknownHostException;
+import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.List;
 import java.util.Optional;
 import java.util.Properties;
+import java.util.stream.Collectors;
 import org.eclipse.jetty.server.Server;
 import org.eclipse.jetty.server.ServerConnector;
 import org.exolin.msp.core.PseudoAbstraction;
@@ -48,11 +51,16 @@ public class MainTest
         ProcessManager pm = new ProcessManager(new ProcessDataStorage(Paths.get(".")));
         
         SystemAbstraction sys = new PseudoAbstraction(new LogAdapter(PseudoAbstraction.class));
-        Services services = new StubServices(Arrays.asList(
-                    new StubService("test-mittens-discord", sys, Collections.emptyMap()),
-                    new StubService("test-milkboi-discord", sys, Collections.emptyMap()),
-                    new StubService("test-milkboi-telegram", sys, Collections.emptyMap())
-            ));
+        
+        List<String> names = Arrays.asList(
+                "test-mittens-discord",
+                "test-milkboi-discord",
+                "test-milkboi-telegram"
+        );
+        
+        Path root = Paths.get("repos");
+        String prefix = "http://github.test/a/";
+        Services services = new StubServices(names.stream().map(name -> new StubService(name, root.resolve(name), prefix+name, sys, Collections.emptyMap())).collect(Collectors.toList()));
         
         Properties properties = new Properties();
         properties.setProperty(Config.KEY_AUTH_TYPE, Config.AuthType.none.name());
@@ -82,8 +90,6 @@ public class MainTest
                 .filter(f -> !f.isLoopbackAddress())
                 .filter(f -> f instanceof Inet4Address)
                 .findFirst().get();
-        
-        System.out.println("http://"+nonLocalhostAddress.getHostAddress()+":"+port+"/");
         
         HttpURLConnection con = (HttpURLConnection)new URL("http://"+nonLocalhostAddress.getHostAddress()+":"+port+"/").openConnection();
         

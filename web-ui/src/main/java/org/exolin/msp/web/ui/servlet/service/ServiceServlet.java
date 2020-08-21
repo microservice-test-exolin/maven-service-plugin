@@ -2,6 +2,7 @@ package org.exolin.msp.web.ui.servlet.service;
 
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.net.URL;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -62,77 +63,11 @@ public class ServiceServlet extends HttpServlet
             
             out.append("<h1>Service "+serviceName+"</h1>");
             
-            out.append("<div class=\"card\" style=\"max-width: 25rem;\">");
-            out.append("<div class=\"card-header\">Service</div>\n");
-            
-            out.append("<table class=\"table table-sm\">");
-            
-            out.append("<tr>");
-            out.append("<th>Name</th>");
-            out.append("<td>").append(service.getName()).append("</td>");
-            out.append("</tr>");
-            
-            out.append("<tr>");
-            out.append("<th>Status</th>");
-            out.append("<td>");
-            try{
-                writeStatus(out, service.getStatus());
-            }catch(IOException e){
-                LOGGER.error("Couldn't be determined", e);
-                out.append("Couldn't be determined");
-            }
-            out.append("</td>");
-            out.append("</tr>");
-            
-            out.append("<tr>");
-            out.append("<th>Links</th>");
-            out.append("<td>");
-            out.append("<a href=\""+ServiceStatusServlet.getUrl(service.getName())+"\">");
-            out.append("<span data-feather=\"info\"></span> ");
-            out.append("Status</a>");
+            writeCard1(service, out);
             out.append("<br>");
-            out.append("<a href=\""+LogServlet.getFilesOfService(service.getName())+"\">");
-            out.append("<span data-feather=\""+Layout.LOG+"\"></span> ");
-            out.append("Service Logfiles</a><br>");
-            out.append("</td>");
-            out.append("</tr>");
-            out.append("</table>");
-            
-            out.append("<div class=\"card-body\">");
-            out.append("<form action=\""+ListServicesServlet.URL+"\" method=\"POST\" style=\"display: inline\">");
-            out.append("<input type=\"hidden\" name=\"service\" value=\"").append(service.getName()).append("\">");
-            write(out, "start", Layout.START, "Start");
-            write(out, "stop", Layout.STOP, "Stop");
-            write(out, "restart", Layout.RESTART, "Restart");
-            out.append("</form>");
-            
-            out.append("</div></div>");
-            
+            writeCard2(service, out);
             out.append("<br>");
-            
-            out.append("<div class=\"card\" style=\"max-width: 25rem;\">");
-            out.append("<div class=\"card-header\">Build/Deployment</div>\n");
-            out.append("<div class=\"card-body\">");
-            out.append("<a href=\""+LogServlet.getFilesOfTask(service.getName(), "build")+"\">");
-            out.append("<span data-feather=\""+Layout.LOG+"\"></span> ");
-            out.append("Build Logfiles</a><br>");
-            out.append("<a href=\""+LogServlet.getFilesOfTask(service.getName(), "deploy")+"\">");
-            out.append("<span data-feather=\""+Layout.LOG+"\"></span> ");
-            out.append("Deploy Logfiles</a><br>");
-            if(service.supportsBuildAndDeployment())
-            {
-                out.append("<form action=\"/deploy\" method=\"POST\" style=\"display: inline\">");
-                if(!service.isBuildOrDeployProcessRunning())
-                {
-                    out.append("<input type=\"hidden\" name=\"service\" value=\"").append(service.getName()).append("\">");
-                    write(out, "compile", Layout.COMPILE, "Compile");
-                    write(out, "deploy", Layout.DEPLOY, "Deploy");
-                    out.append("</form>");
-                }
-                else
-                    out.append("Build/deploy currently running");
-            }
-            out.append("</div></div>");
+            writeCard3(service, out);
             
             out.append("<h2>Builds/deploys</h2>");
             ProcessServlet.list(out, new ReverseList<>(pm.getProcessesIncludingHistory(service.getName())), false);
@@ -169,5 +104,98 @@ public class ServiceServlet extends HttpServlet
             LOGGER.warn("Couldn't determine status", e);
             out.append("<span title=\"unknown because failed to fetch status\" class=\"badge badge-secondary\">unknown</span>");
         }
+    }
+
+    private void writeCard1(Service service, PrintWriter out) throws IOException
+    {
+        out.append("<div class=\"card\" style=\"max-width: 25rem;\">");
+        out.append("<div class=\"card-header\">Service</div>\n");
+
+        out.append("<table class=\"table table-sm\">");
+
+        out.append("<tr>");
+        out.append("<th>Name</th>");
+        out.append("<td>").append(service.getName()).append("</td>");
+        out.append("</tr>");
+
+        out.append("<tr>");
+        out.append("<th>Status</th>");
+        out.append("<td>");
+        try{
+            writeStatus(out, service.getStatus());
+        }catch(IOException e){
+            LOGGER.error("Couldn't be determined", e);
+            out.append("Couldn't be determined");
+        }
+        out.append("</td>");
+        out.append("</tr>");
+
+        out.append("<tr>");
+        out.append("<th>Links</th>");
+        out.append("<td>");
+        out.append("<a href=\""+ServiceStatusServlet.getUrl(service.getName())+"\">");
+        out.append("<span data-feather=\"info\"></span> ");
+        out.append("Status</a>");
+        out.append("<br>");
+        out.append("<a href=\""+LogServlet.getFilesOfService(service.getName())+"\">");
+        out.append("<span data-feather=\""+Layout.LOG+"\"></span> ");
+        out.append("Service Logfiles</a><br>");
+        out.append("</td>");
+        out.append("</tr>");
+        out.append("</table>");
+
+        out.append("<div class=\"card-body\">");
+        out.append("<form action=\""+ListServicesServlet.URL+"\" method=\"POST\" style=\"display: inline\">");
+        out.append("<input type=\"hidden\" name=\"service\" value=\"").append(service.getName()).append("\">");
+        write(out, "start", Layout.START, "Start");
+        write(out, "stop", Layout.STOP, "Stop");
+        write(out, "restart", Layout.RESTART, "Restart");
+        out.append("</form>");
+
+        out.append("</div></div>");
+    }
+
+    private void writeCard2(Service service, PrintWriter out) throws IOException
+    {
+        out.append("<div class=\"card\" style=\"max-width: 25rem;\">");
+        out.append("<div class=\"card-header\">Build/Deployment</div>\n");
+        out.append("<div class=\"card-body\">");
+        out.append("<a href=\""+LogServlet.getFilesOfTask(service.getName(), "build")+"\">");
+        out.append("<span data-feather=\""+Layout.LOG+"\"></span> ");
+        out.append("Build Logfiles</a><br>");
+        out.append("<a href=\""+LogServlet.getFilesOfTask(service.getName(), "deploy")+"\">");
+        out.append("<span data-feather=\""+Layout.LOG+"\"></span> ");
+        out.append("Deploy Logfiles</a><br>");
+        if(service.supportsBuildAndDeployment())
+        {
+            out.append("<form action=\"/deploy\" method=\"POST\" style=\"display: inline\">");
+            if(!service.isBuildOrDeployProcessRunning())
+            {
+                out.append("<input type=\"hidden\" name=\"service\" value=\"").append(service.getName()).append("\">");
+                write(out, "compile", Layout.COMPILE, "Compile");
+                write(out, "deploy", Layout.DEPLOY, "Deploy");
+                out.append("</form>");
+            }
+            else
+                out.append("Build/deploy currently running");
+        }
+        out.append("</div></div>");
+    }
+
+    private void writeCard3(Service service, PrintWriter out) throws IOException
+    {
+        out.append("<div class=\"card\" style=\"max-width: 25rem;\">");
+        out.append("<div class=\"card-header\">Git</div>\n");
+        out.append("<div class=\"card-body\">");
+        
+        String repoUrl = service.getRepositoryUrl();
+        
+        out.append("<a href=\"").append(repoUrl).append("\">").append(new URL(repoUrl).getHost()).append("</a>");
+        
+        /*out.append("<table>");// class=\"table\">");
+        out.append("<tr><th>Repository URL:</th><td>").append(service.getRepositoryUrl()).append("</td></tr>");
+        out.append("<tr><th>Local Git Repo:</th><td>").append(service.getLocalGitRoot().toString()).append("</td></tr>");
+        out.append("</table>");*/
+        out.append("</div></div>");
     }
 }

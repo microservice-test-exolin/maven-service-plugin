@@ -15,14 +15,18 @@ import org.exolin.msp.service.LogFile;
  */
 public class StubService extends AbstractService
 {
+    private final Path localGitRootPath;
+    private final String repositoryUrl;
     private final Map<String, LogFile> logFiles;
     
-    public StubService(String name, SystemAbstraction sys, Map<String, LogFile> logFiles)
+    public StubService(String name, Path gitRootPath, String repositoryUrl, SystemAbstraction sys, Map<String, LogFile> logFiles)
     {
         super(name, sys);
+        this.localGitRootPath = gitRootPath;
+        this.repositoryUrl = repositoryUrl;
         this.logFiles = logFiles;
     }
-
+    
     @Override
     public boolean supportsBuildAndDeployment() throws IOException
     {
@@ -55,13 +59,13 @@ public class StubService extends AbstractService
     @Override
     public Path getLocalGitRoot() throws IOException
     {
-        throw new UnsupportedOperationException();
+        return localGitRootPath;
     }
     
     @Override
     public String getRepositoryUrl() throws IOException
     {
-        throw new UnsupportedOperationException();
+        return repositoryUrl;
     }
 
     @Override
