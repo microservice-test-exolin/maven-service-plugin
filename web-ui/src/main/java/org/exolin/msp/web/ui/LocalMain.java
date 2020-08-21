@@ -63,8 +63,10 @@ public class LocalMain
                     new StubService("test-milkboi-telegram", sys, Collections.emptyMap())
             ));
         
-        pm.register(services.getServices().get(0).getName(), "build", Arrays.asList("mvn", "build"), Paths.get("."), System.currentTimeMillis(), "testcode");
-        pm.register(services.getServices().get(1).getName(), "build", Arrays.asList("mvn", "build"), Paths.get("."), System.currentTimeMillis(), "testcode");
+        Process process = new ProcessBuilder("cmd", "/c", "echo x").start();
+        
+        pm.register(services.getServices().get(0).getName(), "build", Arrays.asList("mvn", "build"), Paths.get("."), System.currentTimeMillis(), "testcode").setProcess(process);
+        pm.register(services.getServices().get(1).getName(), "build", Arrays.asList("mvn", "build"), Paths.get("."), System.currentTimeMillis(), "testcode").setProcess(process);
         
         run(pm, sys, services, Config.read(Paths.get("../config/config")), false);
     }
