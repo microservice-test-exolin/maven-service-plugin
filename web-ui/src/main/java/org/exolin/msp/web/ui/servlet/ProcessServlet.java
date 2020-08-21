@@ -31,6 +31,16 @@ public class ProcessServlet extends HttpServlet
     {
         return dateTime.toString().replace('T', ' ');
     }
+
+    private static CharSequence formatExitCode(Integer exitCode)
+    {
+        if(exitCode == null)
+            return "<span class=\"badge badge-secondary\">unknown</span>";
+        else if(exitCode == 0)
+            return "<span class=\"badge badge-success\">successful</span>";
+        else
+            return "<span class=\"badge badge-danger\">failed ("+exitCode+")</span>";
+    }
     
     private final ProcessManager pm;
 
@@ -86,7 +96,7 @@ public class ProcessServlet extends HttpServlet
         out.append("<th>Started at</th>");
         out.append("<th style=\"text-align: right\">Runtime</th>");
         out.append("<th>Log</th>");
-        out.append("<th>Exit Code</th>");
+        out.append("<th>Result</th>");
         out.append("</tr>");
 
         if(processes.isEmpty())
@@ -116,7 +126,7 @@ public class ProcessServlet extends HttpServlet
             out.append("<td>").append(format(process.getStartedAt())).append("</td>");
             out.append("<td style=\"text-align: right\">").append(runtime != -1 ? runtime/1000.+" s" : "<em>N/A</em>").append("</td>");
             out.append("<td><a href=\"").append(LogFileShowServlet.getFileUrl(process.getService(), logFileName)).append("\">Logfile</a></td>");
-            out.append("<td>").append(Optional.ofNullable(process.getExitCode()).map(Object::toString).orElse("<em>unknown</em>")).append("</td>");
+            out.append("<td>").append(formatExitCode(process.getExitCode())).append("</td>");
             out.append("</tr>");
         }
 
