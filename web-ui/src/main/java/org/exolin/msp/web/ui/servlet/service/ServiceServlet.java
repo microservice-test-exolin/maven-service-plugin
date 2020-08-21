@@ -63,20 +63,12 @@ public class ServiceServlet extends HttpServlet
             
             out.append("<h1>Service "+serviceName+"</h1>");
             
-            out.append("<div class=\"row\">");
-            
-            out.append("<div class=\"col-3\">");
+            out.append("<style>.card-row .card{float: left; margin-right: 1em}</style>");
+            out.append("<div class=\"card-row\">");
             writeCard1(service, out);
-            out.append("</div>");
-            
-            out.append("<div class=\"col-3\">");
             writeCard2(service, out);
-            out.append("</div>");
-            
-            out.append("<div class=\"col-3\">");
             writeCard3(service, out);
-            out.append("</div>");
-            
+            out.append("<div style=\"clear:both\"></div>");
             out.append("</div>");
             
             out.append("<h2>Builds/deploys</h2>");
