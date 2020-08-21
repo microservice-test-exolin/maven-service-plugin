@@ -1,12 +1,23 @@
 package org.exolin.msp.web.ui;
 
 import java.io.IOException;
+import java.io.InputStream;
+import java.net.ConnectException;
 import java.net.HttpURLConnection;
+import java.net.Inet4Address;
+import java.net.Inet6Address;
+import java.net.InetAddress;
 import java.net.MalformedURLException;
+import java.net.NetworkInterface;
+import java.net.SocketException;
 import java.net.URL;
+import java.net.URLConnection;
+import java.net.UnknownHostException;
 import java.nio.file.Paths;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.Optional;
 import java.util.Properties;
 import org.eclipse.jetty.server.Server;
 import org.eclipse.jetty.server.ServerConnector;
@@ -60,6 +71,28 @@ public class MainTest
     private HttpURLConnection open(String path) throws MalformedURLException, IOException
     {
         return ((HttpURLConnection)new URL("http://localhost:"+port+"/"+path).openConnection());
+    }
+    
+    @Test
+    public void testAccessibleWithNonLocalhost() throws Exception
+    {
+        InetAddress nonLocalhostAddress = Collections.list(java.net.NetworkInterface.getNetworkInterfaces())
+                .stream()
+                .flatMap(inf -> Collections.list(inf.getInetAddresses()).stream())
+                .filter(f -> !f.isLoopbackAddress())
+                .filter(f -> f instanceof Inet4Address)
+                .findFirst().get();
+        
+        System.out.println("http://"+nonLocalhostAddress.getHostAddress()+":"+port+"/");
+        
+        HttpURLConnection con = (HttpURLConnection)new URL("http://"+nonLocalhostAddress.getHostAddress()+":"+port+"/").openConnection();
+        
+        try{
+            con.connect();
+            fail("Accessible over "+nonLocalhostAddress.getHostAddress());
+        }catch(ConnectException e){
+            assertEquals("Connection refused: connect", e.getMessage());
+        }
     }
     
     @Test
