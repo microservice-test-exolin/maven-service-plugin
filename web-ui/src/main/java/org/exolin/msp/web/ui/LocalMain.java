@@ -37,6 +37,8 @@ public class LocalMain
     
     public static void main(String[] args) throws Exception
     {
+        ConsoleLog.setup();
+        
         String TS = "2020-01-02-030405";
         
         Path logDirectory = Paths.get("log");
