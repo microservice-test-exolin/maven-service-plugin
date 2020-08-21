@@ -3,6 +3,7 @@ package org.exolin.msp.web.ui.servlet;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.nio.file.Path;
+import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -25,6 +26,11 @@ import org.slf4j.LoggerFactory;
 public class ProcessServlet extends HttpServlet
 {
     private static final Logger LOGGER = LoggerFactory.getLogger(ProcessServlet.class);
+
+    private static String format(LocalDateTime dateTime)
+    {
+        return dateTime.toString().replace('T', ' ');
+    }
     
     private final ProcessManager pm;
 
@@ -97,8 +103,8 @@ public class ProcessServlet extends HttpServlet
             out.append("<td>").append(Optional.ofNullable(process.getInitiator()).map(ProcessServlet::displayInitiator).orElse("<em>unknown</em>")).append("</td>");
             out.append("<td>").append(String.join(" ", process.getCmd())).append("</td>");
             out.append("<td>").append(Optional.ofNullable(process.getWorkingDirectory()).map(Path::toString).orElse("<em>unknown</em>")).append("</td>");
-            out.append("<td>").append(process.getStartedAt().toString()).append("</td>");
-            out.append("<td>").append(runtime != -1 ? runtime/1000.+" s" : "<em>N/A</em>").append("</td>");
+            out.append("<td>").append(format(process.getStartedAt())).append("</td>");
+            out.append("<td style=\"text-align: right\">").append(runtime != -1 ? runtime/1000.+" s" : "<em>N/A</em>").append("</td>");
             out.append("<td><a href=\"").append(LogFileShowServlet.getFileUrl(process.getService(), logFileName)).append("\">Logfile</a></td>");
             out.append("<td>").append(Optional.ofNullable(process.getExitCode()).map(Object::toString).orElse("<em>unknown</em>")).append("</td>");
             out.append("</tr>");
