@@ -63,11 +63,21 @@ public class ServiceServlet extends HttpServlet
             
             out.append("<h1>Service "+serviceName+"</h1>");
             
+            out.append("<div class=\"row\">");
+            
+            out.append("<div class=\"col-3\">");
             writeCard1(service, out);
-            out.append("<br>");
+            out.append("</div>");
+            
+            out.append("<div class=\"col-3\">");
             writeCard2(service, out);
-            out.append("<br>");
+            out.append("</div>");
+            
+            out.append("<div class=\"col-3\">");
             writeCard3(service, out);
+            out.append("</div>");
+            
+            out.append("</div>");
             
             out.append("<h2>Builds/deploys</h2>");
             ProcessServlet.list(out, new ReverseList<>(pm.getProcessesIncludingHistory(service.getName())), false, false);
@@ -108,7 +118,7 @@ public class ServiceServlet extends HttpServlet
 
     private void writeCard1(Service service, PrintWriter out) throws IOException
     {
-        out.append("<div class=\"card\" style=\"max-width: 25rem;\">");
+        out.append("<div class=\"card\">");// style=\"max-width: 25rem;\">");
         out.append("<div class=\"card-header\">Service</div>\n");
 
         out.append("<table class=\"table table-sm\">");
@@ -157,7 +167,7 @@ public class ServiceServlet extends HttpServlet
 
     private void writeCard2(Service service, PrintWriter out) throws IOException
     {
-        out.append("<div class=\"card\" style=\"max-width: 25rem;\">");
+        out.append("<div class=\"card\">");// style=\"max-width: 25rem;\">");
         out.append("<div class=\"card-header\">Build/Deployment</div>\n");
         out.append("<div class=\"card-body\">");
         out.append("<a href=\""+LogServlet.getFilesOfTask(service.getName(), "build")+"\">");
@@ -184,7 +194,7 @@ public class ServiceServlet extends HttpServlet
 
     private void writeCard3(Service service, PrintWriter out) throws IOException
     {
-        out.append("<div class=\"card\" style=\"max-width: 25rem;\">");
+        out.append("<div class=\"card\">");// style=\"max-width: 25rem;\">");
         out.append("<div class=\"card-header\">Git</div>\n");
         out.append("<div class=\"card-body\">");
         
