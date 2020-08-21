@@ -52,19 +52,19 @@ public class ProcessServlet extends HttpServlet
             
             out.append("<h1>Processes</h1>");
             
-            list(out, pm.getProcesses(), true);
+            list(out, pm.getProcesses(), true, true);
             List<ProcessInfo> processesHistory = pm.getProcessesHistory();
             if(!processesHistory.isEmpty())
             {
                 out.append("<h2>History</h2>");
-                list(out, new ReverseList<>(processesHistory), true);
+                list(out, new ReverseList<>(processesHistory), true, true);
             }
             
             Layout.end(out);
         }
     }
     
-    public static void list(PrintWriter out, List<ProcessInfo> processes, boolean showServiceTitle)
+    public static void list(PrintWriter out, List<ProcessInfo> processes, boolean showServiceTitle, boolean details)
     {
         out.append("<div class=\"table-responsive\">");
         out.append("<table class=\"table table-striped table-sm\">");
@@ -76,10 +76,15 @@ public class ProcessServlet extends HttpServlet
         
         out.append("<th>Name</th>");
         out.append("<th>Initiater</th>");
-        out.append("<th>Commandline</th>");
-        out.append("<th>Working directory</th>");
+        
+        if(details)
+        {
+            out.append("<th>Commandline</th>");
+            out.append("<th>Working directory</th>");
+        }
+        
         out.append("<th>Started at</th>");
-        out.append("<th>Runtime</th>");
+        out.append("<th style=\"text-align: right\">Runtime</th>");
         out.append("<th>Log</th>");
         out.append("<th>Exit Code</th>");
         out.append("</tr>");
@@ -101,8 +106,13 @@ public class ProcessServlet extends HttpServlet
             
             out.append("<td>").append(process.getName()).append("</td>");
             out.append("<td>").append(Optional.ofNullable(process.getInitiator()).map(ProcessServlet::displayInitiator).orElse("<em>unknown</em>")).append("</td>");
-            out.append("<td>").append(String.join(" ", process.getCmd())).append("</td>");
-            out.append("<td>").append(Optional.ofNullable(process.getWorkingDirectory()).map(Path::toString).orElse("<em>unknown</em>")).append("</td>");
+            
+            if(details)
+            {
+                out.append("<td>").append(String.join(" ", process.getCmd())).append("</td>");
+                out.append("<td>").append(Optional.ofNullable(process.getWorkingDirectory()).map(Path::toString).orElse("<em>unknown</em>")).append("</td>");
+            }
+            
             out.append("<td>").append(format(process.getStartedAt())).append("</td>");
             out.append("<td style=\"text-align: right\">").append(runtime != -1 ? runtime/1000.+" s" : "<em>N/A</em>").append("</td>");
             out.append("<td><a href=\"").append(LogFileShowServlet.getFileUrl(process.getService(), logFileName)).append("\">Logfile</a></td>");

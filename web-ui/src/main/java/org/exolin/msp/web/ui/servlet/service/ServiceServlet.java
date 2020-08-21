@@ -70,7 +70,7 @@ public class ServiceServlet extends HttpServlet
             writeCard3(service, out);
             
             out.append("<h2>Builds/deploys</h2>");
-            ProcessServlet.list(out, new ReverseList<>(pm.getProcessesIncludingHistory(service.getName())), false);
+            ProcessServlet.list(out, new ReverseList<>(pm.getProcessesIncludingHistory(service.getName())), false, false);
             
             //out.append("</div>");
             Layout.end(out);
