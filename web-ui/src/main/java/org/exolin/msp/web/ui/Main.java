@@ -13,6 +13,7 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 import javax.servlet.DispatcherType;
+import org.eclipse.jetty.jsp.JettyJspServlet;
 import org.eclipse.jetty.server.Connector;
 import org.eclipse.jetty.server.Server;
 import org.eclipse.jetty.server.ServerConnector;
@@ -153,7 +154,7 @@ public class Main
                 throw new UnsupportedOperationException();
         }
         
-        servletHandler.addServletWithMapping(IndexServlet.class, "/*");
+        //servletHandler.addServletWithMapping(IndexServlet.class, "/*");
         
         servletHandler.addServletWithMapping(StatusServlet.class, "/status");
         
@@ -177,6 +178,8 @@ public class Main
         servletHandler.addServletWithMapping(ServerInfoServlet.class, ServerInfoServlet.URL);
         servletHandler.addServletWithMapping(SystemPropertiesServlet.class, SystemPropertiesServlet.URL);
         servletHandler.addServletWithMapping(SystemEnvironmentServlet.class, SystemEnvironmentServlet.URL);
+        
+        servletHandler.addServletWithMapping(JettyJspServlet.class, "*.jsp").setServlet(new JettyJspServlet());
         
         server.setHandler(servletHandler);
         

@@ -18,6 +18,7 @@
         <service.user>root</service.user>
         
         <jetty.version>9.4.17.v20190418</jetty.version>
+        <jetty.jsp.version>9.3.0.M1</jetty.jsp.version>
     </properties>
     <dependencies>
         <dependency>
@@ -27,8 +28,14 @@
         </dependency>
         <dependency>
             <groupId>org.eclipse.jetty</groupId>
-            <artifactId>jetty-servlet</artifactId>
+            <artifactId>apache-jsp</artifactId>
             <version>${jetty.version}</version>
+            <type>jar</type>
+        </dependency>
+        <dependency>
+            <groupId>org.eclipse.jetty</groupId>
+            <artifactId>jetty-jsp</artifactId>
+            <version>${jetty.jsp.version}</version>
         </dependency>
         <dependency>
             <groupId>com.fasterxml.jackson.core</groupId>
@@ -112,6 +119,28 @@
             <plugin>
                 <artifactId>maven-surefire-plugin</artifactId>
                 <version>2.22.2</version>
+            </plugin>
+            <plugin>
+                <groupId>org.eclipse.jetty</groupId>
+                <artifactId>jetty-maven-plugin</artifactId>
+                <configuration>
+                    <webApp>
+                        <contextPath>/${artifactId}</contextPath>
+                    </webApp>
+                    <scanIntervalSeconds>5</scanIntervalSeconds>
+                </configuration>
+                <dependencies>
+                    <dependency>
+                        <groupId>com.sun.faces</groupId>
+                        <artifactId>jsf-api</artifactId>
+                        <version>2.0.8</version>
+                    </dependency>
+                    <dependency>
+                        <groupId>com.sun.faces</groupId>
+                        <artifactId>jsf-impl</artifactId>
+                        <version>2.0.8</version>
+                    </dependency>
+                </dependencies>
             </plugin>
         </plugins>
     </build>

@@ -6,6 +6,8 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  *
@@ -13,11 +15,14 @@ import javax.servlet.http.HttpServletResponse;
  */
 public class IndexServlet extends HttpServlet
 {
+    private static final Logger LOGGER = LoggerFactory.getLogger(IndexServlet.class);
+    
     @Override
     protected void service(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException
     {
         if(req.getPathInfo() != null && !req.getPathInfo().equals("/"))
         {
+            LOGGER.info("404 @ {}", req.getRequestURI());
             resp.sendError(HttpServletResponse.SC_NOT_FOUND);
             return;
         }
