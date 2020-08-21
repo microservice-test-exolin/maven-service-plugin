@@ -97,7 +97,7 @@ public class MainTest
             con.connect();
             fail("Accessible over "+nonLocalhostAddress.getHostAddress());
         }catch(ConnectException e){
-            assertEquals("Connection refused: connect", e.getMessage());
+            assertTrue(e.getMessage().startsWith("Connection refused"));
         }
     }
     
