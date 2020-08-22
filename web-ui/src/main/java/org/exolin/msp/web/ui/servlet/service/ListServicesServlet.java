@@ -35,6 +35,8 @@ public class ListServicesServlet extends HttpServlet
     {
         resp.setContentType("text/html;charset=UTF-8");
         
+        boolean showBuildOptions = "1".equals(req.getParameter("showBuildOptions"));
+        
         try(PrintWriter out = resp.getWriter())
         {
             Layout.start("Services", req.getRequestURI(), out);
@@ -47,7 +49,10 @@ public class ListServicesServlet extends HttpServlet
             out.append("<tr>");
             out.append("<th>Name</th>");
             out.append("<th>Status</th>");
-            out.append("<th colspan=\"3\"></th>");
+            if(showBuildOptions)
+                out.append("<th colspan=\"3\"></th>");
+            else
+                out.append("<th></th>");
             out.append("</tr>");
             
             for(Service service: services.getServices())
@@ -72,32 +77,35 @@ public class ListServicesServlet extends HttpServlet
                 write(out, "restart", Layout.RESTART, "Restart");
                 out.append("</form>");
                 
-                out.append("<a href=\""+ServiceStatusServlet.getUrl(service.getName())+"\">Status</a>");
+                out.append("<a href=\""+ServiceStatusServlet.getUrl(service.getName())+"\">Status</a> ");
+                out.append("<a href=\""+LogServlet.getFilesOfService(service.getName())+"\">Logfiles</a><br>");
                 
                 out.append("</td>");
                 
-                out.append("<td>");
-                if(service.supportsBuildAndDeployment())
+                if(showBuildOptions)
                 {
-                    out.append("<form action=\"/deploy\" method=\"POST\" style=\"display: inline\">");
-                    if(!service.isBuildOrDeployProcessRunning())
+                    out.append("<td>");
+                    if(service.supportsBuildAndDeployment())
                     {
-                        out.append("<input type=\"hidden\" name=\"service\" value=\"").append(service.getName()).append("\">");
-                        write(out, "compile", Layout.COMPILE, "Compile");
-                        write(out, "deploy", Layout.DEPLOY, "Deploy");
-                        out.append("</form>");
+                        out.append("<form action=\"/deploy\" method=\"POST\" style=\"display: inline\">");
+                        if(!service.isBuildOrDeployProcessRunning())
+                        {
+                            out.append("<input type=\"hidden\" name=\"service\" value=\"").append(service.getName()).append("\">");
+                            write(out, "compile", Layout.COMPILE, "Compile");
+                            write(out, "deploy", Layout.DEPLOY, "Deploy");
+                            out.append("</form>");
+                        }
+                        else
+                            out.append("Build/deploy currently running");
                     }
-                    else
-                        out.append("Build/deploy currently running");
+                    out.append("</td>");
+
+                    out.append("<td>");
+                    out.append("<a href=\""+LogServlet.getFilesOfTask(service.getName(), "build")+"\">Build Logfiles</a><br>");
+                    out.append("<a href=\""+LogServlet.getFilesOfTask(service.getName(), "deploy")+"\">Deploy Logfiles</a><br>");
+
+                    out.append("</td>");
                 }
-                out.append("</td>");
-                
-                out.append("<td>");
-                out.append("<a href=\""+LogServlet.getFilesOfService(service.getName())+"\">Service Logfiles</a><br>");
-                out.append("<a href=\""+LogServlet.getFilesOfTask(service.getName(), "build")+"\">Build Logfiles</a><br>");
-                out.append("<a href=\""+LogServlet.getFilesOfTask(service.getName(), "deploy")+"\">Deploy Logfiles</a><br>");
-                
-                out.append("</td>");
                 
                 out.append("</tr>");
             }
