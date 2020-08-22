@@ -65,9 +65,9 @@ public class ServiceServlet extends HttpServlet
             
             out.append("<style>.card-row .card{float: left; margin-right: 1em}</style>");
             out.append("<div class=\"card-row\">");
-            writeCard1(service, out);
-            writeCard2(service, out);
-            writeCard3(service, out);
+            writeServiceCard(service, out);
+            writeBuildDeployCard(service, out);
+            writeGitCard(service, out);
             out.append("<div style=\"clear:both\"></div>");
             out.append("</div>");
             
@@ -108,7 +108,7 @@ public class ServiceServlet extends HttpServlet
         }
     }
 
-    private void writeCard1(Service service, PrintWriter out) throws IOException
+    private void writeServiceCard(Service service, PrintWriter out) throws IOException
     {
         out.append("<div class=\"card\">");// style=\"max-width: 25rem;\">");
         out.append("<div class=\"card-header\">Service</div>\n");
@@ -157,7 +157,7 @@ public class ServiceServlet extends HttpServlet
         out.append("</div></div>");
     }
 
-    private void writeCard2(Service service, PrintWriter out) throws IOException
+    private void writeBuildDeployCard(Service service, PrintWriter out) throws IOException
     {
         out.append("<div class=\"card\">");// style=\"max-width: 25rem;\">");
         out.append("<div class=\"card-header\">Build/Deployment</div>\n");
@@ -184,9 +184,9 @@ public class ServiceServlet extends HttpServlet
         out.append("</div></div>");
     }
 
-    private void writeCard3(Service service, PrintWriter out) throws IOException
+    private void writeGitCard(Service service, PrintWriter out) throws IOException
     {
-        out.append("<div class=\"card\">");// style=\"max-width: 25rem;\">");
+        out.append("<div class=\"card\">");
         out.append("<div class=\"card-header\">Git</div>\n");
         out.append("<div class=\"card-body\">");
         
