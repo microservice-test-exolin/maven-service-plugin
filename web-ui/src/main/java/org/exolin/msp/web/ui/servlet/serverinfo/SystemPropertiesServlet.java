@@ -3,6 +3,7 @@ package org.exolin.msp.web.ui.servlet.serverinfo;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.Map;
+import java.util.TreeMap;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -27,7 +28,7 @@ public class SystemPropertiesServlet extends HttpServlet
         Layout.start("System properties", req.getRequestURI(), out);
         
         out.append("<h1><a href=\""+ServerInfoServlet.URL+"\">System info</a> / System properties</h1>");
-        list(out, (Map)System.getProperties(), SystemPropertiesServlet::format);
+        list(out, new TreeMap(System.getProperties()), SystemPropertiesServlet::format);
         
         Layout.end(out);
     }
