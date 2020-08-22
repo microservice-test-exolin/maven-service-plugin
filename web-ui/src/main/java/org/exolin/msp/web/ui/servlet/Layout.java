@@ -3,6 +3,7 @@ package org.exolin.msp.web.ui.servlet;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.io.Writer;
+import org.exolin.msp.web.ui.Constants;
 import org.exolin.msp.web.ui.Main;
 
 /**
@@ -61,13 +62,13 @@ public class Layout
         w.append("<ul class=\"nav flex-column\">");
         
         writeMenuItem(w, "Dashboard", "/", "home", current.equals("/"));
-        writeMenuItem(w, "Services", "/services", SERVICE, current.startsWith("/services"));
+        writeMenuItem(w, "Services", "/services", SERVICE, current.startsWith("/service"));
         writeMenuItem(w, "Processes", "/processes", PROCESS, current.startsWith("/processes"));
         writeMenuItem(w, "Logs", "/logs", LOG, current.startsWith("/logs"));
         writeMenuItem(w, "Server Info", "/server-info", "server", current.startsWith("/server-info"));
         
         w.write("</ul>");
-        w.write("<div class=\"footer\">Started at "+Main.startedAt+"</div>");
+        w.write("<div class=\"footer\">Started at "+Main.startedAt+"<br>Version:"+Constants.VERSION+"</div>");
         w.write("</div>");
         w.write("</nav>");
     }
