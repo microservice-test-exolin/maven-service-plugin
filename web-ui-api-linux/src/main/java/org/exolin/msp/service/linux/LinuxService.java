@@ -75,6 +75,11 @@ public class LinuxService extends AbstractService
             throw new UnsupportedOperationException("Can't determine original path of "+getName(), e);
         }
     }
+    
+    public static String getLogicalLogFileName(String processName, long timestamp)
+    {
+        return "task/"+processName+"/"+timestamp+".log";
+    }
 
     private void readLogFiles(Optional<String> processName, Path dir, Map<String, LogFile> files) throws IOException
     {

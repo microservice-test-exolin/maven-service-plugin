@@ -12,6 +12,7 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import org.exolin.msp.service.linux.LinuxService;
 import org.exolin.msp.service.pm.ProcessInfo;
 import org.exolin.msp.service.pm.ProcessManager;
 import org.exolin.msp.web.ui.servlet.service.ListServicesServlet;
@@ -106,8 +107,7 @@ public class ProcessServlet extends HttpServlet
         {
             long runtime = process.getRuntime();
             
-            //TODO: passt so nicht
-            String logFileName = process.getName()+" "+process.getStartTime()+".log";
+            String logFileName = LinuxService.getLogicalLogFileName(process.getName(), process.getStartTime());
             
             out.append("<tr>");
             
