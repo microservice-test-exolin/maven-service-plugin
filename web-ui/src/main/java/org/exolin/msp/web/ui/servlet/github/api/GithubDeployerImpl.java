@@ -20,7 +20,7 @@ import org.slf4j.LoggerFactory;
  *
  * @author tomgk
  */
-public class GithubDeployerImpl implements GithubDeployer
+public class GithubDeployerImpl
 {
     private static final Logger LOGGER = LoggerFactory.getLogger(Repo.class);
     
