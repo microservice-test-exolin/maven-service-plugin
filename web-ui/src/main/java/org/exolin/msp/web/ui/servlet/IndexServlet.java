@@ -86,7 +86,7 @@ public class IndexServlet extends HttpServlet
                 
                 out.append("\" role=\"progressbar\" style=\"width: ");
                 out.append(percentage+"");
-                out.append("%\" aria-valuenow=\"25\" aria-valuemin=\"0\" aria-valuemax=\"100\">");
+                out.append("%\" aria-valuenow=\""+count+"\" aria-valuemin=\"0\" aria-valuemax=\""+serviceList.size()+"\">");
                 
                 out.append(status.toString());
                 out.append("</div>");
