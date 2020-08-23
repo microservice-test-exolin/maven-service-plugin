@@ -29,4 +29,6 @@ public interface Service
     public Path getLocalGitRoot() throws IOException;
     public Path getLocalServiceMavenProject() throws IOException;
     public String getRepositoryUrl() throws IOException;
+
+    public Iterable<String> getTasks();
 }

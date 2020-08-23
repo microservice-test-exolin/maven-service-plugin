@@ -130,6 +130,15 @@ public class LinuxService extends AbstractService
         throw new IllegalArgumentException("Not a git repository: "+path);
     }
     
+    private static final String TASK_BUILD = "build";
+    private static final String TASK_DEPLOY = "deploy";
+
+    @Override
+    public Iterable<String> getTasks()
+    {
+        return Arrays.asList(TASK_BUILD, TASK_DEPLOY);
+    }
+    
     @Override
     public void build(boolean asynch, String initiator) throws IOException, InterruptedException
     {
@@ -137,7 +146,7 @@ public class LinuxService extends AbstractService
         
         String[] cmd = {"/bin/bash", "-c", "git pull && mvn package"};
         
-        start(gitRoot, "build", cmd, asynch, initiator);
+        start(gitRoot, TASK_BUILD, cmd, asynch, initiator);
     }
     
     @Override
@@ -147,7 +156,7 @@ public class LinuxService extends AbstractService
         
         String[] cmd = {"/bin/bash", "-c", "/root/repos/deploy.sh"};
         
-        start(serviceSrcDirectory, "deploy", cmd, asynch, initiator);
+        start(serviceSrcDirectory, TASK_DEPLOY, cmd, asynch, initiator);
     }
     
     private void start(Path workingDirectory, String name, String[] cmd, boolean asynch, String initiator) throws IOException, InterruptedException

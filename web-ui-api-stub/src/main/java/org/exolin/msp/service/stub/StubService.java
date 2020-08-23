@@ -2,6 +2,7 @@ package org.exolin.msp.service.stub;
 
 import java.io.IOException;
 import java.nio.file.Path;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
@@ -51,6 +52,12 @@ public class StubService extends AbstractService
     public void deploy(boolean asynch, String initiator) throws IOException, InterruptedException
     {
         processStart = System.currentTimeMillis();
+    }
+
+    @Override
+    public Iterable<String> getTasks()
+    {
+        return Arrays.asList("build", "deploy");
     }
 
     @Override

@@ -88,11 +88,25 @@ public class LogServlet extends HttpServlet
             
             out.append("<h1>Logfiles</h1>");
             
+            out.append("<h2>Services</h2>");
+            
             for(Service service: services.getServices())
             {
                 out.append("<a href=\"").append(getFilesOfService(service.getName())).append("\">");
                 Icon.SERVICE.writeTo(out);
                 out.append(service.getName()).append("</a><br>");
+            }
+            
+            out.append("<h2>Tasks</h2>");
+            
+            for(Service service: services.getServices())
+            {
+                for(String task: service.getTasks())
+                {
+                    out.append("<a href=\"").append(getFilesOfTask(service.getName(), task)).append("\">");
+                    Icon.SERVICE.writeTo(out);
+                    out.append(service.getName()).append(" - Task ").append(task).append("</a><br>");
+                }
             }
             
             Layout.end(out);
