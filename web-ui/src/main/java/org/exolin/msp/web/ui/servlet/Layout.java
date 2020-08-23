@@ -58,10 +58,10 @@ public class Layout
         
         w.append("<h6 class=\"sidebar-heading d-flex justify-content-between align-items-center px-3 mt-4 mb-1 text-muted\">Services</h6>");
         writeMenuItem(w, "Services", "/services", Icon.SERVICE, current.startsWith("/service"));
-        writeMenuItem(w, "Processes", "/processes", Icon.PROCESS, current.startsWith("/processes"));
         writeMenuItem(w, "Logs", ServiceLogServlet.URL, Icon.LOG, current.startsWith(ServiceLogServlet.URL));
         
         w.append("<h6 class=\"sidebar-heading d-flex justify-content-between align-items-center px-3 mt-4 mb-1 text-muted\">Tasks</h6>");
+        writeMenuItem(w, "Processes", "/processes", Icon.PROCESS, current.startsWith("/processes"));
         writeMenuItem(w, "Logs", TaskLogServlet.URL, Icon.LOG, current.startsWith(TaskLogServlet.URL));
         
         w.append("<h6 class=\"sidebar-heading d-flex justify-content-between align-items-center px-3 mt-4 mb-1 text-muted\">Server</h6>");
