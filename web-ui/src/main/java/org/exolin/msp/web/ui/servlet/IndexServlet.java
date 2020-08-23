@@ -68,12 +68,29 @@ public class IndexServlet extends HttpServlet
                 }
             }).collect(Collectors.groupingBy(Function.identity(), Collectors.counting()));
             
-            out.append("<p>Service status: ");
+            out.append("<p>Service status:</p>");
+            
+            out.append("<div>");
             counts.forEach((status, count) -> {
-                out.append(count+"").append("x ");
-                ServiceServlet.writeStatus(out, status);
+                double percentage = count*100./serviceList.size();
+                
+                out.append("<div style=\"width: ");
+                out.append(percentage+"");
+                out.append("%;display:inline-block;border: 1px solid black;text-align:center;padding:0.25em;background:");
+                
+                switch(status)
+                {
+                    case ACTIVE: out.append("green"); break;
+                    case INACTIVE: out.append("#ddd"); break;
+                    case FAILED: out.append("red"); break;
+                    default: out.append("white");
+                }
+                
+                out.append("\">");
+                out.append(status.toString());
+                out.append("</div>");
             });
-            out.append("</p>");
+            out.append("</div>");
             
             out.append("<p>Currently running tasks: ").append(pm.getProcesses().size()+"").append("</p>");
             
