@@ -82,29 +82,32 @@ public class ServiceServlet extends HttpServlet
         }
     }
 
+    public static void writeStatus(PrintWriter out, StatusType statusType)
+    {
+        switch(statusType)
+        {
+            case ACTIVE:
+                out.append("<span title=\"running\" class=\"badge badge-success\">running</span>");
+                break;
+
+            case FAILED:
+                out.append("<span title=\"failed to start\" class=\"badge badge-danger\">failed</span>");
+                break;
+
+            case INACTIVE:
+                out.append("<span title=\"not started\" class=\"badge badge-secondary\">inactive</span>");
+                break;
+
+            default:
+                out.append("<span class=\"badge badge-secondary\">"+statusType+"</span>");
+                break;
+        }
+    }
+    
     static void writeStatus(PrintWriter out, StatusInfo status)
     {
         try{
-            StatusType statusType = status.getStatus();
-            
-            switch(statusType)
-            {
-                case ACTIVE:
-                    out.append("<span title=\"running\" class=\"badge badge-success\">running</span>");
-                    break;
-                    
-                case FAILED:
-                    out.append("<span title=\"failed to start\" class=\"badge badge-danger\">failed</span>");
-                    break;
-                    
-                case INACTIVE:
-                    out.append("<span title=\"not started\" class=\"badge badge-secondary\">inactive</span>");
-                    break;
-                    
-                default:
-                    out.append("<span class=\"badge badge-secondary\">"+statusType+"</span>");
-                    break;
-            }
+            writeStatus(out, status.getStatus());
         }catch(UnsupportedOperationException e){
             LOGGER.warn("Couldn't determine status", e);
             out.append("<span title=\"unknown because failed to fetch status\" class=\"badge badge-secondary\">unknown</span>");

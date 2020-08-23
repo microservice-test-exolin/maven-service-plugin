@@ -2,10 +2,21 @@ package org.exolin.msp.web.ui.servlet;
 
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.util.List;
+import java.util.Map;
+import java.util.function.Function;
+import java.util.stream.Collectors;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import org.exolin.msp.core.StatusType;
+import org.exolin.msp.service.Service;
+import org.exolin.msp.service.Services;
+import org.exolin.msp.service.pm.ProcessManager;
+import org.exolin.msp.web.ui.servlet.service.ServiceServlet;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  *
@@ -13,6 +24,17 @@ import javax.servlet.http.HttpServletResponse;
  */
 public class IndexServlet extends HttpServlet
 {
+    private static final Logger LOGGER = LoggerFactory.getLogger(IndexServlet.class);
+    
+    private final Services services;
+    private final ProcessManager pm;
+
+    public IndexServlet(Services services, ProcessManager pm)
+    {
+        this.services = services;
+        this.pm = pm;
+    }
+    
     @Override
     protected void service(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException
     {
@@ -36,13 +58,24 @@ public class IndexServlet extends HttpServlet
             
             out.append("<h1>Service Web UI</h1>");
             
-            out.append("<p><a href=\"/services\">");
-            Icon.SERVICE.writeTo(out);
-            out.append(" Services</a></p>");
+            List<Service> serviceList = services.getServices();
+            Map<StatusType, Long> counts = serviceList.stream().map(s -> {
+                try{
+                    return s.getStatus().getStatus();
+                }catch(IOException|UnsupportedOperationException e){
+                    LOGGER.error("Couldn't determine status", e);
+                    return null;
+                }
+            }).collect(Collectors.groupingBy(Function.identity(), Collectors.counting()));
             
-            out.append("<p><a href=\"/processes\">");
-            Icon.PROCESS.writeTo(out);
-            out.append(" Processes</a></p>");
+            out.append("<p>Service status: ");
+            counts.forEach((status, count) -> {
+                out.append(count+"").append("x ");
+                ServiceServlet.writeStatus(out, status);
+            });
+            out.append("</p>");
+            
+            out.append("<p>Currently running tasks: ").append(pm.getProcesses().size()+"").append("</p>");
             
             Layout.end(out);
         }

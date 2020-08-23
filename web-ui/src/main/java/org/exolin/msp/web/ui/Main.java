@@ -155,7 +155,7 @@ public class Main
                 throw new UnsupportedOperationException();
         }
         
-        servletHandler.addServletWithMapping(IndexServlet.class, "/*");
+        servletHandler.addServletWithMapping(IndexServlet.class, "/*").setServlet(new IndexServlet(services, pm));
         
         servletHandler.addServletWithMapping(StatusServlet.class, "/status");
         
