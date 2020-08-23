@@ -27,7 +27,7 @@ public class Layout
         w.append("</nav>");
     }
     
-    private static void writeMenuItem(Writer out, String title, String link, Feather icon, boolean cur) throws IOException
+    private static void writeMenuItem(Writer out, String title, String link, Icon icon, boolean cur) throws IOException
     {
          out.append("<li class=\"nav-item\">\n");
          out.append("<a class=\"nav-link");
@@ -51,11 +51,11 @@ public class Layout
         w.append("<div class=\"sidebar-sticky\">");
         w.append("<ul class=\"nav flex-column\">");
         
-        writeMenuItem(w, "Dashboard", "/", Feather.HOME, current.equals("/"));
-        writeMenuItem(w, "Services", "/services", Feather.SERVICE, current.startsWith("/service"));
-        writeMenuItem(w, "Processes", "/processes", Feather.PROCESS, current.startsWith("/processes"));
-        writeMenuItem(w, "Logs", "/logs", Feather.LOG, current.startsWith("/logs"));
-        writeMenuItem(w, "Server Info", "/server-info", Feather.SERVER, current.startsWith("/server-info"));
+        writeMenuItem(w, "Dashboard", "/", Icon.HOME, current.equals("/"));
+        writeMenuItem(w, "Services", "/services", Icon.SERVICE, current.startsWith("/service"));
+        writeMenuItem(w, "Processes", "/processes", Icon.PROCESS, current.startsWith("/processes"));
+        writeMenuItem(w, "Logs", "/logs", Icon.LOG, current.startsWith("/logs"));
+        writeMenuItem(w, "Server Info", "/server-info", Icon.SERVER, current.startsWith("/server-info"));
         
         w.write("</ul>");
         w.write("<div class=\"footer\">Started at "+Main.startedAt+"<br>Version:"+Constants.VERSION+"</div>");
@@ -74,8 +74,7 @@ public class Layout
         out.append("<script src=\"https://getbootstrap.com/docs/4.1/assets/js/vendor/popper.min.js\"></script>");
         out.append("<script src=\"https://getbootstrap.com/docs/4.1/dist/js/bootstrap.min.js\"></script>");
 
-        out.append("<script src=\"https://unpkg.com/feather-icons/dist/feather.min.js\"></script>");
-        out.append("<script>feather.replace()</script>");
+        Icon.script(out);
 
         out.append("</body>");
         out.append("</html>");

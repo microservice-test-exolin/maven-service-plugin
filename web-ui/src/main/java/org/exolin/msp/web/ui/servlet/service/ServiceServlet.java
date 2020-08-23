@@ -13,7 +13,7 @@ import org.exolin.msp.core.StatusType;
 import org.exolin.msp.service.Service;
 import org.exolin.msp.service.Services;
 import org.exolin.msp.service.pm.ProcessManager;
-import org.exolin.msp.web.ui.servlet.Feather;
+import org.exolin.msp.web.ui.servlet.Icon;
 import org.exolin.msp.web.ui.servlet.Layout;
 import org.exolin.msp.web.ui.servlet.ProcessServlet;
 import org.exolin.msp.web.ui.servlet.ReverseList;
@@ -138,11 +138,11 @@ public class ServiceServlet extends HttpServlet
         out.append("<th>Links</th>");
         out.append("<td>");
         out.append("<a href=\""+ServiceStatusServlet.getUrl(service.getName())+"\">");
-        Feather.INFO.writeTo(out);
+        Icon.INFO.writeTo(out);
         out.append("Status</a>");
         out.append("<br>");
         out.append("<a href=\""+LogServlet.getFilesOfService(service.getName())+"\">");
-        Feather.LOG.writeTo(out);
+        Icon.LOG.writeTo(out);
         out.append("Service Logfiles</a><br>");
         out.append("</td>");
         out.append("</tr>");
@@ -151,9 +151,9 @@ public class ServiceServlet extends HttpServlet
         out.append("<div class=\"card-body\">");
         out.append("<form action=\""+ListServicesServlet.URL+"\" method=\"POST\" style=\"display: inline\">");
         out.append("<input type=\"hidden\" name=\"service\" value=\"").append(service.getName()).append("\">");
-        write(out, "start", Feather.START, "Start");
-        write(out, "stop", Feather.STOP, "Stop");
-        write(out, "restart", Feather.RESTART, "Restart");
+        write(out, "start", Icon.START, "Start");
+        write(out, "stop", Icon.STOP, "Stop");
+        write(out, "restart", Icon.RESTART, "Restart");
         out.append("</form>");
 
         out.append("</div></div>");
@@ -165,10 +165,10 @@ public class ServiceServlet extends HttpServlet
         out.append("<div class=\"card-header\">Build/Deployment</div>\n");
         out.append("<div class=\"card-body\">");
         out.append("<a href=\"").append(LogServlet.getFilesOfTask(service.getName(), "build")).append("\">");
-        Feather.LOG.writeTo(out);
+        Icon.LOG.writeTo(out);
         out.append("Build Logfiles</a><br>");
         out.append("<a href=\""+LogServlet.getFilesOfTask(service.getName(), "deploy")+"\">");
-        Feather.LOG.writeTo(out);
+        Icon.LOG.writeTo(out);
         out.append("Deploy Logfiles</a><br>");
         if(service.supportsBuildAndDeployment())
         {
@@ -176,8 +176,8 @@ public class ServiceServlet extends HttpServlet
             if(!service.isBuildOrDeployProcessRunning())
             {
                 out.append("<input type=\"hidden\" name=\"service\" value=\"").append(service.getName()).append("\">");
-                write(out, "compile", Feather.COMPILE, "Compile");
-                write(out, "deploy", Feather.DEPLOY, "Deploy");
+                write(out, "compile", Icon.COMPILE, "Compile");
+                write(out, "deploy", Icon.DEPLOY, "Deploy");
                 out.append("</form>");
             }
             else

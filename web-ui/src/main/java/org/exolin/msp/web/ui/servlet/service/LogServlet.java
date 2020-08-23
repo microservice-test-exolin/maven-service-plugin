@@ -12,7 +12,7 @@ import org.exolin.msp.service.LogFile;
 import org.exolin.msp.service.Service;
 import org.exolin.msp.service.Services;
 import org.exolin.msp.web.ui.LognameGenerator;
-import org.exolin.msp.web.ui.servlet.Feather;
+import org.exolin.msp.web.ui.servlet.Icon;
 import org.exolin.msp.web.ui.servlet.Layout;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -91,7 +91,7 @@ public class LogServlet extends HttpServlet
             for(Service service: services.getServices())
             {
                 out.append("<a href=\"").append(getFilesOfService(service.getName())).append("\">");
-                Feather.SERVICE.writeTo(out);
+                Icon.SERVICE.writeTo(out);
                 out.append(service.getName()).append("</a><br>");
             }
             
@@ -112,7 +112,7 @@ public class LogServlet extends HttpServlet
             Map<String, LogFile> files = service.getLogFiles(taskName);
             files.forEach((name, lf) -> {
                 out.append("<a href=\""+LogFileShowServlet.getFileUrl(service.getName(), name)+"\">");
-                Feather.LOG.writeTo(out);
+                Icon.LOG.writeTo(out);
                 out.append(LognameGenerator.getLogFileTitle(lf)+"</a><br>");
             });
             if(files.isEmpty())

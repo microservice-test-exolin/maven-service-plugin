@@ -37,11 +37,11 @@ public class IndexServlet extends HttpServlet
             out.append("<h1>Service Web UI</h1>");
             
             out.append("<p><a href=\"/services\">");
-            Feather.SERVICE.writeTo(out);
+            Icon.SERVICE.writeTo(out);
             out.append(" Services</a></p>");
             
             out.append("<p><a href=\"/processes\">");
-            Feather.PROCESS.writeTo(out);
+            Icon.PROCESS.writeTo(out);
             out.append(" Processes</a></p>");
             
             Layout.end(out);
