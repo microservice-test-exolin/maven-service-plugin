@@ -33,14 +33,14 @@ public class ProcessServlet extends HttpServlet
         return dateTime.toString().replace('T', ' ');
     }
 
-    private static CharSequence formatExitCode(Integer exitCode)
+    private static void writeExitCode(PrintWriter out, Integer exitCode)
     {
         if(exitCode == null)
-            return "<span class=\"badge badge-secondary\">unknown</span>";
+            out.append("<span class=\"badge badge-secondary\">unknown</span>");
         else if(exitCode == 0)
-            return "<span class=\"badge badge-success\">successful</span>";
+            out.append("<span class=\"badge badge-success\">successful</span>");
         else
-            return "<span class=\"badge badge-danger\">failed ("+exitCode+")</span>";
+            out.append("<span class=\"badge badge-danger\">failed (").append(exitCode).append(")</span>");
     }
     
     private final ProcessManager pm;
@@ -126,7 +126,9 @@ public class ProcessServlet extends HttpServlet
             out.append("<td>").append(format(process.getStartedAt())).append("</td>");
             out.append("<td style=\"text-align: right\">").append(runtime != -1 ? runtime/1000.+" s" : "<em>N/A</em>").append("</td>");
             out.append("<td><a href=\"").append(LogFileShowServlet.getFileUrl(process.getService(), logFileName)).append("\">Logfile</a></td>");
-            out.append("<td>").append(formatExitCode(process.getExitCode())).append("</td>");
+            out.append("<td>");
+            writeExitCode(out, process.getExitCode());
+            out.append("</td>");
             out.append("</tr>");
         }
 
