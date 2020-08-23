@@ -15,9 +15,10 @@ import org.exolin.msp.service.Services;
 import org.exolin.msp.service.pm.ProcessManager;
 import org.exolin.msp.web.ui.servlet.Icon;
 import org.exolin.msp.web.ui.servlet.Layout;
-import org.exolin.msp.web.ui.servlet.ProcessServlet;
 import org.exolin.msp.web.ui.servlet.ReverseList;
 import static org.exolin.msp.web.ui.servlet.service.ListServicesServlet.write;
+import org.exolin.msp.web.ui.servlet.task.ProcessServlet;
+import org.exolin.msp.web.ui.servlet.task.TaskLogServlet;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -141,7 +142,7 @@ public class ServiceServlet extends HttpServlet
         Icon.INFO.writeTo(out);
         out.append("Status</a>");
         out.append("<br>");
-        out.append("<a href=\""+LogServlet.getFilesOfService(service.getName())+"\">");
+        out.append("<a href=\""+ServiceLogServlet.getFilesOfService(service.getName())+"\">");
         Icon.LOG.writeTo(out);
         out.append("Service Logfiles</a><br>");
         out.append("</td>");

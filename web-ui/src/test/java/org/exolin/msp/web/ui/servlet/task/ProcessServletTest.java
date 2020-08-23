@@ -1,4 +1,4 @@
-package org.exolin.msp.web.ui.servlet;
+package org.exolin.msp.web.ui.servlet.task;
 
 import static org.junit.jupiter.api.Assertions.*;
 import org.junit.jupiter.api.Test;

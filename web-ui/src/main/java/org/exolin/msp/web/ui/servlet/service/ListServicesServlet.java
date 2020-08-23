@@ -11,6 +11,7 @@ import org.exolin.msp.service.Service;
 import org.exolin.msp.service.Services;
 import org.exolin.msp.web.ui.servlet.Icon;
 import org.exolin.msp.web.ui.servlet.Layout;
+import org.exolin.msp.web.ui.servlet.task.TaskLogServlet;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -79,7 +80,7 @@ public class ListServicesServlet extends HttpServlet
                 out.append("</form>");
                 
                 out.append("<a href=\""+ServiceStatusServlet.getUrl(service.getName())+"\">Status</a> ");
-                out.append("<a href=\""+LogServlet.getFilesOfService(service.getName())+"\">Logfiles</a><br>");
+                out.append("<a href=\""+ServiceLogServlet.getFilesOfService(service.getName())+"\">Logfiles</a><br>");
                 
                 out.append("</td>");
                 

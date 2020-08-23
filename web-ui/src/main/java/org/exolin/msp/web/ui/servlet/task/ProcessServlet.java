@@ -1,12 +1,10 @@
-package org.exolin.msp.web.ui.servlet;
+package org.exolin.msp.web.ui.servlet.task;
 
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.nio.file.Path;
 import java.time.LocalDateTime;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.Optional;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
@@ -15,8 +13,10 @@ import javax.servlet.http.HttpServletResponse;
 import org.exolin.msp.service.linux.LinuxService;
 import org.exolin.msp.service.pm.ProcessInfo;
 import org.exolin.msp.service.pm.ProcessManager;
+import org.exolin.msp.web.ui.servlet.Layout;
+import org.exolin.msp.web.ui.servlet.ReverseList;
 import org.exolin.msp.web.ui.servlet.service.ListServicesServlet;
-import org.exolin.msp.web.ui.servlet.service.LogFileShowServlet;
+import org.exolin.msp.web.ui.servlet.log.LogFileShowServlet;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -134,45 +134,6 @@ public class ProcessServlet extends HttpServlet
 
         out.append("</table>");
         out.append("</div>");
-    }
-    
-    static class Initiator
-    {
-        private final String type;
-        private final Map<String, String> args;
-
-        public Initiator(String type, Map<String, String> args)
-        {
-            this.type = type;
-            this.args = args;
-        }
-        
-        public static Initiator parse(String initiator)
-        {
-            String type;
-            Map<String, String> map = new HashMap<>();
-            
-            if(!initiator.contains("["))
-                type = initiator;
-            else if(!initiator.endsWith("]"))
-                throw new IllegalArgumentException(initiator);
-            else
-            {
-                int i = initiator.indexOf('[');
-                type = initiator.substring(0, i);
-                String mapString = initiator.substring(i+1, initiator.length()-1);
-                String[] pairs = mapString.split(",");
-                for(String pair: pairs)
-                {
-                    int eq = pair.indexOf('=');
-                    if(eq == -1)
-                        throw new IllegalArgumentException(initiator);
-                    map.put(pair.substring(0, eq), pair.substring(eq+1));
-                }
-            }
-            
-            return new Initiator(type, map);
-        }
     }
     
     static String displayInitiator(String initiator)

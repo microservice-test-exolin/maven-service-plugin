@@ -14,6 +14,7 @@ import org.exolin.msp.service.Services;
 import org.exolin.msp.web.ui.LognameGenerator;
 import org.exolin.msp.web.ui.servlet.Icon;
 import org.exolin.msp.web.ui.servlet.Layout;
+import org.exolin.msp.web.ui.servlet.log.LogLister;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -21,21 +22,20 @@ import org.slf4j.LoggerFactory;
  *
  * @author tomgk
  */
-public class TaskLogServlet extends HttpServlet
+public class ServiceLogServlet extends HttpServlet
 {
-    private static final Logger LOGGER = LoggerFactory.getLogger(TaskLogServlet.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(ServiceLogServlet.class);
     
     private final Services services;
 
-    public static final String URL = "/tasks/logs";
+    public static final String URL = "/logs/services";
 
-    public TaskLogServlet(Services services)
+    public ServiceLogServlet(Services services)
     {
         this.services = services;
     }
     
     private static final String SERVICE = "service";
-    private static final String TASK = "task";
     
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException
@@ -60,22 +60,16 @@ public class TaskLogServlet extends HttpServlet
                 return;
             }
 
-            String task = req.getParameter(TASK);
-            if(task == null)
-            {
-                resp.sendError(HttpServletResponse.SC_BAD_REQUEST, "Missing parameter task");
-                return;
-            }
-            LogServlet.listServiceFiles(service, Optional.of(task), req, resp);
+            LogLister.listServiceFiles(service, Optional.empty(), req, resp);
         }catch(IOException|RuntimeException e){
             LOGGER.error("Error", e);
             throw e;
         }
     }
     
-    static String getFilesOfTask(String service, String taskName)
+    static String getFilesOfService(String service)
     {
-        return URL+"?"+SERVICE+"="+service+"&"+TASK+"="+taskName;
+        return URL+"?"+SERVICE+"="+service;
     }
     
     private void listServices(Services services, HttpServletRequest req, HttpServletResponse resp) throws IOException
@@ -84,18 +78,15 @@ public class TaskLogServlet extends HttpServlet
         
         try(PrintWriter out = resp.getWriter())
         {
-            Layout.start("Task Logfiles", req.getRequestURI(), out);
+            Layout.start("Service Logfiles", req.getRequestURI(), out);
             
-            out.append("<h1>Task Logfiles</h1>");
+            out.append("<h1>Service Logfiles</h1>");
             
             for(Service service: services.getServices())
             {
-                for(String task: service.getTasks())
-                {
-                    out.append("<a href=\"").append(getFilesOfTask(service.getName(), task)).append("\">");
-                    Icon.SERVICE.writeTo(out);
-                    out.append(service.getName()).append(" - Task ").append(task).append("</a><br>");
-                }
+                out.append("<a href=\"").append(getFilesOfService(service.getName())).append("\">");
+                Icon.SERVICE.writeTo(out);
+                out.append(service.getName()).append("</a><br>");
             }
             
             Layout.end(out);

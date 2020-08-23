@@ -1,4 +1,4 @@
-package org.exolin.msp.web.ui.servlet.service;
+package org.exolin.msp.web.ui.servlet.log;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;

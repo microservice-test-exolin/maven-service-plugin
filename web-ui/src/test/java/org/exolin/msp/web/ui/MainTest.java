@@ -1,25 +1,17 @@
 package org.exolin.msp.web.ui;
 
 import java.io.IOException;
-import java.io.InputStream;
 import java.net.ConnectException;
 import java.net.HttpURLConnection;
 import java.net.Inet4Address;
-import java.net.Inet6Address;
 import java.net.InetAddress;
 import java.net.MalformedURLException;
-import java.net.NetworkInterface;
-import java.net.SocketException;
 import java.net.URL;
-import java.net.URLConnection;
-import java.net.UnknownHostException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
-import java.util.Optional;
 import java.util.Properties;
 import java.util.stream.Collectors;
 import org.eclipse.jetty.server.Server;
