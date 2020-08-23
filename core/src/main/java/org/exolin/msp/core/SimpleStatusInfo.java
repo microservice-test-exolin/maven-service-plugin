@@ -6,17 +6,17 @@ package org.exolin.msp.core;
  */
 public class SimpleStatusInfo implements StatusInfo
 {
-    private final boolean isRunning;
+    private final StatusType statusType;
 
-    public SimpleStatusInfo(boolean isRunning)
+    public SimpleStatusInfo(StatusType statusType)
     {
-        this.isRunning = isRunning;
+        this.statusType = statusType;
     }
 
     @Override
     public StatusType getStatus()
     {
-        return isRunning ? StatusType.ACTIVE : StatusType.INACTIVE;
+        return statusType;
     }
 
     @Override

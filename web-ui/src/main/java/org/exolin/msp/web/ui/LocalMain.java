@@ -61,13 +61,16 @@ public class LocalMain
         Path gitRoot = Paths.get("repos").toAbsolutePath();
         String prefix = "http://github.com/a/";
         
-        SystemAbstraction sys = new PseudoAbstraction(new LogAdapter(PseudoAbstraction.class));
+        PseudoAbstraction sys = new PseudoAbstraction(new LogAdapter(PseudoAbstraction.class));
         
         Services services = new StubServices(Arrays.asList(
                     new StubService("test-mittens-discord", gitRoot.resolve("test-mittens-discord"), gitRoot.resolve("test-mittens-discord"), prefix+"test-mittens-discord", sys, logFiles),
                     new StubService("test-milkboi-discord", gitRoot.resolve("test-milkboi"), gitRoot.resolve("test-milkboi/discord"), prefix+"test-milkboi-discord", sys, Collections.emptyMap()),
                     new StubService("test-milkboi-telegram", gitRoot.resolve("test-milkboi"), gitRoot.resolve("test-milkboi/telegram"), prefix+"test-milkboi-telegram", sys, Collections.emptyMap())
             ));
+        
+        sys.start("test-mittens-discord");
+        sys.setFailed("test-milkboi-discord");
         
         Process process = new ProcessBuilder("cmd", "/c", "echo x").start();
         

@@ -2,8 +2,8 @@ package org.exolin.msp.core;
 
 import java.io.IOException;
 import java.nio.file.Path;
-import java.util.HashSet;
-import java.util.Set;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  *
@@ -12,7 +12,7 @@ import java.util.Set;
 public class PseudoAbstraction implements SystemAbstraction
 {
     private final Log log;
-    private final Set<String> running = new HashSet<>();
+    private final Map<String, StatusType> running = new HashMap<>();
 
     public PseudoAbstraction(Log log)
     {
@@ -35,21 +35,21 @@ public class PseudoAbstraction implements SystemAbstraction
     public void restart(String name) throws IOException
     {
         log.warn("Pseudo > Restart "+name);
-        running.add(name);
+        running.put(name, StatusType.ACTIVE);
     }
 
     @Override
     public StatusInfo getStatus(String name) throws IOException
     {
         log.warn("Pseudo > Check status for "+name);
-        return new SimpleStatusInfo(running.contains(name));
+        return new SimpleStatusInfo(running.getOrDefault(name, StatusType.INACTIVE));
     }
 
     @Override
     public void start(String name) throws IOException
     {
         log.warn("Pseudo > Start "+name);
-        running.add(name);
+        running.put(name, StatusType.ACTIVE);
     }
 
     @Override
@@ -57,5 +57,10 @@ public class PseudoAbstraction implements SystemAbstraction
     {
         log.warn("Pseudo > Stop "+name);
         running.remove(name);
+    }
+    
+    public void setFailed(String name) throws IOException
+    {
+        running.put(name, StatusType.FAILED);
     }
 }
