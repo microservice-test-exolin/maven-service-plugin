@@ -37,15 +37,16 @@ import org.exolin.msp.web.ui.servlet.auth.GithubOAuth;
 import org.exolin.msp.web.ui.servlet.auth.GithubOAuthServlet;
 import org.exolin.msp.web.ui.servlet.github.GithubWebhookServlet;
 import org.exolin.msp.web.ui.servlet.github.api.GithubDeployerImpl;
+import org.exolin.msp.web.ui.servlet.log.LogFileShowServlet;
 import org.exolin.msp.web.ui.servlet.serverinfo.ServerInfoServlet;
 import org.exolin.msp.web.ui.servlet.serverinfo.SystemEnvironmentServlet;
 import org.exolin.msp.web.ui.servlet.serverinfo.SystemPropertiesServlet;
 import org.exolin.msp.web.ui.servlet.service.DeployServlet;
 import org.exolin.msp.web.ui.servlet.service.ListServicesServlet;
-import org.exolin.msp.web.ui.servlet.log.LogFileShowServlet;
 import org.exolin.msp.web.ui.servlet.service.ServiceLogServlet;
 import org.exolin.msp.web.ui.servlet.service.ServiceServlet;
 import org.exolin.msp.web.ui.servlet.service.ServiceStatusServlet;
+import org.exolin.msp.web.ui.servlet.task.ProcessHistoryServlet;
 import org.exolin.msp.web.ui.servlet.task.ProcessServlet;
 import org.exolin.msp.web.ui.servlet.task.TaskLogServlet;
 import org.slf4j.Logger;
@@ -170,6 +171,7 @@ public class Main
         servletHandler.addServletWithMapping(TaskLogServlet.class, TaskLogServlet.URL).setServlet(new TaskLogServlet(services));
         servletHandler.addServletWithMapping(LogFileShowServlet.class, LogFileShowServlet.URL).setServlet(new LogFileShowServlet(services));
         servletHandler.addServletWithMapping(ProcessServlet.class, ProcessServlet.URL).setServlet(new ProcessServlet(pm));
+        servletHandler.addServletWithMapping(ProcessHistoryServlet.class, ProcessHistoryServlet.URL).setServlet(new ProcessHistoryServlet(pm));
         servletHandler.addServletWithMapping(ServiceStatusServlet.class, ServiceStatusServlet.URL).setServlet(new ServiceStatusServlet(services));
         
         if(githubDeployer != null)

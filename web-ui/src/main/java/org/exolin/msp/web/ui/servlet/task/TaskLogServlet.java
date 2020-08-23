@@ -11,7 +11,6 @@ import org.exolin.msp.service.Service;
 import org.exolin.msp.service.Services;
 import org.exolin.msp.web.ui.servlet.Icon;
 import org.exolin.msp.web.ui.servlet.Layout;
-import org.exolin.msp.web.ui.servlet.service.ServiceLogServlet;
 import org.exolin.msp.web.ui.servlet.log.LogLister;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

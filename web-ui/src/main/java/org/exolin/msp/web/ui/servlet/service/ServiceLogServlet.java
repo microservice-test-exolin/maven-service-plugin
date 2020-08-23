@@ -2,16 +2,13 @@ package org.exolin.msp.web.ui.servlet.service;
 
 import java.io.IOException;
 import java.io.PrintWriter;
-import java.util.Map;
 import java.util.Optional;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import org.exolin.msp.service.LogFile;
 import org.exolin.msp.service.Service;
 import org.exolin.msp.service.Services;
-import org.exolin.msp.web.ui.LognameGenerator;
 import org.exolin.msp.web.ui.servlet.Icon;
 import org.exolin.msp.web.ui.servlet.Layout;
 import org.exolin.msp.web.ui.servlet.log.LogLister;

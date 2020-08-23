@@ -6,6 +6,8 @@ import java.io.Writer;
 import org.exolin.msp.web.ui.Constants;
 import org.exolin.msp.web.ui.Main;
 import org.exolin.msp.web.ui.servlet.service.ServiceLogServlet;
+import org.exolin.msp.web.ui.servlet.task.ProcessHistoryServlet;
+import org.exolin.msp.web.ui.servlet.task.ProcessServlet;
 import org.exolin.msp.web.ui.servlet.task.TaskLogServlet;
 
 /**
@@ -61,7 +63,8 @@ public class Layout
         writeMenuItem(w, "Logs", ServiceLogServlet.URL, Icon.LOG, current.startsWith(ServiceLogServlet.URL));
         
         w.append("<h6 class=\"sidebar-heading d-flex justify-content-between align-items-center px-3 mt-4 mb-1 text-muted\">Tasks</h6>");
-        writeMenuItem(w, "Processes", "/processes", Icon.PROCESS, current.startsWith("/processes"));
+        writeMenuItem(w, "Processes", ProcessServlet.URL, Icon.PROCESS, current.startsWith(ProcessServlet.URL));
+        writeMenuItem(w, "Process History", ProcessHistoryServlet.URL, Icon.PROCESS, current.startsWith(ProcessHistoryServlet.URL));
         writeMenuItem(w, "Logs", TaskLogServlet.URL, Icon.LOG, current.startsWith(TaskLogServlet.URL));
         
         w.append("<h6 class=\"sidebar-heading d-flex justify-content-between align-items-center px-3 mt-4 mb-1 text-muted\">Server</h6>");

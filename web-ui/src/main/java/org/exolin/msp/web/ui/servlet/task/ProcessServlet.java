@@ -14,9 +14,8 @@ import org.exolin.msp.service.linux.LinuxService;
 import org.exolin.msp.service.pm.ProcessInfo;
 import org.exolin.msp.service.pm.ProcessManager;
 import org.exolin.msp.web.ui.servlet.Layout;
-import org.exolin.msp.web.ui.servlet.ReverseList;
-import org.exolin.msp.web.ui.servlet.service.ListServicesServlet;
 import org.exolin.msp.web.ui.servlet.log.LogFileShowServlet;
+import org.exolin.msp.web.ui.servlet.service.ListServicesServlet;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -45,7 +44,7 @@ public class ProcessServlet extends HttpServlet
     
     private final ProcessManager pm;
 
-    public static final String URL = "/processes";
+    public static final String URL = "/processes/running";
 
     public ProcessServlet(ProcessManager pm)
     {
@@ -63,19 +62,13 @@ public class ProcessServlet extends HttpServlet
             
             out.append("<h1>Processes</h1>");
             
-            list(out, pm.getProcesses(), true, true);
-            List<ProcessInfo> processesHistory = pm.getProcessesHistory();
-            if(!processesHistory.isEmpty())
-            {
-                out.append("<h2>History</h2>");
-                list(out, new ReverseList<>(processesHistory), true, true);
-            }
+            list(out, pm.getProcesses(), true, true, "No running processes");
             
             Layout.end(out);
         }
     }
     
-    public static void list(PrintWriter out, List<ProcessInfo> processes, boolean showServiceTitle, boolean details)
+    public static void list(PrintWriter out, List<ProcessInfo> processes, boolean showServiceTitle, boolean details, String emptyText)
     {
         out.append("<div class=\"table-responsive\">");
         out.append("<table class=\"table table-striped table-sm\">");
@@ -100,8 +93,8 @@ public class ProcessServlet extends HttpServlet
         out.append("<th>Result</th>");
         out.append("</tr>");
 
-        if(processes.isEmpty())
-            out.append("<tr><td style=\"text-align: center\" colspan=\"9\"><em>No running processes</em></td></tr>");
+        if(processes.isEmpty() && emptyText != null)
+            out.append("<tr><td style=\"text-align: center\" colspan=\"9\"><em>").append(emptyText).append("</em></td></tr>");
 
         for(ProcessInfo process: processes)
         {
