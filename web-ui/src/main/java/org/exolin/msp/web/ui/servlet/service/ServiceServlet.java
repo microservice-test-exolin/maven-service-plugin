@@ -3,6 +3,7 @@ package org.exolin.msp.web.ui.servlet.service;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.net.URL;
+import java.nio.file.Path;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -194,6 +195,10 @@ public class ServiceServlet extends HttpServlet
         String host = new URL(repoUrl).getHost();
         String name = host;
         
+        Path localMavenProject = service.getLocalServiceMavenProject();
+        Path localGitRepo = service.getLocalGitRoot();
+        
+        out.append("<p>");
         out.append("<a href=\"").append(repoUrl).append("\"");
         
         if(host.equals("github.com"))
@@ -204,6 +209,21 @@ public class ServiceServlet extends HttpServlet
         
         out.append(">");
         out.append(name).append("</a>");
+        
+        if(!localGitRepo.equals(localMavenProject))
+        {
+            String rel = localGitRepo.relativize(localMavenProject).toString();
+            
+            out.append(" / ");
+            out.append("<a title=\"subdirectory in the repository which contains the service project\" ");
+            out.append("href=\"").append(repoUrl).append("/tree/master/").append(rel).append("\">");
+            out.append(rel);
+            out.append("</a>");
+        }
+        
+        out.append("</p>");
+        
+        out.append("Local Git Repository: ").append(localGitRepo.toString()).append("<br>");
         
         /*out.append("<table>");// class=\"table\">");
         out.append("<tr><th>Repository URL:</th><td>").append(service.getRepositoryUrl()).append("</td></tr>");

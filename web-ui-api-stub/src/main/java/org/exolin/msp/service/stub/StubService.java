@@ -16,13 +16,19 @@ import org.exolin.msp.service.LogFile;
 public class StubService extends AbstractService
 {
     private final Path localGitRootPath;
+    private final Path localServiceMavenProject;
     private final String repositoryUrl;
     private final Map<String, LogFile> logFiles;
     
-    public StubService(String name, Path gitRootPath, String repositoryUrl, SystemAbstraction sys, Map<String, LogFile> logFiles)
+    public StubService(String name, Path gitRootPath, Path localServiceMavenProject, String repositoryUrl, SystemAbstraction sys, Map<String, LogFile> logFiles)
     {
         super(name, sys);
+        
+        if(!localServiceMavenProject.startsWith(gitRootPath))
+            throw new IllegalArgumentException(localServiceMavenProject+" is not in "+gitRootPath);
+        
         this.localGitRootPath = gitRootPath;
+        this.localServiceMavenProject = localServiceMavenProject;
         this.repositoryUrl = repositoryUrl;
         this.logFiles = logFiles;
     }
@@ -54,6 +60,12 @@ public class StubService extends AbstractService
             return false;
         
         return System.currentTimeMillis() - processStart < 3000;  //3 s simulierter Lauf
+    }
+
+    @Override
+    public Path getLocalServiceMavenProject()
+    {
+        return localServiceMavenProject;
     }
     
     @Override

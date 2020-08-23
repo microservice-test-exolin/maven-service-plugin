@@ -27,5 +27,6 @@ public interface Service
     public Map<String, LogFile> getLogFiles(Optional<String> taskName) throws IOException;
 
     public Path getLocalGitRoot() throws IOException;
+    public Path getLocalServiceMavenProject() throws IOException;
     public String getRepositoryUrl() throws IOException;
 }

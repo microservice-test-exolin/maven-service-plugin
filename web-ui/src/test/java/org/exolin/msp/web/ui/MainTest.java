@@ -60,7 +60,14 @@ public class MainTest
         
         Path root = Paths.get("repos");
         String prefix = "http://github.test/a/";
-        Services services = new StubServices(names.stream().map(name -> new StubService(name, root.resolve(name), prefix+name, sys, Collections.emptyMap())).collect(Collectors.toList()));
+        Services services = new StubServices(names.stream().map(name -> new StubService(
+                name,
+                root.resolve(name),
+                root.resolve(name).resolve("x"),
+                prefix+name,
+                sys,
+                Collections.emptyMap()
+        )).collect(Collectors.toList()));
         
         Properties properties = new Properties();
         properties.setProperty(Config.KEY_AUTH_TYPE, Config.AuthType.none.name());

@@ -40,7 +40,7 @@ public class ProcessServlet extends HttpServlet
         else if(exitCode == 0)
             out.append("<span class=\"badge badge-success\">successful</span>");
         else
-            out.append("<span class=\"badge badge-danger\">failed (").append(exitCode).append(")</span>");
+            out.append("<span class=\"badge badge-danger\">failed (").append(exitCode+"").append(")</span>");
     }
     
     private final ProcessManager pm;

@@ -58,15 +58,16 @@ public class LinuxService extends AbstractService
     public boolean supportsBuildAndDeployment() throws IOException
     {
         try{
-            getOriginalPath();
+            getLocalServiceMavenProject();
             return true;
         }catch(UnsupportedOperationException e){
             LOGGER.info("Couldn't determine original path", e);
             return false;
         }
     }
-    
-    private Path getOriginalPath() throws IOException
+
+    @Override
+    public Path getLocalServiceMavenProject() throws IOException
     {
         Path originalPathFile = serviceDirectory.resolve("original.path");
         try{
@@ -115,7 +116,7 @@ public class LinuxService extends AbstractService
     @Override
     public Path getLocalGitRoot() throws IOException
     {
-        return getGitRoot(getOriginalPath());
+        return getGitRoot(getLocalServiceMavenProject());
     }
     
     static Path getGitRoot(Path path)
@@ -142,7 +143,7 @@ public class LinuxService extends AbstractService
     @Override
     public void deploy(boolean asynch, String initiator) throws IOException, InterruptedException
     {
-        Path serviceSrcDirectory = getOriginalPath();
+        Path serviceSrcDirectory = getLocalServiceMavenProject();
         
         String[] cmd = {"/bin/bash", "-c", "/root/repos/deploy.sh"};
         
