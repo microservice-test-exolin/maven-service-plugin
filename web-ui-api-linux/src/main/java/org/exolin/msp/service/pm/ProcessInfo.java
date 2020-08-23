@@ -106,9 +106,9 @@ public class ProcessInfo
         return workingDirectory;
     }
     
-    public List<String> getCmd()
+    public String getCmd()
     {
-        return cmd;
+        return String.join(" ", cmd);
     }
 
     public long getStartTime()

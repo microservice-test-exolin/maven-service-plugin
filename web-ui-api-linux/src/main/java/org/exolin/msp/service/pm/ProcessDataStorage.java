@@ -108,7 +108,7 @@ public class ProcessDataStorage
         Path dest = destDir.resolve(pi.getStartTime()+FILE_EXTENSION);
         
         Properties properties = new Properties();
-        properties.setProperty(CMD, String.join(" ", pi.getCmd()));
+        properties.setProperty(CMD, pi.getCmd());
         properties.setProperty(START_TIME, pi.getStartTime()+"");
         if(pi.getEndTime() != null)
             properties.setProperty(END_TIME, pi.getEndTime()+"");

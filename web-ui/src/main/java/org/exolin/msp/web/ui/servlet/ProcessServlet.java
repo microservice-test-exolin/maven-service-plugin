@@ -119,7 +119,7 @@ public class ProcessServlet extends HttpServlet
             
             if(details)
             {
-                out.append("<td>").append(String.join(" ", process.getCmd())).append("</td>");
+                out.append("<td>").append(process.getCmd()).append("</td>");
                 out.append("<td>").append(Optional.ofNullable(process.getWorkingDirectory()).map(Path::toString).orElse("<em>unknown</em>")).append("</td>");
             }
             
