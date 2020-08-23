@@ -80,9 +80,9 @@ public class IndexServlet extends HttpServlet
                 
                 switch(status)
                 {
-                    case ACTIVE: out.append("green"); break;
+                    case ACTIVE: out.append("#28a745"); break;
                     case INACTIVE: out.append("#ddd"); break;
-                    case FAILED: out.append("red"); break;
+                    case FAILED: out.append("#dc3545"); break;
                     default: out.append("white");
                 }
                 
