@@ -13,6 +13,7 @@ import org.exolin.msp.core.StatusType;
 import org.exolin.msp.service.Service;
 import org.exolin.msp.service.Services;
 import org.exolin.msp.service.pm.ProcessManager;
+import org.exolin.msp.web.ui.servlet.Feather;
 import org.exolin.msp.web.ui.servlet.Layout;
 import org.exolin.msp.web.ui.servlet.ProcessServlet;
 import org.exolin.msp.web.ui.servlet.ReverseList;
@@ -137,11 +138,11 @@ public class ServiceServlet extends HttpServlet
         out.append("<th>Links</th>");
         out.append("<td>");
         out.append("<a href=\""+ServiceStatusServlet.getUrl(service.getName())+"\">");
-        out.append("<span data-feather=\"info\"></span> ");
+        Feather.INFO.writeTo(out);
         out.append("Status</a>");
         out.append("<br>");
         out.append("<a href=\""+LogServlet.getFilesOfService(service.getName())+"\">");
-        out.append("<span data-feather=\""+Layout.LOG+"\"></span> ");
+        Feather.LOG.writeTo(out);
         out.append("Service Logfiles</a><br>");
         out.append("</td>");
         out.append("</tr>");
@@ -150,9 +151,9 @@ public class ServiceServlet extends HttpServlet
         out.append("<div class=\"card-body\">");
         out.append("<form action=\""+ListServicesServlet.URL+"\" method=\"POST\" style=\"display: inline\">");
         out.append("<input type=\"hidden\" name=\"service\" value=\"").append(service.getName()).append("\">");
-        write(out, "start", Layout.START, "Start");
-        write(out, "stop", Layout.STOP, "Stop");
-        write(out, "restart", Layout.RESTART, "Restart");
+        write(out, "start", Feather.START, "Start");
+        write(out, "stop", Feather.STOP, "Stop");
+        write(out, "restart", Feather.RESTART, "Restart");
         out.append("</form>");
 
         out.append("</div></div>");
@@ -163,11 +164,11 @@ public class ServiceServlet extends HttpServlet
         out.append("<div class=\"card\">");// style=\"max-width: 25rem;\">");
         out.append("<div class=\"card-header\">Build/Deployment</div>\n");
         out.append("<div class=\"card-body\">");
-        out.append("<a href=\""+LogServlet.getFilesOfTask(service.getName(), "build")+"\">");
-        out.append("<span data-feather=\""+Layout.LOG+"\"></span> ");
+        out.append("<a href=\"").append(LogServlet.getFilesOfTask(service.getName(), "build")).append("\">");
+        Feather.LOG.writeTo(out);
         out.append("Build Logfiles</a><br>");
         out.append("<a href=\""+LogServlet.getFilesOfTask(service.getName(), "deploy")+"\">");
-        out.append("<span data-feather=\""+Layout.LOG+"\"></span> ");
+        Feather.LOG.writeTo(out);
         out.append("Deploy Logfiles</a><br>");
         if(service.supportsBuildAndDeployment())
         {
@@ -175,8 +176,8 @@ public class ServiceServlet extends HttpServlet
             if(!service.isBuildOrDeployProcessRunning())
             {
                 out.append("<input type=\"hidden\" name=\"service\" value=\"").append(service.getName()).append("\">");
-                write(out, "compile", Layout.COMPILE, "Compile");
-                write(out, "deploy", Layout.DEPLOY, "Deploy");
+                write(out, "compile", Feather.COMPILE, "Compile");
+                write(out, "deploy", Feather.DEPLOY, "Deploy");
                 out.append("</form>");
             }
             else
@@ -223,7 +224,7 @@ public class ServiceServlet extends HttpServlet
         
         out.append("</p>");
         
-        out.append("Local Git Repository: ").append(localGitRepo.toString()).append("<br>");
+        out.append("<p style=\"color: gray\">Local Git Repository: ").append(localGitRepo.toString()).append("</p>");
         
         /*out.append("<table>");// class=\"table\">");
         out.append("<tr><th>Repository URL:</th><td>").append(service.getRepositoryUrl()).append("</td></tr>");

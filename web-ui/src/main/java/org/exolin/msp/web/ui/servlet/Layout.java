@@ -27,7 +27,7 @@ public class Layout
         w.append("</nav>");
     }
     
-    private static void writeMenuItem(Writer out, String title, String link, String icon, boolean cur) throws IOException
+    private static void writeMenuItem(Writer out, String title, String link, Feather icon, boolean cur) throws IOException
     {
          out.append("<li class=\"nav-item\">\n");
          out.append("<a class=\"nav-link");
@@ -36,7 +36,7 @@ public class Layout
             out.append(" active");
          
          out.append("\" href=\""+link+"\">");
-         out.append("<span data-feather=\""+icon+"\"></span>");
+         icon.writeTo(out);
          out.append(title);
          
          if(cur)
@@ -45,27 +45,17 @@ public class Layout
          out.append("</a>");
     }
     
-    public static final String SERVICE = "layers";
-    public static final String PROCESS = "loader";
-    public static final String LOG = "file-text";
-    public static final String START = "play";
-    public static final String STOP = "stop-circle";
-    public static final String RESTART = "circle";
-    public static final String COMPILE = "code";
-    public static final String DEPLOY = "chevrons-right";
-    public static final String CODE = "code";
-    
     private static void writeSidebar(Writer w, String current) throws IOException
     {
         w.write("<nav class=\"col-md-2 d-none d-md-block bg-light sidebar\">");
         w.append("<div class=\"sidebar-sticky\">");
         w.append("<ul class=\"nav flex-column\">");
         
-        writeMenuItem(w, "Dashboard", "/", "home", current.equals("/"));
-        writeMenuItem(w, "Services", "/services", SERVICE, current.startsWith("/service"));
-        writeMenuItem(w, "Processes", "/processes", PROCESS, current.startsWith("/processes"));
-        writeMenuItem(w, "Logs", "/logs", LOG, current.startsWith("/logs"));
-        writeMenuItem(w, "Server Info", "/server-info", "server", current.startsWith("/server-info"));
+        writeMenuItem(w, "Dashboard", "/", Feather.HOME, current.equals("/"));
+        writeMenuItem(w, "Services", "/services", Feather.SERVICE, current.startsWith("/service"));
+        writeMenuItem(w, "Processes", "/processes", Feather.PROCESS, current.startsWith("/processes"));
+        writeMenuItem(w, "Logs", "/logs", Feather.LOG, current.startsWith("/logs"));
+        writeMenuItem(w, "Server Info", "/server-info", Feather.SERVER, current.startsWith("/server-info"));
         
         w.write("</ul>");
         w.write("<div class=\"footer\">Started at "+Main.startedAt+"<br>Version:"+Constants.VERSION+"</div>");

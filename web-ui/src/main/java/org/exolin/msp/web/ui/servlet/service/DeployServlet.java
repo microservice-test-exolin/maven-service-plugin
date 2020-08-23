@@ -9,6 +9,7 @@ import javax.servlet.http.HttpServletResponse;
 import org.exolin.msp.service.Service;
 import org.exolin.msp.service.Services;
 import org.exolin.msp.service.pm.BuildOrDeployAlreadyRunningException;
+import org.exolin.msp.web.ui.servlet.Feather;
 import org.exolin.msp.web.ui.servlet.Layout;
 import org.exolin.msp.web.ui.servlet.auth.AuthFilter;
 import static org.exolin.msp.web.ui.servlet.service.ListServicesServlet.write;
@@ -63,8 +64,8 @@ public class DeployServlet extends HttpServlet
             out.append("<h1>Services</h1>");
             out.append("<form action=\"#\" method=\"POST\">");
             out.append("<input type=\"hidden\" name=\"service\" value=\"").append(service.getName()).append("\">");
-            write(out, "compile", Layout.COMPILE, "Compile");
-            write(out, "deploy", Layout.DEPLOY, "Deploy");
+            write(out, "compile", Feather.COMPILE, "Compile");
+            write(out, "deploy", Feather.DEPLOY, "Deploy");
             out.append("</form>");
             
             Layout.end(out);
