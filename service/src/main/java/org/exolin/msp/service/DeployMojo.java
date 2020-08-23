@@ -49,7 +49,7 @@ public class DeployMojo extends BaseMojo
             
             deploy(sys, files, simDir, serviceName, jar.toPath(), libDir.toPath(), serviceUser, startSh.toPath());
         
-            setupServiceFile(sys, files, simDir, serviceName, serviceFile.toPath());
+            setupService(sys, files, simDir, serviceName, serviceFile.toPath());
         }catch(IOException ex){
             throw new MojoExecutionException("Couldn't deploy", ex);
         }
@@ -101,7 +101,7 @@ public class DeployMojo extends BaseMojo
         getLog().info("Copied jar file to "+jarDest);
     }
     
-    private void setupServiceFile(SystemAbstraction sys, FileUtils files, Path simDir, String name, Path localServiceFile) throws IOException
+    private void setupService(SystemAbstraction sys, FileUtils files, Path simDir, String name, Path localServiceFile) throws IOException
     {
         Path serviceDestFile = simDir.resolve("etc/systemd/system/"+name+".service");
         
@@ -113,7 +113,8 @@ public class DeployMojo extends BaseMojo
         getLog().info("Installed");
 
         sys.restart(name);
-        if(sys.getStatus(name).getStatus() != StatusType.ACTIVE)
-            throw new IllegalStateException("Not running: "+name);
+        StatusType status = sys.getStatus(name).getStatus();
+        if(status != StatusType.ACTIVE)
+            throw new IllegalStateException(name+" not "+StatusType.ACTIVE+" "+name+" but "+status);
     }
 }
