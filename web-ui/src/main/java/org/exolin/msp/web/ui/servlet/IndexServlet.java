@@ -2,6 +2,7 @@ package org.exolin.msp.web.ui.servlet;
 
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.util.EnumMap;
 import java.util.List;
 import java.util.Map;
 import java.util.function.Function;
@@ -66,7 +67,7 @@ public class IndexServlet extends HttpServlet
                     LOGGER.error("Couldn't determine status", e);
                     return null;
                 }
-            }).collect(Collectors.groupingBy(Function.identity(), Collectors.counting()));
+            }).collect(Collectors.groupingBy(Function.identity(), () -> new EnumMap<>(StatusType.class), Collectors.counting()));
             
             out.append("<p>Service status:</p>");
             

@@ -6,5 +6,5 @@ package org.exolin.msp.core;
  */
 public enum StatusType
 {
-    ACTIVE, INACTIVE, FAILED
+    ACTIVE, FAILED, INACTIVE
 }
