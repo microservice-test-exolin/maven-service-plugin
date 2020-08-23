@@ -164,10 +164,10 @@ public class ServiceServlet extends HttpServlet
         out.append("<div class=\"card\">");// style=\"max-width: 25rem;\">");
         out.append("<div class=\"card-header\">Build/Deployment</div>\n");
         out.append("<div class=\"card-body\">");
-        out.append("<a href=\"").append(LogServlet.getFilesOfTask(service.getName(), "build")).append("\">");
+        out.append("<a href=\"").append(TaskLogServlet.getFilesOfTask(service.getName(), "build")).append("\">");
         Icon.LOG.writeTo(out);
         out.append("Build Logfiles</a><br>");
-        out.append("<a href=\""+LogServlet.getFilesOfTask(service.getName(), "deploy")+"\">");
+        out.append("<a href=\""+TaskLogServlet.getFilesOfTask(service.getName(), "deploy")+"\">");
         Icon.LOG.writeTo(out);
         out.append("Deploy Logfiles</a><br>");
         if(service.supportsBuildAndDeployment())
