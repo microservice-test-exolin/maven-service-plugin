@@ -70,23 +70,24 @@ public class IndexServlet extends HttpServlet
             
             out.append("<p>Service status:</p>");
             
-            out.append("<div>");
+            out.append("<div class=\"progress\">");
             counts.forEach((status, count) -> {
                 double percentage = count*100./serviceList.size();
                 
-                out.append("<div style=\"width: ");
-                out.append(percentage+"");
-                out.append("%;display:inline-block;border: 1px solid black;text-align:center;padding:0.25em;background:");
+                out.append("<div class=\"progress-bar ");
                 
                 switch(status)
                 {
-                    case ACTIVE: out.append("#28a745"); break;
-                    case INACTIVE: out.append("#ddd"); break;
-                    case FAILED: out.append("#dc3545"); break;
-                    default: out.append("white");
+                    case ACTIVE: out.append("bg-success"); break;
+                    case INACTIVE: out.append("bg-secondary"); break;
+                    case FAILED: out.append("bg-danger"); break;
+                    default: out.append("bg-secondary");
                 }
                 
-                out.append("\">");
+                out.append("\" role=\"progressbar\" style=\"width: ");
+                out.append(percentage+"");
+                out.append("%\" aria-valuenow=\"25\" aria-valuemin=\"0\" aria-valuemax=\"100\">");
+                
                 out.append(status.toString());
                 out.append("</div>");
             });
