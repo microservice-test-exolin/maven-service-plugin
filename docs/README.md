@@ -7,6 +7,11 @@ Konzepte:
 Abläufe:
 * [Build & Deploy](build+deploy.md)
 
+Deploy features:
+* Setup als Service
+* nginx port mapping (not implemented yet => [#32](https://github.com/microservice-test-exolin/maven-service-plugin/issues/32))
+* database association (not implemented yet => [#56](https://github.com/microservice-test-exolin/maven-service-plugin/issues/56))
+
 Tools:
 * [Maven Service Plugin](maven-deployment-plugin.md)
 * [Web-UI](web-ui.md)
