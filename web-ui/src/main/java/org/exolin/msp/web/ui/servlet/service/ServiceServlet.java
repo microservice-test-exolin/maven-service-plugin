@@ -1,5 +1,6 @@
 package org.exolin.msp.web.ui.servlet.service;
 
+import ch.qos.logback.core.status.Status;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.net.URL;
@@ -82,7 +83,7 @@ public class ServiceServlet extends HttpServlet
         }
     }
 
-    public static void writeStatus(PrintWriter out, StatusType statusType)
+    public static void writeStatus(PrintWriter out, StatusType statusType, StatusInfo.UnknowableBoolean enabled)
     {
         switch(statusType)
         {
@@ -102,16 +103,27 @@ public class ServiceServlet extends HttpServlet
                 out.append("<span class=\"badge badge-secondary\">"+statusType+"</span>");
                 break;
         }
+        
+        switch(enabled)
+        {
+            case TRUE:
+                out.append(" <span title=\"running\" class=\"badge badge-success\">enabled</span>");
+                break;
+
+            case FALSE:
+                out.append(" <span title=\"failed to start\" class=\"badge badge-danger\">disabled</span>");
+                break;
+                
+            case UNKNOWN: break;
+            
+            default:
+                out.append(" <span class=\"badge badge-secondary\">enabled="+enabled+"</span>");
+        }
     }
     
     static void writeStatus(PrintWriter out, StatusInfo status)
     {
-        try{
-            writeStatus(out, status.getStatus());
-        }catch(UnsupportedOperationException e){
-            LOGGER.warn("Couldn't determine status", e);
-            out.append("<span title=\"unknown because failed to fetch status\" class=\"badge badge-secondary\">unknown</span>");
-        }
+        writeStatus(out, status.getStatus(), status.isStartAtBootEnabled());
     }
 
     private void writeServiceCard(Service service, PrintWriter out) throws IOException

@@ -97,9 +97,9 @@ public class ListServicesServlet extends HttpServlet
                 if(status != null && status.getStatus() != StatusType.ACTIVE)
                     write(out, ACTION_RESTART, Icon.RESTART, "Restart");
                 
-                if(status != null && !status.isStartAtBootEnabled())
+                if(status != null && status.isStartAtBootEnabled() != StatusInfo.UnknowableBoolean.TRUE)
                     write(out, ACTION_ENABLE, null, "Enable");
-                if(status != null && status.isStartAtBootEnabled())
+                if(status != null && status.isStartAtBootEnabled() != StatusInfo.UnknowableBoolean.FALSE)
                     write(out, ACTION_DISABLE, null, "Disable");
                 
                 out.append("</form>");

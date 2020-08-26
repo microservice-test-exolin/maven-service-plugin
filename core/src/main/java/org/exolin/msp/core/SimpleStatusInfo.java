@@ -28,9 +28,9 @@ public class SimpleStatusInfo implements StatusInfo
     }
 
     @Override
-    public boolean isStartAtBootEnabled()
+    public UnknowableBoolean isStartAtBootEnabled()
     {
-        return startAtBootEnabled;
+        return UnknowableBoolean.of(startAtBootEnabled);
     }
 
     @Override

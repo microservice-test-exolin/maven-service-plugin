@@ -72,7 +72,7 @@ public class LinuxStatusInfoTest
 "           ââ3491 /bin/bash /home/root/services/service-web-ui/start.sh\n" +
 "           ââ3492 /usr/bin/java -Dsystem.baseDirectory=/home/root/services/service-web-ui -Dsystem.logDirectory=/home/root/services/service-web-ui/log -jar /home/root/services/service-web-ui/bin/service-web-ui-1.0-SNAPSHOT.jar";
         
-        assertTrue(new LinuxStatusInfo(txt).isStartAtBootEnabled());
+        assertEquals(StatusInfo.UnknowableBoolean.TRUE, new LinuxStatusInfo(txt).isStartAtBootEnabled());
     }
     
     @Test
@@ -86,6 +86,12 @@ public class LinuxStatusInfoTest
 "           ââ3535 /bin/bash /home/exolin/services/milkboi-telegram/start.sh\n" +
 "           ââ3536 /usr/bin/java -Dsystem.baseDirectory=/home/exolin/services/milkboi-telegram -Dsystem.logDirectory=/home/exolin/services/milkboi-telegram/log -jar /home/exolin/services/milkboi-telegram/bin/milkboi-telegram-1.0-SNAPSHOT.";
         
-        assertFalse(new LinuxStatusInfo(txt).isStartAtBootEnabled());
+        assertEquals(StatusInfo.UnknowableBoolean.FALSE, new LinuxStatusInfo(txt).isStartAtBootEnabled());
+    }
+    
+    @Test
+    public void testEnabledUnknown()
+    {
+        assertEquals(StatusInfo.UnknowableBoolean.UNKNOWN, new LinuxStatusInfo("x").isStartAtBootEnabled());
     }
 }

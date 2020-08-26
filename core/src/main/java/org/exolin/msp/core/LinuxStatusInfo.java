@@ -20,14 +20,14 @@ public class LinuxStatusInfo implements StatusInfo
     }
 
     @Override
-    public boolean isStartAtBootEnabled()
+    public UnknowableBoolean isStartAtBootEnabled()
     {
         if(stdout.contains("; enabled;"))
-            return true;
+            return UnknowableBoolean.TRUE;
         else if(stdout.contains("; disabled;"))
-            return false;
+            return UnknowableBoolean.FALSE;
         else
-            throw new UnsupportedOperationException("can't determine if enabled from "+stdout);
+            return UnknowableBoolean.UNKNOWN;
     }
 
     @Override
