@@ -94,7 +94,7 @@ public class ListServicesServlet extends HttpServlet
                     write(out, ACTION_START, Icon.START, "Start");
                 if(status != null && status.getStatus() != StatusType.INACTIVE)
                     write(out, ACTION_STOP, Icon.STOP, "Stop");
-                if(status != null && status.getStatus() != StatusType.ACTIVE)
+                if(status != null && status.getStatus() != StatusType.INACTIVE)
                     write(out, ACTION_RESTART, Icon.RESTART, "Restart");
                 
                 if(status != null && status.isStartAtBootEnabled() != StatusInfo.UnknowableBoolean.TRUE)
