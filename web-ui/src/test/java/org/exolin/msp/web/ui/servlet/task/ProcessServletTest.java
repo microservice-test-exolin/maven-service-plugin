@@ -14,7 +14,7 @@ public class ProcessServletTest
     {
         assertEquals(
                 "<a href=\"https://github.com/microservice-test-exolin/maven-service-plugin/commit/2d647bd3a8beacf68b0230e9f476ce27be04e3d2\">"+
-                "Github Webhook</a>",
+                "Github Webhook 2d647bd</a>",
                 ProcessServlet.displayInitiator("github-webhook[repo=https://github.com/microservice-test-exolin/maven-service-plugin,sha1=2d647bd3a8beacf68b0230e9f476ce27be04e3d2]"));
     }
     

@@ -144,7 +144,7 @@ public class ProcessServlet extends HttpServlet
             String repo = i.args.get("repo");
             String sha1 = i.args.get("sha1");
             if(repo != null && sha1 != null)
-                return "<a href=\""+repo+"/commit/"+sha1+"\">Github Webhook</a>";
+                return "<a href=\""+repo+"/commit/"+sha1+"\">Github Webhook "+sha1.substring(0, 7)+"</a>";
             else if(repo != null && sha1 == null)
                 return "<a href=\""+repo+"\">Github Webhook</a>";
             else
