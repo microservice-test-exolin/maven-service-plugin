@@ -70,7 +70,7 @@ public class ProcessServlet extends HttpServlet
     
     public static void list(PrintWriter out, List<ProcessInfo> processes, boolean showServiceTitle, boolean details, String emptyText)
     {
-        out.append("<style>.cmd, .pwd{font-family: Consolas, Monospace}</style>");
+        out.append("<style>.initiator{white-space: nowrap}.cmd, .pwd{font-family: Consolas, Monospace}</style>");
         
         out.append("<div class=\"table-responsive\">");
         out.append("<table class=\"table table-striped table-sm\">");
@@ -110,7 +110,7 @@ public class ProcessServlet extends HttpServlet
                 out.append("<td><a href=\"").append(ListServicesServlet.getUrl(process.getService())).append("\">").append(process.getService()).append("</a></td>");
             
             out.append("<td>").append(process.getName()).append("</td>");
-            out.append("<td>").append(Optional.ofNullable(process.getInitiator()).map(ProcessServlet::displayInitiator).orElse("<em>unknown</em>")).append("</td>");
+            out.append("<td class=\"initiator\">").append(Optional.ofNullable(process.getInitiator()).map(ProcessServlet::displayInitiator).orElse("<em>unknown</em>")).append("</td>");
             
             if(details)
             {
