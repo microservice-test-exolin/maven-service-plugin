@@ -98,9 +98,9 @@ public class ListServicesServlet extends HttpServlet
                     write(out, ACTION_RESTART, Icon.RESTART, "Restart");
                 
                 if(status != null && !status.isStartAtBootEnabled())
-                    write(out, ACTION_ENABLE, Icon.RESTART, "Enable");
+                    write(out, ACTION_ENABLE, null, "Enable");
                 if(status != null && status.isStartAtBootEnabled())
-                    write(out, ACTION_DISABLE, Icon.RESTART, "Disable");
+                    write(out, ACTION_DISABLE, null, "Disable");
                 
                 out.append("</form>");
                 
@@ -152,7 +152,8 @@ public class ListServicesServlet extends HttpServlet
     static void write(Writer out, String action, Icon icon, String title) throws IOException
     {
         out.append("<button name=\"action\" value=\""+action+"\" class=\"btn btn-secondary btn-sm\">");
-        icon.writeTo(out);
+        if(icon != null)
+            icon.writeTo(out);
         out.append(title).append("</button> ");
     }
 
