@@ -48,4 +48,10 @@ public abstract class AbstractService implements Service
     {
         sys.restart(name);
     }
+
+    @Override
+    public void setStartAtBoot(boolean b) throws IOException
+    {
+        sys.setStartAtBoot(name, b);
+    }
 }

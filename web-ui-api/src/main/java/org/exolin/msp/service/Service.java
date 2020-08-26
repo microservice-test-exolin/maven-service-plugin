@@ -18,6 +18,7 @@ public interface Service
     public void start() throws IOException;
     public void stop() throws IOException;
     public void restart() throws IOException;
+    public void setStartAtBoot(boolean b) throws IOException;
     
     public boolean supportsBuildAndDeployment() throws IOException;
     public void build(boolean async, String initiator) throws IOException, InterruptedException;

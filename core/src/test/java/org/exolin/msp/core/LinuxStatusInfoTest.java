@@ -58,11 +58,34 @@ public class LinuxStatusInfoTest
     @Test
     public void testGetStatus_Invalid() throws Exception
     {
-        try{
-            LinuxStatusInfo.parse("xyz");
-            fail();
-        }catch(UnsupportedOperationException e){
-            assertEquals("Can't parse:\nxyz", e.getMessage());
-        }
+        assertEquals(StatusType.UNKNOWN, LinuxStatusInfo.parse("xyz"));
+    }
+    
+    @Test
+    public void testIsEnabled()
+    {
+        String txt = "â service-web-ui.service - Web-UI for managing services\n" +
+"   Loaded: loaded (/etc/systemd/system/service-web-ui.service; enabled; vendor preset: enabled)\n" +
+"   Active: active (running) since Wed 2020-08-26 21:34:16 CEST; 5min ago\n" +
+" Main PID: 3491 (bash)\n" +
+"   CGroup: /system.slice/service-web-ui.service\n" +
+"           ââ3491 /bin/bash /home/root/services/service-web-ui/start.sh\n" +
+"           ââ3492 /usr/bin/java -Dsystem.baseDirectory=/home/root/services/service-web-ui -Dsystem.logDirectory=/home/root/services/service-web-ui/log -jar /home/root/services/service-web-ui/bin/service-web-ui-1.0-SNAPSHOT.jar";
+        
+        assertTrue(new LinuxStatusInfo(txt).isStartAtBootEnabled());
+    }
+    
+    @Test
+    public void testIsDisabled()
+    {
+        String txt = "â milkboi-telegram.service - Milkboi Telegram\n" +
+"   Loaded: loaded (/etc/systemd/system/milkboi-telegram.service; disabled; vendor preset: enabled)\n" +
+"   Active: active (running) since Wed 2020-08-26 21:36:18 CEST; 3min 54s ago\n" +
+" Main PID: 3535 (bash)\n" +
+"   CGroup: /system.slice/milkboi-telegram.service\n" +
+"           ââ3535 /bin/bash /home/exolin/services/milkboi-telegram/start.sh\n" +
+"           ââ3536 /usr/bin/java -Dsystem.baseDirectory=/home/exolin/services/milkboi-telegram -Dsystem.logDirectory=/home/exolin/services/milkboi-telegram/log -jar /home/exolin/services/milkboi-telegram/bin/milkboi-telegram-1.0-SNAPSHOT.";
+        
+        assertFalse(new LinuxStatusInfo(txt).isStartAtBootEnabled());
     }
 }

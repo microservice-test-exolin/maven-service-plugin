@@ -7,6 +7,8 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import org.exolin.msp.core.StatusInfo;
+import org.exolin.msp.core.StatusType;
 import org.exolin.msp.service.Service;
 import org.exolin.msp.service.Services;
 import org.exolin.msp.web.ui.servlet.Icon;
@@ -32,6 +34,12 @@ public class ListServicesServlet extends HttpServlet
         this.services = services;
     }
 
+    private static final String ACTION_START = "start";
+    private static final String ACTION_STOP = "stop";
+    private static final String ACTION_RESTART = "restart";
+    private static final String ACTION_ENABLE = "enable";
+    private static final String ACTION_DISABLE = "disable";
+    
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException
     {
@@ -62,21 +70,38 @@ public class ListServicesServlet extends HttpServlet
                 out.append("<tr id=\"").append(service.getName()).append("\">");
                 out.append("<td><a href=\"").append(getUrl(service.getName())).append("\">").append(service.getName()).append("</a></td>");
                 
-                out.append("<td>");
+                StatusInfo status;
                 try{
-                    ServiceServlet.writeStatus(out, service.getStatus());
+                    status = service.getStatus();
                 }catch(IOException e){
+                    status = null;
                     LOGGER.error("Couldn't be determined", e);
-                    out.append("Couldn't be determined");
                 }
+                
+                out.append("<td>");
+                
+                if(status != null)
+                    ServiceServlet.writeStatus(out, service.getStatus());
+                else
+                    out.append("Couldn't be determined");
+                
                 out.append("</td>");
                 
                 out.append("<td>");
                 out.append("<form action=\"#\" method=\"POST\" style=\"display: inline\">");
                 out.append("<input type=\"hidden\" name=\"service\" value=\"").append(service.getName()).append("\">");
-                write(out, "start", Icon.START, "Start");
-                write(out, "stop", Icon.STOP, "Stop");
-                write(out, "restart", Icon.RESTART, "Restart");
+                if(status != null && status.getStatus() != StatusType.ACTIVE)
+                    write(out, ACTION_START, Icon.START, "Start");
+                if(status != null && status.getStatus() != StatusType.INACTIVE)
+                    write(out, ACTION_STOP, Icon.STOP, "Stop");
+                if(status != null && status.getStatus() != StatusType.ACTIVE)
+                    write(out, ACTION_RESTART, Icon.RESTART, "Restart");
+                
+                if(status != null && !status.isStartAtBootEnabled())
+                    write(out, ACTION_ENABLE, Icon.RESTART, "Enable");
+                if(status != null && status.isStartAtBootEnabled())
+                    write(out, ACTION_DISABLE, Icon.RESTART, "Disable");
+                
                 out.append("</form>");
                 
                 out.append("<a href=\""+ServiceStatusServlet.getUrl(service.getName())+"\">Status</a> ");
@@ -162,9 +187,11 @@ public class ListServicesServlet extends HttpServlet
         
         switch(action)
         {
-            case "start": service.start(); break;
-            case "stop": service.stop(); break;
-            case "restart": service.restart(); break;
+            case ACTION_START: service.start(); break;
+            case ACTION_STOP: service.stop(); break;
+            case ACTION_RESTART: service.restart(); break;
+            case ACTION_ENABLE: service.setStartAtBoot(true); break;
+            case ACTION_DISABLE: service.setStartAtBoot(false); break;
             default:
                 resp.sendError(HttpServletResponse.SC_BAD_REQUEST);
                 return;

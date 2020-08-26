@@ -8,4 +8,5 @@ public interface StatusInfo
 {
     StatusType getStatus();
     String getInfo();
+    boolean isStartAtBootEnabled();
 }

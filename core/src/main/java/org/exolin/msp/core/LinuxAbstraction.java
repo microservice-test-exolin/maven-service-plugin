@@ -58,6 +58,12 @@ public class LinuxAbstraction implements SystemAbstraction
     }
 
     @Override
+    public void setStartAtBoot(String name, boolean b) throws IOException
+    {
+        system("systemctl", b ? "enable" : "disable", name);
+    }
+    
+    @Override
     public StatusInfo getStatus(String name) throws IOException
     {
         return new LinuxStatusInfo(system2("systemctl", "status", name));

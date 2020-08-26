@@ -15,5 +15,6 @@ public interface SystemAbstraction
     public void start(String name) throws IOException;
     public void stop(String name) throws IOException;
     public void restart(String name) throws IOException;
+    public void setStartAtBoot(String name, boolean b) throws IOException;
     public StatusInfo getStatus(String name) throws IOException;
 }

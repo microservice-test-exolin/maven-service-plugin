@@ -20,6 +20,17 @@ public class LinuxStatusInfo implements StatusInfo
     }
 
     @Override
+    public boolean isStartAtBootEnabled()
+    {
+        if(stdout.contains("; enabled;"))
+            return true;
+        else if(stdout.contains("; disabled;"))
+            return false;
+        else
+            throw new UnsupportedOperationException("can't determine if enabled from "+stdout);
+    }
+
+    @Override
     public String getInfo()
     {
         return stdout;
@@ -34,6 +45,6 @@ public class LinuxStatusInfo implements StatusInfo
         else if(stdout.contains("   Active: inactive "))
             return StatusType.INACTIVE;
         else
-            throw new UnsupportedOperationException("Can't parse:\n"+stdout);
+            return StatusType.UNKNOWN;
     }
 }
