@@ -39,13 +39,14 @@ public class Generator
             throw new IOException("Failed to write file "+serviceFile);
     }
     
-    private static void writeSysProp(Writer w, String name, String value) throws IOException
+    private static void setEnv(BufferedWriter w, String name, String value) throws IOException
     {
         //safety check
         if(name.contains(" ") || value.contains(" "))
             throw new IllegalArgumentException();
         
-        w.append(" -D").append(name).append("=").append(value);
+        w.append("export ").append(name).append("=").append(value);
+        w.newLine();
     }
     
     public static void createStartSh(File file, String serviceName, String serviceUser, String jarName, boolean useConfigDirectory) throws IOException
@@ -66,26 +67,28 @@ public class Generator
             w.write("DIR=/home/"+serviceUser+"/services/$NAME");
             w.newLine();
 
+            w.write("LOGFILE=$DIR/log/service.out.log");
+            w.newLine();
+
             w.write("cd $DIR/bin");
             w.newLine();
             
-            w.write("echo Starting >> $DIR/log/service.out.log");
+            w.write("echo Starting >> $LOGFILE");
             w.newLine();
-
-            w.write("/usr/bin/java");
-            writeSysProp(w, "system.baseDirectory", "$DIR");
-            writeSysProp(w, "system.logDirectory", "$DIR/log");
+            
+            setEnv(w, "SERVICE_BASE_DIR", "$DIR");
+            setEnv(w, "SERVICE_LOG_DIR", "$DIR/log");
             
             if(useConfigDirectory)
-                writeSysProp(w, "system.configDirectory", "$DIR/cfg");
+                setEnv(w, "SERVICE_CFG_DIR", "$DIR/cfg");
+
+            w.write("/usr/bin/java");
             
-            w.write(" -jar ");
-           /**/w.append("$DIR/bin/").append(jarName);
-            w.write(" >> $DIR/log/service.out.log ");
+            w.append(" -jar ").append("$DIR/bin/").append(jarName).append(" >> $LOGFILE ");
             w.write("2>&1");
             w.newLine();
             
-            w.write("echo Stopped >> $DIR/log/service.out.log");
+            w.write("echo Stopped >> $LOGFILE");
             w.newLine();
         }
         
