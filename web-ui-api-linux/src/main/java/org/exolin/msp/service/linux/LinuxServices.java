@@ -74,6 +74,7 @@ public class LinuxServices implements Services
             new LinuxService(
                     serviceDirectory,
                     serviceDirectory.resolve("log"),
+                    serviceDirectory.resolve("cfg"),
                     serviceName, sys, pm)
         );
     }

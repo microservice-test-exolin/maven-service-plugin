@@ -127,7 +127,7 @@ public class DeployMojoTest
         Path serviceFile = simDir.resolve("etc/systemd/system/test-service.service");
         assertExists(serviceFile);
         
-        org.ini4j.Ini a = new Ini(serviceFile.toFile());
+        Ini a = new Ini(serviceFile.toFile());
         assertEquals("/bin/bash /home/exolin/services/test-service/start.sh", a.get("Service", "ExecStart"));
         assertEquals("exolin", a.get("Service", "User"));
         assertEquals("always", a.get("Service", "Restart"));

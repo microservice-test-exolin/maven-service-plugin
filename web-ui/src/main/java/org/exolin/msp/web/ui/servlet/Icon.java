@@ -22,6 +22,7 @@ public class Icon
     public static final Icon SERVER = new Icon("server");
     public static final Icon HOME = new Icon("home");
     public static final Icon INFO = new Icon("info");
+    public static final Icon SETTINGS = new Icon("settings");
 
     private final String name;
 

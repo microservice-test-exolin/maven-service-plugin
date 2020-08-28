@@ -43,6 +43,7 @@ import org.exolin.msp.web.ui.servlet.serverinfo.SystemEnvironmentServlet;
 import org.exolin.msp.web.ui.servlet.serverinfo.SystemPropertiesServlet;
 import org.exolin.msp.web.ui.servlet.service.DeployServlet;
 import org.exolin.msp.web.ui.servlet.service.ListServicesServlet;
+import org.exolin.msp.web.ui.servlet.service.ServiceConfigServlet;
 import org.exolin.msp.web.ui.servlet.service.ServiceLogServlet;
 import org.exolin.msp.web.ui.servlet.service.ServiceServlet;
 import org.exolin.msp.web.ui.servlet.service.ServiceStatusServlet;
@@ -165,6 +166,7 @@ public class Main
         ResourceServlet.addFile(servletHandler, "GitHub_Logo_small.png", "image/png");
         
         servletHandler.addServletWithMapping(ServiceServlet.class, ServiceServlet.URL).setServlet(new ServiceServlet(services, pm));
+        servletHandler.addServletWithMapping(ServiceConfigServlet.class, ServiceConfigServlet.URL).setServlet(new ServiceConfigServlet(services));
         servletHandler.addServletWithMapping(ListServicesServlet.class, ListServicesServlet.URL).setServlet(new ListServicesServlet(services));
         servletHandler.addServletWithMapping(DeployServlet.class, DeployServlet.URL).setServlet(new DeployServlet(services));
         servletHandler.addServletWithMapping(ServiceLogServlet.class, ServiceLogServlet.URL).setServlet(new ServiceLogServlet(services));

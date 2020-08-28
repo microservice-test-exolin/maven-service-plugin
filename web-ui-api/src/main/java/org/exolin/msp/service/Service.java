@@ -2,6 +2,7 @@ package org.exolin.msp.service;
 
 import java.io.IOException;
 import java.nio.file.Path;
+import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import org.exolin.msp.core.StatusInfo;
@@ -32,4 +33,7 @@ public interface Service
     public String getRepositoryUrl() throws IOException;
 
     public Iterable<String> getTasks();
+    
+    public List<String> getConfigFiles() throws IOException;
+    public ConfigFile getConfigFile(String name) throws IOException;
 }

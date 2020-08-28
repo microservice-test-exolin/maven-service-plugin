@@ -1,5 +1,6 @@
 package org.exolin.msp.service.linux;
 
+import java.io.BufferedReader;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
@@ -7,12 +8,16 @@ import java.nio.file.NoSuchFileException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.Properties;
 import java.util.TreeMap;
+import java.util.stream.Collectors;
 import org.exolin.msp.core.SystemAbstraction;
 import org.exolin.msp.service.AbstractService;
+import org.exolin.msp.service.ConfigFile;
 import org.exolin.msp.service.LogFile;
 import org.exolin.msp.service.pm.BuildOrDeployAlreadyRunningException;
 import org.exolin.msp.service.pm.ProcessInfo;
@@ -28,6 +33,7 @@ public class LinuxService extends AbstractService
 {
     private final Path serviceDirectory;
     private final Path logDirectory;
+    private final Path configDirectory;
     
     private final ProcessManager pm;
     
@@ -38,6 +44,7 @@ public class LinuxService extends AbstractService
     public LinuxService(
             Path serviceDirectory,
             Path logDirectory,
+            Path configDirectory,
             String name,
             SystemAbstraction sys,
             ProcessManager pm)
@@ -45,6 +52,7 @@ public class LinuxService extends AbstractService
         super(name, sys);
         this.serviceDirectory = serviceDirectory;
         this.logDirectory = logDirectory;
+        this.configDirectory = configDirectory;
         this.pm = pm;
     }
 
@@ -240,5 +248,35 @@ public class LinuxService extends AbstractService
             repo = repo.substring(0, repo.length()-4);
         
         return repo;
+    }
+
+    @Override
+    public List<String> getConfigFiles() throws IOException
+    {
+        try{
+            return Files.list(logDirectory)
+                    .map(Path::getFileName)
+                    .map(Path::toString)
+                    .sorted()
+                    .collect(Collectors.toList());
+        }catch(NoSuchFileException e){
+            return Collections.emptyList();
+        }
+    }
+
+    @Override
+    public ConfigFile getConfigFile(String name) throws IOException
+    {
+        Path config = configDirectory.resolve(name);
+        if(!config.normalize().startsWith(configDirectory))
+            throw new IllegalArgumentException(name);
+        
+        Properties properties = new Properties();
+        try(BufferedReader in = Files.newBufferedReader(config))
+        {
+            properties.load(in);
+        }
+        
+        return new PropertiesConfigFile(config, properties);
     }
 }

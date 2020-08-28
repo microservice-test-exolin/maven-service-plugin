@@ -2,10 +2,12 @@ package org.exolin.msp.web.ui.servlet.service;
 
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.util.Map;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import org.exolin.msp.service.ConfigFile;
 import org.exolin.msp.service.Service;
 import org.exolin.msp.service.Services;
 import org.exolin.msp.web.ui.servlet.Layout;
@@ -30,28 +32,153 @@ public class ServiceConfigServlet extends HttpServlet
     {
         String serviceName = req.getParameter("service");
         if(serviceName == null)
-        {
-            resp.sendError(HttpServletResponse.SC_BAD_REQUEST, "Missing parameter service");
-            return;
-        }
-        
+            showServiceList(req, resp);
+        else
+            showConfigOfService(serviceName, req, resp);
+    }
+    
+    private void showServiceList(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException
+    {
         resp.setContentType("text/html;charset=UTF-8");
         
         try(PrintWriter out = resp.getWriter())
         {
-            Service service = services.getService(serviceName);
-            if(service == null)
+            Layout.start("Configs", req.getRequestURI(), out);
+            
+            out.append("<h1>Configs</h1>");
+            
+            for(Service service: services.getServices())
             {
-                resp.sendError(HttpServletResponse.SC_BAD_REQUEST, "Service not found");
-                return;
+                int count = service.getConfigFiles().size();
+                
+                if(count != 0)
+                    out.append("<a href=\""+URL+"?service=").append(service.getName()).append("\">");
+                
+                out.append(service.getName()).append(" (").append(count+"").append(" config file"+(count != 1 ? "s" : "")+")");
+                
+                if(count != 0)
+                    out.append("</a>");
+                
+                out.append("<br>");
             }
             
+            Layout.end(out);
+        }
+    }
+    
+    private void showConfigOfService(String serviceName, HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException
+    {
+        Service service = services.getService(serviceName);
+        if(service == null)
+        {
+            resp.sendError(HttpServletResponse.SC_NOT_FOUND, "Service not found");
+            return;
+        }
+
+        String file = req.getParameter("file");
+        if(file != null)
+            showConfigFile(service, file, req, resp);
+        else
+            listConfigFiles(service, req, resp);
+    }
+    
+    private void listConfigFiles(Service service, HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException
+    {
+        resp.setContentType("text/html;charset=UTF-8");
+        String serviceName = service.getName();
+        
+        try(PrintWriter out = resp.getWriter())
+        {
             Layout.start("Config of "+serviceName, req.getRequestURI(), out);
             
             out.append("<h1>Config of "+serviceName+"</h1>");
             
+            for(String file: service.getConfigFiles())
+                out.append("<a href=\""+URL+"?service="+serviceName+"&file="+file+"\">").append(file).append("</a><br>");
+            
             //out.append("</div>");
             Layout.end(out);
         }
+    }
+    
+    private void showConfigFile(Service service, String name, HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException
+    {
+        resp.setContentType("text/html;charset=UTF-8");
+        
+        try(PrintWriter out = resp.getWriter())
+        {
+            String serviceName = service.getName();
+            
+            Layout.start(serviceName+"/"+name, req.getRequestURI(), out);
+            
+            out.append("<h1>").append(serviceName+"/"+name).append("</h1>");
+            
+            ConfigFile file = service.getConfigFile(name);
+
+            out.append("<form action=\""+URL+"?service=").append(serviceName).append("&file=").append(name).append("\" method=\"POST\">");
+
+            for(Map.Entry<String, String> e: file.get().entrySet())
+            {
+                out.append("<div class=\"form-group\">");
+
+                out.append("<label for=\"").append(e.getKey()).append("\">");
+                out.append(e.getKey());
+                out.append("</label>");
+
+                out.append(e.getKey()).append(": <input class=\"form-control\" name=\"").append(e.getKey()).append("\" value=\"").append(e.getValue()).append("\"><br>");
+
+                out.append("</div>");
+            }
+
+            out.append("<button class=\"btn btn-primary\" type=\"submit\">Save</button>");
+
+            out.append("</form>");
+            
+            Layout.end(out);
+        }
+    }
+
+    @Override
+    protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException
+    {
+        String serviceName = req.getParameter("service");
+        if(serviceName == null)
+        {
+            resp.sendError(HttpServletResponse.SC_BAD_REQUEST, "missing parameter service");
+            return;
+        }
+        String file = req.getParameter("file");
+        if(file == null)
+        {
+            resp.sendError(HttpServletResponse.SC_BAD_REQUEST, "missing parameter file");
+            return;
+        }
+        
+        Service service = services.getService(serviceName);
+        if(service == null)
+        {
+            resp.sendError(HttpServletResponse.SC_NOT_FOUND, "Service not found");
+            return;
+        }
+        
+        ConfigFile configFile = service.getConfigFile(file);
+        for(String key: configFile.get().keySet())
+        {
+            if(key.equals("service") || key.equals("file"))  //könnte in query sein
+                throw new UnsupportedOperationException("ambiguity");
+            
+            String val = req.getParameter(key);
+            if(val == null)
+            {
+                resp.sendError(HttpServletResponse.SC_BAD_REQUEST, "missing form field "+key);
+                return;
+            }
+            
+            configFile.set(key, val);
+        }
+        
+        configFile.save();
+        //Zurück zur Liste
+        resp.sendRedirect(URL+"?service="+serviceName);//+"&file="+file);
     }
 }
