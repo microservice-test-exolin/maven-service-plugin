@@ -125,7 +125,7 @@ public class ServiceConfigServlet extends HttpServlet
                 out.append(e.getKey());
                 out.append("</label>");
 
-                out.append(e.getKey()).append(": <input class=\"form-control\" name=\"").append(e.getKey()).append("\" value=\"").append(e.getValue()).append("\"><br>");
+                out.append(": <input class=\"form-control\" name=\"").append(e.getKey()).append("\" value=\"").append(e.getValue()).append("\"><br>");
 
                 out.append("</div>");
             }
