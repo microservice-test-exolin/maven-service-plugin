@@ -94,7 +94,7 @@ public class ServiceConfigServlet extends HttpServlet
             out.append("<h1>Config of "+serviceName+"</h1>");
             
             for(String file: service.getConfigFiles())
-                out.append("<a href=\""+URL+"?service="+serviceName+"&file="+file+"\">").append(file).append("</a><br>");
+                out.append("<a href=\""+URL+"?service="+serviceName+"&file="+file+"\">").append(getDisplayName(file)).append("</a><br>");
             
             //out.append("</div>");
             Layout.end(out);
@@ -109,13 +109,13 @@ public class ServiceConfigServlet extends HttpServlet
         {
             String serviceName = service.getName();
             
-            Layout.start(serviceName+"/"+name, req.getRequestURI(), out);
+            Layout.start(serviceName+"/"+getDisplayName(name), req.getRequestURI(), out);
             
-            out.append("<h1>").append(serviceName+"/"+name).append("</h1>");
+            out.append("<h1>").append(serviceName+"/"+getDisplayName(name)).append("</h1>");
             
             ConfigFile file = service.getConfigFile(name);
 
-            out.append("<form action=\""+URL+"?service=").append(serviceName).append("&file=").append(name).append("\" method=\"POST\">");
+            out.append("<form action=\""+URL+"?service=").append(serviceName).append("&file=").append(getDisplayName(name)).append("\" method=\"POST\">");
 
             for(Map.Entry<String, String> e: file.get().entrySet())
             {
@@ -180,5 +180,13 @@ public class ServiceConfigServlet extends HttpServlet
         configFile.save();
         //Zurück zur Liste
         resp.sendRedirect(URL+"?service="+serviceName);//+"&file="+file);
+    }
+    
+    private String getDisplayName(String file)
+    {
+        if(file.equals("bot.properties"))
+            return "Bot configuration";
+        else
+            return file;
     }
 }
