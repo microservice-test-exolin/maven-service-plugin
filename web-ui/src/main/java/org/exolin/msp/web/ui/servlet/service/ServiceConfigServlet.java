@@ -123,7 +123,7 @@ public class ServiceConfigServlet extends HttpServlet
             
             ConfigFile file = service.getConfigFile(name);
 
-            out.append("<form action=\""+URL+"?service=").append(serviceName).append("&file=").append(getDisplayName(name)).append("\" method=\"POST\">");
+            out.append("<form action=\""+URL+"?service=").append(serviceName).append("&file=").append(name).append("\" method=\"POST\">");
 
             for(Map.Entry<String, String> e: file.get().entrySet())
             {
