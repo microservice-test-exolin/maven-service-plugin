@@ -254,7 +254,7 @@ public class LinuxService extends AbstractService
     public List<String> getConfigFiles() throws IOException
     {
         try{
-            return Files.list(logDirectory)
+            return Files.list(configDirectory)
                     .map(Path::getFileName)
                     .map(Path::toString)
                     .sorted()
