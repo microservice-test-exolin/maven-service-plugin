@@ -63,7 +63,7 @@ public class MainTest
         
         Properties properties = new Properties();
         properties.setProperty(Config.KEY_AUTH_TYPE, Config.AuthType.none.name());
-        server = Main.create(pm, sys, services, new Config(properties), 0, true);
+        server = Main.create(pm, sys, services, new Config(properties), Paths.get("invalid"), 0, true);
         server.start();
         
         port = ((ServerConnector)server.getConnectors()[0]).getLocalPort();

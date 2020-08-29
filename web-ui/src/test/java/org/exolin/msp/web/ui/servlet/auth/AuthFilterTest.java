@@ -72,7 +72,7 @@ public class AuthFilterTest
         properties.setProperty(Config.KEY_GITHUB_CLIENT_ID, "fake");
         properties.setProperty(Config.KEY_GITHUB_CLIENT_SECRET, "fake");
         properties.setProperty(Config.ALLOWED_USERS, "someone");
-        server = Main.create(pm, sys, services, new Config(properties), 0, true);
+        server = Main.create(pm, sys, services, new Config(properties), Paths.get("invalid"), 0, true);
         server.start();
         
         port = ((ServerConnector)server.getConnectors()[0]).getLocalPort();

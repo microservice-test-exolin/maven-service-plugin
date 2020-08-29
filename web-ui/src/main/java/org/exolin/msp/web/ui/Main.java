@@ -90,14 +90,14 @@ public class Main
                     Paths.get("/home/exolin/services"),
                     sys, pm);
 
-            run(pm, sys, services, Config.read(Paths.get(configDir, "config")), true);
+            run(pm, sys, services, Config.read(Paths.get(configDir, "config")), Paths.get(configDir), true);
         }catch(Exception e){
             LOGGER.error("Error starting", e);
             throw e;
         }
     }
     
-    public static void run(ProcessManager pm, SystemAbstraction sys, Services services, Config config, boolean localhost) throws Exception
+    public static void run(ProcessManager pm, SystemAbstraction sys, Services services, Config config, Path configDir, boolean localhost) throws Exception
     {
         ScheduledExecutorService deamonScheduler = Executors.newScheduledThreadPool(1, (Runnable r) -> {
             Thread t = new Thread(r);
@@ -107,7 +107,7 @@ public class Main
     
         deamonScheduler.scheduleWithFixedDelay(pm::clean, 1, 1, TimeUnit.SECONDS);
         
-        Server server = create(pm, sys, services, config, 8090, localhost);
+        Server server = create(pm, sys, services, config, configDir, 8090, localhost);
         
         try{
             server.start();
@@ -121,10 +121,10 @@ public class Main
         }
     }
     
-    public static Server create(ProcessManager pm, SystemAbstraction sys, Services services, Config config, int port, boolean localhost) throws Exception
+    public static Server create(ProcessManager pm, SystemAbstraction sys, Services services, Config config, Path configDir, int port, boolean localhost) throws Exception
     {
         ExecutorService executorService = Executors.newCachedThreadPool();
-        Path githubTokenFile = Paths.get("../config/github.token");
+        Path githubTokenFile = configDir.resolve("github.token");
         
         GithubDeployerImpl githubDeployer = null;
         try{
@@ -190,7 +190,7 @@ public class Main
         if(githubDeployer != null)
             servletHandler.addServletWithMapping(GithubWebhookServlet.class, GithubWebhookServlet.URL).setServlet(new GithubWebhookServlet(services, githubDeployer, executorService));
         else
-            servletHandler.addServletWithMapping(UnsupportedServlet.class, GithubWebhookServlet.URL);
+            servletHandler.addServletWithMapping(UnsupportedServlet.class, GithubWebhookServlet.URL).setServlet(new UnsupportedServlet("Github hooks aren't supported"));
         
         servletHandler.addServletWithMapping(ServerInfoServlet.class, ServerInfoServlet.URL);
         servletHandler.addServletWithMapping(SystemPropertiesServlet.class, SystemPropertiesServlet.URL);

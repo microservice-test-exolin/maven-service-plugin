@@ -12,9 +12,16 @@ import javax.servlet.http.HttpServletResponse;
  */
 public class UnsupportedServlet extends HttpServlet
 {
+    private final String message;
+
+    public UnsupportedServlet(String message)
+    {
+        this.message = message;
+    }
+    
     @Override
     protected void service(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException
     {
-        resp.sendError(HttpServletResponse.SC_NOT_FOUND, "Not supported");
+        resp.sendError(HttpServletResponse.SC_NOT_IMPLEMENTED, message);
     }
 }

@@ -77,6 +77,6 @@ public class LocalMain
         pm.register(services.getServices().get(0).getName(), "build", Arrays.asList("mvn", "build"), Paths.get("."), System.currentTimeMillis(), "testcode").setProcess(process);
         pm.register(services.getServices().get(1).getName(), "build", Arrays.asList("mvn", "build"), Paths.get("."), System.currentTimeMillis(), "testcode").setProcess(process);
         
-        run(pm, sys, services, Config.read(Paths.get("../config/config")), false);
+        run(pm, sys, services, Config.read(Paths.get("../config/config")), Paths.get("../config"), false);
     }
 }
