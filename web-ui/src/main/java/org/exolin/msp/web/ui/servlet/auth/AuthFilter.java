@@ -11,6 +11,7 @@ import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
+import org.exolin.msp.web.ui.servlet.github.GithubWebhookServlet;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -49,7 +50,8 @@ public class AuthFilter implements Filter
     {
         LOGGER.debug("Requesting {}", request.getRequestURI());
         
-        if(request.getRequestURI().startsWith(GithubOAuthServlet.URL))
+        //TODO: no exclusion like that for GithubWebhookServlet
+        if(request.getRequestURI().startsWith(GithubOAuthServlet.URL) || request.getRequestURI().startsWith(GithubWebhookServlet.URL))
             fc.doFilter(request, response);
         else
         {
