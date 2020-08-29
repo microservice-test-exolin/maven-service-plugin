@@ -141,7 +141,7 @@ public class ServiceConfigServlet extends HttpServlet
 
                 out.append(": <input class=\"form-control\" name=\"").append(e.getKey()).append("\" ");
                 if(isSecret(e.getKey()))
-                    out.append("value=\"").append(UNCHANGED_SECRET).append("\"").append(" type=\"password\"");
+                    out.append("value=\"").append(UNCHANGED_SECRET).append("\"").append(" type=\"password\"").append(" onclick=\"if(this.value=='").append(UNCHANGED_SECRET).append("')this.select();\"");
                 else
                     out.append("value=\"").append(e.getValue()).append("\"");
                 out.append("><br>");
