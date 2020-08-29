@@ -3,6 +3,9 @@ package org.exolin.msp.web.ui.servlet;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.io.Writer;
+import java.util.Arrays;
+import java.util.Comparator;
+import java.util.List;
 import org.exolin.msp.web.ui.Constants;
 import org.exolin.msp.web.ui.Main;
 import org.exolin.msp.web.ui.servlet.service.ListServicesServlet;
@@ -33,7 +36,7 @@ public class Layout
         w.append("</nav>");
     }
     
-    private static void writeMenuItem(Writer out, String title, String link, Icon icon, boolean cur) throws IOException
+    private static void writeMenuItem(Writer out, MenuItem item, boolean cur) throws IOException
     {
          out.append("<li class=\"nav-item\">\n");
          out.append("<a class=\"nav-link");
@@ -41,14 +44,45 @@ public class Layout
          if(cur)
             out.append(" active");
          
-         out.append("\" href=\""+link+"\">");
-         icon.writeTo(out);
-         out.append(title);
+         out.append("\" href=\""+item.link+"\">");
+         item.icon.writeTo(out);
+         out.append(item.title);
          
          if(cur)
             out.append("<span class=\"sr-only\">(current)</span>");
          
          out.append("</a>");
+    }
+    
+    static class Menu
+    {
+        private final String title;
+        private final List<MenuItem> items;
+
+        public Menu(String name, MenuItem...items)
+        {
+            this(name, Arrays.asList(items));
+        }
+        
+        public Menu(String name, List<MenuItem> items)
+        {
+            this.title = name;
+            this.items = items;
+        }
+    }
+    
+    static class MenuItem
+    {
+        private final String title;
+        private final String link;
+        private final Icon icon;
+
+        public MenuItem(String name, String url, Icon icon)
+        {
+            this.title = name;
+            this.link = url;
+            this.icon = icon;
+        }
     }
     
     private static void writeSidebar(Writer w, String current) throws IOException
@@ -58,21 +92,41 @@ public class Layout
         
         w.append("<ul class=\"nav flex-column\">");
         
-        writeMenuItem(w, "Dashboard", "/", Icon.HOME, current.equals("/"));
+        writeMenuItem(w, new MenuItem("Dashboard", "/", Icon.HOME), current.equals("/"));
         
-        w.append("<h6 class=\"sidebar-heading d-flex justify-content-between align-items-center px-3 mt-4 mb-1 text-muted\">Services</h6>");
-        writeMenuItem(w, "Services", ListServicesServlet.URL, Icon.SERVICE, current.startsWith(ListServicesServlet.URL));
-        writeMenuItem(w, "Configs", ServiceConfigServlet.URL, Icon.SETTINGS, current.startsWith(ServiceConfigServlet.URL));
-        writeMenuItem(w, "Logs", ServiceLogServlet.URL, Icon.LOG, current.startsWith(ServiceLogServlet.URL));
+        List<Menu> menus = Arrays.asList(
+                new Menu("Serice",
+                        new MenuItem("Services", ListServicesServlet.URL, Icon.SERVICE),
+                        new MenuItem("Configs", ServiceConfigServlet.URL, Icon.SETTINGS),
+                        new MenuItem("Logs", ServiceLogServlet.URL, Icon.LOG)),
+                new Menu("Tasks", 
+                        new MenuItem("Processes", ProcessServlet.URL, Icon.PROCESS),
+                        new MenuItem("Process History", ProcessHistoryServlet.URL, Icon.PROCESS),
+                        new MenuItem("Logs", TaskLogServlet.URL, Icon.LOG)
+                ),
+                new Menu("Server",
+                        new MenuItem("Server Info", "/server-info", Icon.SERVER)
+                )
+        );
         
-        w.append("<h6 class=\"sidebar-heading d-flex justify-content-between align-items-center px-3 mt-4 mb-1 text-muted\">Tasks</h6>");
-        writeMenuItem(w, "Processes", ProcessServlet.URL, Icon.PROCESS, current.startsWith(ProcessServlet.URL));
-        writeMenuItem(w, "Process History", ProcessHistoryServlet.URL, Icon.PROCESS, current.startsWith(ProcessHistoryServlet.URL));
-        writeMenuItem(w, "Logs", TaskLogServlet.URL, Icon.LOG, current.startsWith(TaskLogServlet.URL));
+        //find longest matching link
+        String currentMenu = menus.stream()
+                .flatMap(m -> m.items.stream())
+                .map(mi -> mi.link)
+                .filter(link -> current.startsWith(link))
+                .sorted(Comparator.comparing(String::length).reversed())
+                .findFirst()
+                .orElse(null);
         
-        w.append("<h6 class=\"sidebar-heading d-flex justify-content-between align-items-center px-3 mt-4 mb-1 text-muted\">Server</h6>");
-        
-        writeMenuItem(w, "Server Info", "/server-info", Icon.SERVER, current.startsWith("/server-info"));
+        for(Menu menu: menus)
+        {
+            w.append("<h6 class=\"sidebar-heading d-flex justify-content-between align-items-center px-3 mt-4 mb-1 text-muted\">");
+            w.append(menu.title);
+            w.append("</h6>");
+            
+            for(MenuItem menuItem: menu.items)
+                writeMenuItem(w, menuItem, menuItem.link.equals(currentMenu));
+        }
         
         w.write("</ul>");
         w.write("<div class=\"footer\">Started at "+Main.startedAt+"<br>Version:"+Constants.VERSION+"</div>");
