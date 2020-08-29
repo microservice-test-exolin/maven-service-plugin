@@ -105,7 +105,8 @@ public class ServiceConfigServlet extends HttpServlet
     private boolean isSecret(String name)
     {
         return name.equals("password") ||
-               name.endsWith(".password");
+               name.endsWith(".password") ||
+               name.endsWith("_secret");
     }
     
     private void showConfigFile(Service service, String name, HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException

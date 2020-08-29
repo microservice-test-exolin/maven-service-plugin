@@ -64,6 +64,13 @@ public class Main
     
     public static void main(String[] args) throws Exception
     {
+        String configDir = System.getenv("SERVICE_CFG_DIR");
+        if(configDir == null)
+        {
+            System.err.println("Environment variable SERVICE_CFG_DIR not set");
+            System.exit(-1);
+        }
+        
         try{
             ProcessManager pm = new ProcessManager(new ProcessDataStorage(Paths.get("../data")));
 
@@ -79,7 +86,7 @@ public class Main
                     Paths.get("/home/exolin/services"),
                     sys, pm);
 
-            run(pm, sys, services, Config.read(Paths.get("../config/config")), true);
+            run(pm, sys, services, Config.read(Paths.get(configDir, "config")), true);
         }catch(Exception e){
             LOGGER.error("Error starting", e);
             throw e;
