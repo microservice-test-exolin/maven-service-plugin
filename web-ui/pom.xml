@@ -16,6 +16,7 @@
         <mainClass>org.exolin.msp.web.ui.Main</mainClass>
         
         <service.user>root</service.user>
+        <service.useConfigDirectory>true</service.useConfigDirectory>
         
         <jetty.version>9.4.17.v20190418</jetty.version>
     </properties>
