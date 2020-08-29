@@ -198,7 +198,16 @@ public class Main
         SessionIdManager idmanager = new DefaultSessionIdManager(server);
         server.setSessionIdManager(idmanager);
         SessionHandler sessionsHandler = new SessionHandler();       
-        servletHandler.setHandler(sessionsHandler);           
+        servletHandler.setHandler(sessionsHandler);
+        
+        /*CustomRequestLog requestLog = new CustomRequestLog("/var/logs/jetty/jetty-yyyy_mm_dd.request.log", CustomRequestLog.NCSA_FORMAT);
+        requestLog.setAppend(true);
+        requestLog.setExtended(false);
+        requestLog.setLogTimeZone("GMT");
+        requestLog.setLogLatency(true);
+        requestLog.setRetainDays("90");
+
+        server.setRequestLog(requestLog);*/
         
         return server;
     }
