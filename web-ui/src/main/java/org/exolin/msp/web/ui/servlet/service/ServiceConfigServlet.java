@@ -10,6 +10,7 @@ import javax.servlet.http.HttpServletResponse;
 import org.exolin.msp.service.ConfigFile;
 import org.exolin.msp.service.Service;
 import org.exolin.msp.service.Services;
+import org.exolin.msp.web.ui.servlet.Icon;
 import org.exolin.msp.web.ui.servlet.Layout;
 
 /**
@@ -94,11 +95,25 @@ public class ServiceConfigServlet extends HttpServlet
             out.append("<h1>Config of "+serviceName+"</h1>");
             
             for(String file: service.getConfigFiles())
-                out.append("<a href=\""+URL+"?service="+serviceName+"&file="+file+"\">").append(getDisplayName(file)).append("</a><br>");
+            {
+                out.append("<a href=\""+URL+"?service="+serviceName+"&file="+file+"\">");
+                getIcon(file).writeTo(out);
+                out.append(getDisplayName(file)).append("</a><br>");
+            }
             
             //out.append("</div>");
             Layout.end(out);
         }
+    }
+    
+    private Icon getIcon(String name)
+    {
+        if(name.equals("database.properties"))
+            return Icon.DATABASE;
+        else if(name.equals("bot.properties") || name.endsWith(".token"))
+            return Icon.SHARE;
+        else
+            return Icon.SETTINGS;
     }
     
     private static final String UNCHANGED_SECRET = "<unchanged>";

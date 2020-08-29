@@ -23,6 +23,9 @@ public class Icon
     public static final Icon HOME = new Icon("home");
     public static final Icon INFO = new Icon("info");
     public static final Icon SETTINGS = new Icon("settings");
+    public static final Icon DATABASE = new Icon("database");
+    public static final Icon PACKAGE = new Icon("package");
+    public static final Icon SHARE = new Icon("share-2");
 
     private final String name;
 

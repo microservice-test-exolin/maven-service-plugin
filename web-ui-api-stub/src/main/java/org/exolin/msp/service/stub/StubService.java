@@ -109,7 +109,11 @@ public class StubService extends AbstractService
     @Override
     public List<String> getConfigFiles() throws IOException
     {
-        return Arrays.asList("test.config");
+        return Arrays.asList(
+                "test.config",
+                "database.properties",
+                "bot.properties"
+        );
     }
     
     private final InMemoryConfigFile testConfig = new InMemoryConfigFile(new HashMap<>(Collections.singletonMap("key", "value")));
