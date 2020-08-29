@@ -20,10 +20,10 @@ import org.slf4j.LoggerFactory;
 public class Config
 {
     private static final Logger LOGGER = LoggerFactory.getLogger(Config.class);
-    static String KEY_GITHUB_CLIENT_ID = "github.client_id";
-    static String KEY_GITHUB_CLIENT_SECRET = "github.client_secret";
-    static String ALLOWED_USERS = "allowedUsers";
-    static String KEY_AUTH_TYPE = "auth.type";
+    public static String KEY_GITHUB_CLIENT_ID = "github.client_id";
+    public static String KEY_GITHUB_CLIENT_SECRET = "github.client_secret";
+    public static String ALLOWED_USERS = "allowedUsers";
+    public static String KEY_AUTH_TYPE = "auth.type";
     
     public enum AuthType
     {

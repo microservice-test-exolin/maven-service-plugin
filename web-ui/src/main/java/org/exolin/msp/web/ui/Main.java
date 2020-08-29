@@ -144,7 +144,7 @@ public class Main
             case github:
                 GithubOAuth githubOAuth = new GithubOAuth(config.get(Config.KEY_GITHUB_CLIENT_ID), config.get(Config.KEY_GITHUB_CLIENT_SECRET));
                 Set<String> allowedUsers = config.getStringSet(Config.ALLOWED_USERS);
-                servletHandler.addFilterWithMapping(AuthFilter.class, "/", EnumSet.of(DispatcherType.REQUEST)).setFilter(new AuthFilter(githubOAuth, allowedUsers));
+                servletHandler.addFilterWithMapping(AuthFilter.class, "/*", EnumSet.of(DispatcherType.REQUEST)).setFilter(new AuthFilter(githubOAuth, allowedUsers));
                 servletHandler.addServletWithMapping(GithubOAuthServlet.class, GithubOAuthServlet.URL).setServlet(new GithubOAuthServlet(githubOAuth));
                 servletHandler.addServletWithMapping(GithubLogoutServlet.class, GithubLogoutServlet.URL);
                 break;

@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.io.Writer;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 import org.exolin.msp.web.ui.Constants;
@@ -54,7 +55,7 @@ public class Layout
          out.append("</a>");
     }
     
-    static class Menu
+    public static class Menu
     {
         private final String title;
         private final List<MenuItem> items;
@@ -69,9 +70,14 @@ public class Layout
             this.title = name;
             this.items = items;
         }
+
+        public List<MenuItem> getItems()
+        {
+            return Collections.unmodifiableList(items);
+        }
     }
     
-    static class MenuItem
+    public static class MenuItem
     {
         private final String title;
         private final String link;
@@ -83,18 +89,14 @@ public class Layout
             this.link = url;
             this.icon = icon;
         }
+
+        public String getLink()
+        {
+            return link;
+        }
     }
     
-    private static void writeSidebar(Writer w, String current) throws IOException
-    {
-        w.write("<nav class=\"col-md-2 d-none d-md-block bg-light sidebar\">");
-        w.append("<div class=\"sidebar-sticky\">");
-        
-        w.append("<ul class=\"nav flex-column\">");
-        
-        writeMenuItem(w, new MenuItem("Dashboard", "/", Icon.HOME), current.equals("/"));
-        
-        List<Menu> menus = Arrays.asList(
+    public static final List<Menu> menus = Arrays.asList(
                 new Menu("Serice",
                         new MenuItem("Services", ListServicesServlet.URL, Icon.SERVICE),
                         new MenuItem("Configs", ServiceConfigServlet.URL, Icon.SETTINGS),
@@ -108,6 +110,15 @@ public class Layout
                         new MenuItem("Server Info", "/server-info", Icon.SERVER)
                 )
         );
+    
+    private static void writeSidebar(Writer w, String current) throws IOException
+    {
+        w.write("<nav class=\"col-md-2 d-none d-md-block bg-light sidebar\">");
+        w.append("<div class=\"sidebar-sticky\">");
+        
+        w.append("<ul class=\"nav flex-column\">");
+        
+        writeMenuItem(w, new MenuItem("Dashboard", "/", Icon.HOME), current.equals("/"));
         
         //find longest matching link
         String currentMenu = menus.stream()

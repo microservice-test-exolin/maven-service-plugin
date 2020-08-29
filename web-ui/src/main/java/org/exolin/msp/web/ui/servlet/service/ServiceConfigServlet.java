@@ -104,7 +104,8 @@ public class ServiceConfigServlet extends HttpServlet
     private static final String UNCHANGED_SECRET = "<unchanged>";
     private boolean isSecret(String name)
     {
-        return name.equals("password");
+        return name.equals("password") ||
+               name.endsWith(".password");
     }
     
     private void showConfigFile(Service service, String name, HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException
