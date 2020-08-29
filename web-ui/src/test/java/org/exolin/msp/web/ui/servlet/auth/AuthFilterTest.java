@@ -106,6 +106,6 @@ public class AuthFilterTest
     @Test
     public void testGithubWebhookAccessible() throws Exception
     {
-        assertEquals(HttpServletResponse.SC_METHOD_NOT_ALLOWED, open(GithubWebhookServlet.URL).getResponseCode());
+        assertEquals(HttpServletResponse.SC_NOT_IMPLEMENTED, open(GithubWebhookServlet.URL).getResponseCode());
     }
 }
