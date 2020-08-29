@@ -12,6 +12,7 @@ import java.util.List;
 import java.util.Properties;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
+import javax.servlet.http.HttpServletResponse;
 import org.eclipse.jetty.server.Server;
 import org.eclipse.jetty.server.ServerConnector;
 import org.exolin.msp.core.PseudoAbstraction;
@@ -25,9 +26,11 @@ import org.exolin.msp.web.ui.Config;
 import org.exolin.msp.web.ui.LogAdapter;
 import org.exolin.msp.web.ui.Main;
 import org.exolin.msp.web.ui.servlet.Layout;
+import org.exolin.msp.web.ui.servlet.github.GithubWebhookServlet;
 import org.junit.jupiter.api.BeforeAll;
 import static org.junit.jupiter.api.Assertions.*;
 import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.MethodSource;
 
@@ -98,5 +101,11 @@ public class AuthFilterTest
     public void testNotAccessible(String path) throws Exception
     {
         assertRedirect(path);
+    }
+    
+    @Test
+    public void testGithubWebhookAccessible() throws Exception
+    {
+        assertEquals(HttpServletResponse.SC_METHOD_NOT_ALLOWED, open(GithubWebhookServlet.URL).getResponseCode());
     }
 }
