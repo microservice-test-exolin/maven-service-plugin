@@ -14,6 +14,10 @@ import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 import javax.servlet.DispatcherType;
 import org.eclipse.jetty.server.Connector;
+import org.eclipse.jetty.server.CustomRequestLog;
+import org.eclipse.jetty.server.Request;
+import org.eclipse.jetty.server.RequestLog;
+import org.eclipse.jetty.server.Response;
 import org.eclipse.jetty.server.Server;
 import org.eclipse.jetty.server.ServerConnector;
 import org.eclipse.jetty.server.SessionIdManager;
@@ -199,6 +203,18 @@ public class Main
         server.setSessionIdManager(idmanager);
         SessionHandler sessionsHandler = new SessionHandler();       
         servletHandler.setHandler(sessionsHandler);
+        
+        Logger requestLogger = LoggerFactory.getLogger("jetty.requestLog");
+        
+        server.setRequestLog(new RequestLog() {
+            @Override
+            public void log(Request request, Response response)
+            {
+                requestLogger.info("{} {} => {} {} {}",
+                        request.getMethod(), request.getRequestURI(),
+                        response.getStatus(), response.getReason(), response.getContentType());
+            }
+        });
         
         /*CustomRequestLog requestLog = new CustomRequestLog("/var/logs/jetty/jetty-yyyy_mm_dd.request.log", CustomRequestLog.NCSA_FORMAT);
         requestLog.setAppend(true);
