@@ -271,12 +271,17 @@ public class LinuxService extends AbstractService
         if(!config.normalize().startsWith(configDirectory))
             throw new IllegalArgumentException(name);
         
-        Properties properties = new Properties();
-        try(BufferedReader in = Files.newBufferedReader(config))
+        if(name.endsWith(".token"))
+            return new TokenConfigFile(config, new String(Files.readAllBytes(config), StandardCharsets.UTF_8));
+        else
         {
-            properties.load(in);
+            Properties properties = new Properties();
+            try(BufferedReader in = Files.newBufferedReader(config))
+            {
+                properties.load(in);
+            }
+
+            return new PropertiesConfigFile(config, properties);
         }
-        
-        return new PropertiesConfigFile(config, properties);
     }
 }
