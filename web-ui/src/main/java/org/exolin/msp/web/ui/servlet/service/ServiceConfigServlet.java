@@ -101,6 +101,12 @@ public class ServiceConfigServlet extends HttpServlet
         }
     }
     
+    private static final String UNCHANGED_SECRET = "<unchanged>";
+    private boolean isSecret(String name)
+    {
+        return name.equals("password");
+    }
+    
     private void showConfigFile(Service service, String name, HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException
     {
         resp.setContentType("text/html;charset=UTF-8");
@@ -133,7 +139,12 @@ public class ServiceConfigServlet extends HttpServlet
                 out.append(e.getKey());
                 out.append("</label>");
 
-                out.append(": <input class=\"form-control\" name=\"").append(e.getKey()).append("\" value=\"").append(e.getValue()).append("\"><br>");
+                out.append(": <input class=\"form-control\" name=\"").append(e.getKey()).append("\" ");
+                if(isSecret(e.getKey()))
+                    out.append("value=\"").append(UNCHANGED_SECRET).append("\"").append(" type=\"password\"");
+                else
+                    out.append("value=\"").append(e.getValue()).append("\"");
+                out.append("><br>");
 
                 out.append("</div>");
             }
@@ -182,7 +193,8 @@ public class ServiceConfigServlet extends HttpServlet
                 return;
             }
             
-            configFile.set(key, val);
+            if(!isSecret(key) || !val.equals(UNCHANGED_SECRET))
+                configFile.set(key, val);
         }
         
         configFile.save();
