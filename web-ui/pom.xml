@@ -70,6 +70,12 @@
             <artifactId>web-ui-api-linux</artifactId>
             <version>${project.version}</version>
         </dependency>
+        
+        <dependency>
+            <groupId>org.javacord</groupId>
+            <artifactId>javacord-core</artifactId>
+            <version>3.0.4</version>
+        </dependency>
     </dependencies>
     <build>
         <plugins>

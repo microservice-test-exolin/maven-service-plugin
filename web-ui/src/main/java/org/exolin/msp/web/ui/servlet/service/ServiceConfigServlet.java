@@ -3,6 +3,7 @@ package org.exolin.msp.web.ui.servlet.service;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.Map;
+import java.util.concurrent.TimeUnit;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -12,6 +13,9 @@ import org.exolin.msp.service.Service;
 import org.exolin.msp.service.Services;
 import org.exolin.msp.web.ui.servlet.Icon;
 import org.exolin.msp.web.ui.servlet.Layout;
+import org.javacord.api.DiscordApiBuilder;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  *
@@ -161,7 +165,12 @@ public class ServiceConfigServlet extends HttpServlet
                     out.append("value=\"").append(UNCHANGED_SECRET).append("\"").append(" type=\"password\"").append(" onclick=\"if(this.value=='").append(UNCHANGED_SECRET).append("')this.select();\"");
                 else
                     out.append("value=\"").append(e.getValue()).append("\"");
-                out.append("><br>");
+                out.append(">");
+                
+                if(e.getKey().equals("discord.apiKey"))
+                    out.append(" Bot: ").append(getDiscordBotName(e.getValue()));
+                
+                out.append("<br>");
 
                 out.append("</div>");
             }
@@ -225,5 +234,22 @@ public class ServiceConfigServlet extends HttpServlet
             return "Bot configuration";
         else
             return file;
+    }
+
+    private static final Logger LOGGER = LoggerFactory.getLogger(ServiceConfigServlet.class);
+    
+    private String getDiscordBotName(String token)
+    {
+        try{
+            return new DiscordApiBuilder()
+                    .setToken(token)
+                    .login()
+                    .get()
+                    .getYourself()
+                    .getDiscriminatedName();
+        }catch(Exception e){
+            LOGGER.error("Error while retriving bot name", e);
+            return "<em>unknown</em>";
+        }
     }
 }
