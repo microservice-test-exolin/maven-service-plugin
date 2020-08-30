@@ -13,6 +13,7 @@ import org.exolin.msp.service.Service;
 import org.exolin.msp.service.Services;
 import org.exolin.msp.web.ui.servlet.Icon;
 import org.exolin.msp.web.ui.servlet.Layout;
+import org.javacord.api.DiscordApi;
 import org.javacord.api.DiscordApiBuilder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -241,10 +242,12 @@ public class ServiceConfigServlet extends HttpServlet
     private String getDiscordBotName(String token)
     {
         try{
-            return new DiscordApiBuilder()
+            DiscordApi api = new DiscordApiBuilder()
                     .setToken(token)
                     .login()
-                    .get()
+                    .get();
+            
+            return api
                     .getYourself()
                     .getDiscriminatedName();
         }catch(Exception e){
