@@ -45,7 +45,9 @@ public class DeployMojo extends BaseMojo
             Generator.createServiceFile(serviceFile, serviceDescription, serviceUser, destStartSh);
             
             getLog().info("Create start script");
-            Generator.createStartSh(startSh, serviceName, serviceUser, jar.getName(), useConfigDirectory);
+            Generator.createStartSh(startSh,
+                    serviceName, serviceUser, maxHeapSize,
+                    jar.getName(), useConfigDirectory);
             
             deploy(sys, files, simDir, serviceName, jar.toPath(), libDir.toPath(), serviceUser, startSh.toPath());
         

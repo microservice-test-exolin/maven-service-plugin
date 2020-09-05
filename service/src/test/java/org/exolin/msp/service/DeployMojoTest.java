@@ -148,7 +148,7 @@ public class DeployMojoTest
                 "export SERVICE_BASE_DIR=$DIR",
                 "export SERVICE_LOG_DIR=$DIR/log",
                 "export SERVICE_CFG_DIR=$DIR/cfg",
-                "/usr/bin/java -jar $DIR/bin/test-service-1.0-SNAPSHOT.jar",
+                "/usr/bin/java -Xmx50m -jar $DIR/bin/test-service-1.0-SNAPSHOT.jar",
                 "echo Stopped"
         )), String.join("\n", x));
         

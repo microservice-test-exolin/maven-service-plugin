@@ -8,8 +8,10 @@
     <properties>
         <maven.compiler.source>1.8</maven.compiler.source>
         <maven.compiler.target>1.8</maven.compiler.target>
+        
         <service.user>exolin</service.user>
         <service.useConfigDirectory>true</service.useConfigDirectory>
+        <service.maxHeapSize>50m</service.maxHeapSize>
     </properties>
     <dependencies>
         <dependency>

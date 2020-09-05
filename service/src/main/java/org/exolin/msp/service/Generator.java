@@ -49,8 +49,22 @@ public class Generator
         w.newLine();
     }
     
-    public static void createStartSh(File file, String serviceName, String serviceUser, String jarName, boolean useConfigDirectory) throws IOException
+    static void validateMaxHeapSize(String maxHeapSize)
     {
+        if(!maxHeapSize.toLowerCase().matches("[0-9]+[kmg]"))
+            throw new IllegalArgumentException("Invalid maxHeapSize: "+maxHeapSize);
+    }
+    
+    public static void createStartSh(File file,
+            String serviceName,
+            String serviceUser,
+            String maxHeapSize,
+            
+            String jarName, boolean useConfigDirectory) throws IOException
+    {
+        if(maxHeapSize != null)
+            validateMaxHeapSize(maxHeapSize);
+        
         Path path = file.toPath();
         
         try(BufferedWriter w = Files.newBufferedWriter(file.toPath()))
@@ -80,6 +94,9 @@ public class Generator
                 setEnv(w, "SERVICE_CFG_DIR", "$DIR/cfg");
 
             w.write("/usr/bin/java");
+            
+            if(maxHeapSize != null)
+                w.append(" -Xmx").append(maxHeapSize);
             
             w.append(" -jar ").append("$DIR/bin/").append(jarName);
             w.newLine();

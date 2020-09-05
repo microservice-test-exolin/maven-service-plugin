@@ -38,6 +38,9 @@ public abstract class BaseMojo extends AbstractMojo
     @Parameter(defaultValue = "${service.useConfigDirectory}", property = "useConfigDirectory", required = false)
     protected boolean useConfigDirectory;
     
+    @Parameter(defaultValue = "${service.maxHeapSize}", property = "maxHeapSize", required = false)
+    protected String maxHeapSize;
+    
     protected File pluginDir() throws IOException
     {
         if(!pluginDir.exists())
