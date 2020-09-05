@@ -61,8 +61,9 @@ public class ProcessManager
             if(pi.getService().equals(service))
                 list.add(pi);
         };
-        processes.forEach(consumer);
+        //zuerst History, dann aktuell laufende damit von alt zu neu ist
         processesHistory.forEach(consumer);
+        processes.forEach(consumer);
         return list;
     }
     
