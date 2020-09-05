@@ -28,6 +28,14 @@ public class Journalctl extends LogFile
     {
         return "Standard Output";
     }
+    
+    private void copy(InputStream in, OutputStream out) throws IOException
+    {
+        byte[] arr = new byte[1024*8];
+        int r;
+        while((r=in.read(arr)) != -1)
+            out.write(arr, 0, r);
+    }
 
     @Override
     public void writeTo(OutputStream out) throws IOException
@@ -37,10 +45,7 @@ public class Journalctl extends LogFile
         
         try(InputStream in = process.getInputStream())
         {
-            byte[] arr = new byte[1024*8];
-            int r;
-            while((r=in.read(arr)) != -1)
-                out.write(arr, 0, r);
+            copy(in, out);
         }
     }
 }
