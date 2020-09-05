@@ -174,7 +174,12 @@ public class ServiceServlet extends HttpServlet
         {
             String javaOptions = status.getJavaOptions();
             if(javaOptions != null)
-                out.append(javaOptions);
+            {
+                if(!javaOptions.isEmpty())
+                    out.append(javaOptions);
+                else
+                    out.append("<em>none</em>");
+            }
             else
                 out.append("<em>unknown</em>");
         }
