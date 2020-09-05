@@ -1,5 +1,6 @@
 package org.exolin.msp.web.ui;
 
+import java.nio.file.Path;
 import java.time.Instant;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
@@ -9,7 +10,6 @@ import java.time.temporal.ChronoField;
 import java.time.temporal.TemporalAccessor;
 import java.time.temporal.TemporalQueries;
 import java.util.Optional;
-import org.exolin.msp.service.LogFile;
 
 /**
  *
@@ -56,17 +56,17 @@ public class LognameGenerator
         return filename;
     }
     
-    public static String getLogFileTitle(LogFile logFile)
+    public static String getLogFileTitle(String serviceName, Optional<String> processName, Path path)
     {
-        String filename = logFile.getPath().getFileName().toString();
+        String filename = path.getFileName().toString();
         
-        if(logFile.getProcessName().isPresent())
+        if(processName.isPresent())
         {
             String title;
             title = getOldProcessLogFileTitle(filename);
             if(title != null)
                 return title;
-            title = x(filename, logFile.getProcessName());
+            title = x(filename, processName);
             if(title != null)
                 return title;
             
@@ -77,17 +77,17 @@ public class LognameGenerator
                     String ts = filename.substring(0, filename.length()-4);
                     try{
                         long timeMillis = Long.parseLong(ts);
-                        return "Task "+logFile.getProcessName().get()+" at "+Instant.ofEpochMilli(timeMillis).atZone(ZoneId.systemDefault()).toLocalDateTime().toString().replace('T', ' ');
+                        return "Task "+processName.get()+" at "+Instant.ofEpochMilli(timeMillis).atZone(ZoneId.systemDefault()).toLocalDateTime().toString().replace('T', ' ');
                     }catch(NumberFormatException e){
                     }
                 }
             }
             
-            return "Task "+logFile.getProcessName().get()+": "+logFile.getPath().getFileName();
+            return "Task "+processName.get()+": "+path.getFileName();
         }
         else
         {
-            String title = getOldServiceLogFileTitle(logFile.getServiceName(), filename);
+            String title = getOldServiceLogFileTitle(serviceName, filename);
             if(title != null)
                 return title;
             else if(filename.equals("service.log"))

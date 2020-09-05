@@ -143,14 +143,13 @@ public class DeployMojoTest
                 "set -e",
                 "NAME=test-service",
                 "DIR=/home/exolin/services/$NAME",
-                "LOGFILE=$DIR/log/service.out.log",
                 "cd $DIR/bin",
-                "echo Starting >> $LOGFILE",
+                "echo Starting",
                 "export SERVICE_BASE_DIR=$DIR",
                 "export SERVICE_LOG_DIR=$DIR/log",
                 "export SERVICE_CFG_DIR=$DIR/cfg",
-                "/usr/bin/java -jar $DIR/bin/test-service-1.0-SNAPSHOT.jar >> $LOGFILE 2>&1",
-                "echo Stopped >> $LOGFILE"
+                "/usr/bin/java -jar $DIR/bin/test-service-1.0-SNAPSHOT.jar",
+                "echo Stopped"
         )), String.join("\n", x));
         
         assertEquals("jar", rule.getVariableValueFromObject(deploy, "packaging"));

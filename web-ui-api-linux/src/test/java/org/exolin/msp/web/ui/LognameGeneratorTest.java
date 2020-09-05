@@ -1,14 +1,10 @@
 package org.exolin.msp.web.ui;
 
-import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.time.Instant;
-import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.time.LocalTime;
 import java.time.ZoneId;
 import java.util.Optional;
-import org.exolin.msp.service.LogFile;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import org.junit.jupiter.api.Test;
 
@@ -51,58 +47,48 @@ public class LognameGeneratorTest
         assertEquals("abc.log", LognameGenerator.getLogFileTitle(SERVICE_NAME, "abc.log"));
     }
     
-    private LogFile serviceLogFile(String serviceName, String filename)
-    {
-        return new LogFile(serviceName, Optional.empty(), Paths.get(filename));
-    }
-    
-    private LogFile processLogFile(String serviceName, String task, String filename)
-    {
-        return new LogFile(serviceName, Optional.of(task), Paths.get(filename));
-    }
-    
     @Test
     public void testGetLogFileTitle2_Service_New()
     {
-        assertEquals("Service Log", LognameGenerator.getLogFileTitle(serviceLogFile(SERVICE_NAME, "service.log")));
+        assertEquals("Service Log", LognameGenerator.getLogFileTitle(SERVICE_NAME, Optional.empty(), Paths.get("service.log")));
     }
     
     @Test
     public void testGetLogFileTitle2_Service_New_Timed()
     {
-        assertEquals("Service Log 2020-08-16-00-07", LognameGenerator.getLogFileTitle(serviceLogFile(SERVICE_NAME, "service.2020-08-16-00-07.log")));
+        assertEquals("Service Log 2020-08-16-00-07", LognameGenerator.getLogFileTitle(SERVICE_NAME, Optional.empty(), Paths.get("service.2020-08-16-00-07.log")));
     }
     
     @Test
     public void testGetLogFileTitle2_Service_Old()
     {
-        assertEquals("Service Log [old version]", LognameGenerator.getLogFileTitle(serviceLogFile(SERVICE_NAME, SERVICE_NAME+".log")));
+        assertEquals("Service Log [old version]", LognameGenerator.getLogFileTitle(SERVICE_NAME, Optional.empty(), Paths.get(SERVICE_NAME+".log")));
     }
     
     @Test
     public void testGetLogFileTitle2_GenericGroup()
     {
         assertEquals("Task x at 2020-01-02 03:04:05", LognameGenerator.x("x-2020-01-02-030405.log", Optional.of("x")));
-        assertEquals("Task x at 2020-01-02 03:04:05", LognameGenerator.getLogFileTitle(processLogFile(SERVICE_NAME, "x", "x-2020-01-02-030405.log")));
+        assertEquals("Task x at 2020-01-02 03:04:05", LognameGenerator.getLogFileTitle(SERVICE_NAME, Optional.of("x"), Paths.get("x-2020-01-02-030405.log")));
     }
     
     @Test
     public void testGetLogFileTitle2_Task_old()
     {
-        assertEquals("Task x at 2020-01-02 03:04:05", LognameGenerator.getLogFileTitle(processLogFile(SERVICE_NAME, "x", "task-x-2020-01-02-030405.log")));
+        assertEquals("Task x at 2020-01-02 03:04:05", LognameGenerator.getLogFileTitle(SERVICE_NAME, Optional.of("x"), Paths.get("task-x-2020-01-02-030405.log")));
     }
     
     @Test
     public void testGetLogFileTitle2_TaskNew()
     {
         Instant i = LocalDateTime.of(2020,01,02,03,04,05).atZone(ZoneId.systemDefault()).toInstant();
-        assertEquals("Task x at 2020-01-02 03:04:05", LognameGenerator.getLogFileTitle(processLogFile(SERVICE_NAME, "x", i.toEpochMilli()+".log")));
+        assertEquals("Task x at 2020-01-02 03:04:05", LognameGenerator.getLogFileTitle(SERVICE_NAME, Optional.of("x"), Paths.get(i.toEpochMilli()+".log")));
     }
     
     @Test
     public void testGetLogFileTitle2_Other()
     {
-        assertEquals("abc.log", LognameGenerator.getLogFileTitle(serviceLogFile(SERVICE_NAME, "abc.log")));
-        assertEquals("Task x: abc.log", LognameGenerator.getLogFileTitle(processLogFile(SERVICE_NAME, "x", "abc.log")));
+        assertEquals("abc.log", LognameGenerator.getLogFileTitle(SERVICE_NAME, Optional.empty(), Paths.get("abc.log")));
+        assertEquals("Task x: abc.log", LognameGenerator.getLogFileTitle(SERVICE_NAME, Optional.of("x"), Paths.get("abc.log")));
     }
 }

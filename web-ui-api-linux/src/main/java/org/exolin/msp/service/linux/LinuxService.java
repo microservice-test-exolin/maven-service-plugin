@@ -96,7 +96,7 @@ public class LinuxService extends AbstractService
         
         try{
             for(Path p: Files.newDirectoryStream(dir, "*.log"))
-                files.put(prefix+p.getFileName().toString(), new LogFile(getName(), processName, p));
+                files.put(prefix+p.getFileName().toString(), new LinuxFSLogFile(getName(), processName, p));
         }catch(NoSuchFileException e){
             LOGGER.warn("Directory doesn't exist: {}", dir);
         }
@@ -110,7 +110,11 @@ public class LinuxService extends AbstractService
         Map<String, LogFile> files = new TreeMap<>();
         
         if(taskName == null || !taskName.isPresent())
+        {
+            files.put("journalctl", new Journalctl(getName()));
+            
             readLogFiles(Optional.empty(), logDirectory, files);
+        }
         
         for(Map.Entry<String, Path> e: pm.getProcessLogDirectories(getName()).entrySet())
         {

@@ -1,5 +1,7 @@
 package org.exolin.msp.service;
 
+import java.io.IOException;
+import java.io.OutputStream;
 import java.nio.file.Path;
 import java.util.Optional;
 
@@ -7,17 +9,15 @@ import java.util.Optional;
  *
  * @author tomgk
  */
-public class LogFile
+public abstract class LogFile
 {
     private final String serviceName;
     private final Optional<String> processName;
-    private final Path path;
 
-    public LogFile(String serviceName, Optional<String> processName, Path path)
+    public LogFile(String serviceName, Optional<String> processName)
     {
         this.serviceName = serviceName;
         this.processName = processName;
-        this.path = path;
     }
 
     public String getServiceName()
@@ -29,9 +29,14 @@ public class LogFile
     {
         return processName;
     }
+    
+    public abstract String getFileName();
+    public abstract String getTitle();
+    
+    public abstract void writeTo(OutputStream out) throws IOException;
 
-    public Path getPath()
+    /*public Path getPath()
     {
         return path;
-    }
+    }*/
 }

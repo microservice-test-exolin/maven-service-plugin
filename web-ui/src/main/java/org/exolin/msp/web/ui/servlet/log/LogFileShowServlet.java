@@ -79,7 +79,7 @@ public class LogFileShowServlet extends HttpServlet
             return;
         }
         
-        Files.copy(lf.getPath(), resp.getOutputStream());
+        lf.writeTo(resp.getOutputStream());
     }
     
     private void showLogFile(Service service, String logFile, HttpServletRequest req, HttpServletResponse resp) throws IOException
@@ -106,7 +106,7 @@ public class LogFileShowServlet extends HttpServlet
             out.append("<pre style=\"border: 1px solid #ccc;padding:0.5em\">");
             
             ByteArrayOutputStream arr = new ByteArrayOutputStream();
-            Files.copy(lf.getPath(), arr);
+            lf.writeTo(arr);
             out.append(arr.toString().replace("<", "&lt;").replace(">", "&gt;"));
             
             out.append("</pre>");

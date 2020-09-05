@@ -32,7 +32,7 @@ public class LogLister
             files.forEach((name, lf) -> {
                 out.append("<a href=\""+LogFileShowServlet.getFileUrl(service.getName(), name)+"\">");
                 Icon.LOG.writeTo(out);
-                out.append(LognameGenerator.getLogFileTitle(lf)+"</a><br>");
+                out.append(lf.getTitle()).append("</a><br>");
             });
             if(files.isEmpty())
                 out.append("<em>No files found</em>");

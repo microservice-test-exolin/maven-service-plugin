@@ -67,13 +67,10 @@ public class Generator
             w.write("DIR=/home/"+serviceUser+"/services/$NAME");
             w.newLine();
 
-            w.write("LOGFILE=$DIR/log/service.out.log");
-            w.newLine();
-
             w.write("cd $DIR/bin");
             w.newLine();
             
-            w.write("echo Starting >> $LOGFILE");
+            w.write("echo Starting");
             w.newLine();
             
             setEnv(w, "SERVICE_BASE_DIR", "$DIR");
@@ -84,11 +81,10 @@ public class Generator
 
             w.write("/usr/bin/java");
             
-            w.append(" -jar ").append("$DIR/bin/").append(jarName).append(" >> $LOGFILE ");
-            w.write("2>&1");
+            w.append(" -jar ").append("$DIR/bin/").append(jarName);
             w.newLine();
             
-            w.write("echo Stopped >> $LOGFILE");
+            w.write("echo Stopped");
             w.newLine();
         }
         
