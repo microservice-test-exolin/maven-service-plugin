@@ -94,4 +94,23 @@ public class LinuxStatusInfoTest
     {
         assertEquals(StatusInfo.UnknowableBoolean.UNKNOWN, new LinuxStatusInfo("x").isStartAtBootEnabled());
     }
+    
+    private String mem(String mem)
+    {
+        return "��� youtube-bot.service - Youtube Tool Bot\n" +
+"   Loaded: loaded (/etc/systemd/system/youtube-bot.service; enabled; vendor preset: enabled)\n" +
+"   Active: active (running) since Sat 2020-09-05 14:43:41 CEST; 5h 28min ago\n" +
+" Main PID: 27322 (bash)\n" +
+"   Memory: "+mem+"\n" +
+"   CGroup: /system.slice/youtube-bot.service\n" +
+"           ������27322 /bin/bash /home/exolin/services/youtube-bot/start.sh\n" +
+"           ������27324 /usr/bin/java -Xmx50m -jar /home/exolin/services/youtube-bot/bin/youtube-bot-1.0-SNAPSHOT.jar";
+    }
+    
+    @Test
+    public void testGetMemory()
+    {
+        assertEquals("295.1M", LinuxStatusInfo.getMemory(mem("295.1M")));
+        assertEquals("1.5G", LinuxStatusInfo.getMemory(mem("1.5G")));
+    }
 }

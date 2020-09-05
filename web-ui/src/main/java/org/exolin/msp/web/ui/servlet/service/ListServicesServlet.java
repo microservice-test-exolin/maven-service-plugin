@@ -59,6 +59,7 @@ public class ListServicesServlet extends HttpServlet
             out.append("<tr>");
             out.append("<th>Name</th>");
             out.append("<th>Status</th>");
+            out.append("<th>Memory</th>");
             if(showBuildOptions)
                 out.append("<th colspan=\"3\"></th>");
             else
@@ -85,6 +86,17 @@ public class ListServicesServlet extends HttpServlet
                 else
                     out.append("Couldn't be determined");
                 
+                out.append("</td>");
+                
+                out.append("<td>");
+                if(status != null)
+                {
+                    String memory = status.getMemory();
+                    if(memory != null)
+                        out.append(memory);
+                    else
+                        out.append("<em>unknown</em>");
+                }
                 out.append("</td>");
                 
                 out.append("<td>");

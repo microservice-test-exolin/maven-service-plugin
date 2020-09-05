@@ -1,6 +1,5 @@
 package org.exolin.msp.web.ui.servlet.service;
 
-import ch.qos.logback.core.status.Status;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.net.URL;
@@ -137,15 +136,33 @@ public class ServiceServlet extends HttpServlet
         out.append("<th>Name</th>");
         out.append("<td>").append(service.getName()).append("</td>");
         out.append("</tr>");
+        
+        StatusInfo status = null;
+        try{
+            status = service.getStatus();
+        }catch(IOException e){
+            LOGGER.error("Couldn't be determined", e);
+            out.append("Couldn't be determined");
+        }
 
         out.append("<tr>");
         out.append("<th>Status</th>");
         out.append("<td>");
-        try{
-            writeStatus(out, service.getStatus());
-        }catch(IOException e){
-            LOGGER.error("Couldn't be determined", e);
-            out.append("Couldn't be determined");
+        if(status != null)
+            writeStatus(out, status);
+        out.append("</td>");
+        out.append("</tr>");
+
+        out.append("<tr>");
+        out.append("<th>Memory</th>");
+        out.append("<td>");
+        if(status != null)
+        {
+            String memory = status.getMemory();
+            if(memory != null)
+                out.append(memory);
+            else
+                out.append("<em>unknown</em>");
         }
         out.append("</td>");
         out.append("</tr>");

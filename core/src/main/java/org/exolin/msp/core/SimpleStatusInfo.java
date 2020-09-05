@@ -38,4 +38,10 @@ public class SimpleStatusInfo implements StatusInfo
     {
         return "";
     }
+
+    @Override
+    public String getMemory()
+    {
+        return null;
+    }
 }

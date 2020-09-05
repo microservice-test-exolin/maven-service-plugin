@@ -47,4 +47,37 @@ public class LinuxStatusInfo implements StatusInfo
         else
             return StatusType.UNKNOWN;
     }
+    
+    @Override
+    public String getMemory()
+    {
+        return getMemory(stdout);
+    }
+    
+    static String getMemory(String stdout)
+    {
+        String prefix = "Memory: ";
+        int i = stdout.indexOf(prefix);
+        if(i == -1)
+            return null;
+        
+        int el = stdout.indexOf('\n', i);
+        if(el == -1)
+            el = stdout.length();
+        
+        String mem = stdout.substring(i + prefix.length(), el);
+        return mem;
+        /*
+        double fac = Double.parseDouble(mem.substring(0, mem.length()-1));
+        long unit;
+        switch(mem.charAt(mem.length()-1))
+        {
+            case 'k': unit = 1024; break;
+            case 'M': unit = 1024 * 1024; break;
+            case 'G': unit = 1024 * 1024 * 1024; break;
+            default: throw new IllegalArgumentException(mem);
+        }
+        
+        return (long)(fac * unit);*/
+    }
 }

@@ -9,6 +9,7 @@ public interface StatusInfo
     StatusType getStatus();
     String getInfo();
     UnknowableBoolean isStartAtBootEnabled();
+    public String getMemory();
     
     enum UnknowableBoolean
     {
