@@ -4,6 +4,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InterruptedIOException;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.FileSystems;
 import java.nio.file.Files;
 import java.nio.file.LinkOption;
@@ -127,6 +128,6 @@ public class LinuxAbstraction implements SystemAbstraction
             throw new IOException(String.join(" ", cmd)+" exited with "+p.exitValue()+": "+errout.toString()+out.toString());
         }*/
 
-        return new String(out.toByteArray());
+        return new String(out.toByteArray(), StandardCharsets.UTF_8);
     }
 }
