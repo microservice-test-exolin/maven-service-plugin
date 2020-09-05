@@ -30,7 +30,6 @@ public class InitiatorFormatterTest
                 InitiatorFormatter.displayInitiator("github-webhook[repo=https://github.com/microservice-test-exolin/maven-service-plugin]"));
     }
     
-    
     @Test
     public void testDisplayInitiator_Webhook_WithNothing()
     {
