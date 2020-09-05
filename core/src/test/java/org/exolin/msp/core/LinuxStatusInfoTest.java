@@ -114,7 +114,7 @@ public class LinuxStatusInfoTest
         assertEquals("1.5G", LinuxStatusInfo.getMemory(mem("1.5G")));
     }
     
-    private static final String txt = "● service-web-ui.service - Web-UI for managing services\n" +
+    private final String txt = "● service-web-ui.service - Web-UI for managing services\n" +
 "   Loaded: loaded (/etc/systemd/system/service-web-ui.service; enabled; vendor preset: enabled)\n" +
 "   Active: active (running) since Sat 2020-09-05 20:39:20 CEST; 2h 40min ago\n" +
 " Main PID: 29476 (bash)\n" +
@@ -142,5 +142,23 @@ public class LinuxStatusInfoTest
     public void testGetJavaCMD()
     {
         assertEquals("/usr/bin/java -Xmx50m -jar /home/root/services/service-web-ui/bin/service-web-ui-1.0-SNAPSHOT.jar", LinuxStatusInfo.getJavaCMD(txt));
+    }
+    
+    @Test
+    public void testGetJavaOptionsFromJavaCMD_Without()
+    {
+        assertEquals("", LinuxStatusInfo.getJavaOptionsFromJavaCMD("/usr/bin/java -jar /home/root/services/service-web-ui/bin/service-web-ui-1.0-SNAPSHOT.jar"));
+    }
+    
+    @Test
+    public void testGetJavaOptionsFromJavaCMD_With()
+    {
+        assertEquals("-Xmx50m", LinuxStatusInfo.getJavaOptionsFromJavaCMD("/usr/bin/java -Xmx50m -jar /home/root/services/service-web-ui/bin/service-web-ui-1.0-SNAPSHOT.jar"));
+    }
+    
+    @Test
+    public void testGetJavaOptionsFromJavaCMD_Unparseable()
+    {
+        assertEquals(null, LinuxStatusInfo.getJavaOptionsFromJavaCMD("/usr/bin/java /home/root/services/service-web-ui/bin/service-web-ui-1.0-SNAPSHOT.jar"));
     }
 }

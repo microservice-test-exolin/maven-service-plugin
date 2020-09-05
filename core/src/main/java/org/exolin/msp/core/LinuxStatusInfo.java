@@ -155,11 +155,20 @@ public class LinuxStatusInfo implements StatusInfo
         if(cmd == null)
             return null;
         
+        return getJavaOptionsFromJavaCMD(cmd);
+    }
+    
+    static String getJavaOptionsFromJavaCMD(String cmd)
+    {
         int a = cmd.indexOf(' ');
         int b = cmd.indexOf("-jar");
         if(a == -1 || b == -1 || a > b)
             return null;
         
-        return cmd.substring(a+1, b);
+        // "java -jar" [...] => keine Optionen
+        if(a+1==b)
+            return "";
+        
+        return cmd.substring(a+1, b-1);
     }
 }

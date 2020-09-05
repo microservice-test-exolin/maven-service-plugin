@@ -12,6 +12,11 @@ public interface StatusInfo
     public String getMemory();
     public Long getJavaPID();
     public String getJavaCMD();
+    
+    /**
+     * 
+     * @return Options, "" for none, {@code null} for unknown
+     */
     public String getJavaOptions();
     
     enum UnknowableBoolean
