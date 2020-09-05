@@ -15,7 +15,7 @@ public class InitiatorFormatterTest
     {
         assertEquals(
                 "<a href=\"https://github.com/microservice-test-exolin/maven-service-plugin/commit/2d647bd3a8beacf68b0230e9f476ce27be04e3d2\"" +
-                " title=\"Github Webhook by commit 2d647bd\"" +
+                " title=\"Github Webhook - Commit 2d647bd\"" +
                 ">"+
                 "Commit 2d647bd</a>",
                 InitiatorFormatter.displayInitiator("github-webhook[repo=https://github.com/microservice-test-exolin/maven-service-plugin,sha1=2d647bd3a8beacf68b0230e9f476ce27be04e3d2]"));

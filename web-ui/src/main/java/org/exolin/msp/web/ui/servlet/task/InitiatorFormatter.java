@@ -29,7 +29,7 @@ public class InitiatorFormatter
             {
                 String shortHash = sha1.substring(0, 7);
                 
-                return "<a href=\""+repo+"/commit/"+sha1+"\" title=\"Github Webhook by commit "+shortHash+"\">Commit "+shortHash+"</a>";
+                return "<a href=\""+repo+"/commit/"+sha1+"\" title=\"Github Webhook - Commit "+shortHash+"\">Commit "+shortHash+"</a>";
             }
             else if(repo != null && sha1 == null)
                 return "<a href=\""+repo+"\">Github Webhook</a>";
