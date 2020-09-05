@@ -168,6 +168,20 @@ public class ServiceServlet extends HttpServlet
         out.append("</tr>");
 
         out.append("<tr>");
+        out.append("<th>Java Options:</th>");
+        out.append("<td>");
+        if(status != null)
+        {
+            String javaOptions = status.getJavaOptions();
+            if(javaOptions != null)
+                out.append(javaOptions);
+            else
+                out.append("<em>unknown</em>");
+        }
+        out.append("</td>");
+        out.append("</tr>");
+
+        out.append("<tr>");
         out.append("<th>Links</th>");
         out.append("<td>");
         out.append("<a href=\""+ServiceStatusServlet.getUrl(service.getName())+"\">");

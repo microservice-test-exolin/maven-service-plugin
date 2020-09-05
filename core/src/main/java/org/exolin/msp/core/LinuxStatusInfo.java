@@ -1,5 +1,7 @@
 package org.exolin.msp.core;
 
+import java.util.Optional;
+
 /**
  *
  * @author tomgk
@@ -56,17 +58,8 @@ public class LinuxStatusInfo implements StatusInfo
     
     static String getMemory(String stdout)
     {
-        String prefix = "Memory: ";
-        int i = stdout.indexOf(prefix);
-        if(i == -1)
-            return null;
+        return get(stdout, "Memory");
         
-        int el = stdout.indexOf('\n', i);
-        if(el == -1)
-            el = stdout.length();
-        
-        String mem = stdout.substring(i + prefix.length(), el);
-        return mem;
         /*
         double fac = Double.parseDouble(mem.substring(0, mem.length()-1));
         long unit;
@@ -79,5 +72,94 @@ public class LinuxStatusInfo implements StatusInfo
         }
         
         return (long)(fac * unit);*/
+    }
+    
+    static String get(String stdout, String name)
+    {
+        String prefix = name+": ";
+        int i = stdout.indexOf(prefix);
+        if(i == -1)
+            return null;
+        
+        int el = stdout.indexOf('\n', i);
+        if(el == -1)
+            el = stdout.length();
+        
+        return stdout.substring(i + prefix.length(), el);
+    }
+    
+    public Long getMainProcessId()
+    {
+        return getMainProcessId(stdout);
+    }
+
+    static Long getMainProcessId(String stdout)
+    {
+        return Optional.ofNullable(get(stdout, "Main PID")).map(Long::parseLong).orElse(null);
+    }
+    
+    static String getLine(String stdout)
+    {
+        int i = stdout.indexOf("└─");
+        if(i == -1)
+            return null;
+        
+        int el = stdout.indexOf('\n', i);
+        if(el == -1)
+            el = stdout.length();
+        
+        return stdout.substring(i + 2, el);
+    }
+    
+    @Override
+    public Long getJavaPID()
+    {
+        return getJavaPID(stdout);
+    }
+    
+    static Long getJavaPID(String stdout)
+    {
+        String line = getLine(stdout);
+        if(line == null)
+            return null;
+        
+        int i = line.indexOf(' ');
+        return Long.parseLong(line.substring(0, i));
+    }
+    
+    @Override
+    public String getJavaCMD()
+    {
+        return getJavaCMD(stdout);
+    }
+    
+    static String getJavaCMD(String stdout)
+    {
+        String line = getLine(stdout);
+        if(line == null)
+            return null;
+        
+        int i = line.indexOf(' ');
+        return line.substring(i+1);
+    }
+    
+    @Override
+    public String getJavaOptions()
+    {
+        return getJavaOptions(stdout);
+    }
+    
+    static String getJavaOptions(String stdout)
+    {
+        String cmd = getJavaCMD(stdout);
+        if(cmd == null)
+            return null;
+        
+        int a = cmd.indexOf(' ');
+        int b = cmd.indexOf("-jar");
+        if(a == -1 || b == -1 || a > b)
+            return null;
+        
+        return cmd.substring(a+1, b);
     }
 }

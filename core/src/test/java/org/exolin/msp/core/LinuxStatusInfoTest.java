@@ -113,4 +113,34 @@ public class LinuxStatusInfoTest
         assertEquals("295.1M", LinuxStatusInfo.getMemory(mem("295.1M")));
         assertEquals("1.5G", LinuxStatusInfo.getMemory(mem("1.5G")));
     }
+    
+    private static final String txt = "● service-web-ui.service - Web-UI for managing services\n" +
+"   Loaded: loaded (/etc/systemd/system/service-web-ui.service; enabled; vendor preset: enabled)\n" +
+"   Active: active (running) since Sat 2020-09-05 20:39:20 CEST; 2h 40min ago\n" +
+" Main PID: 29476 (bash)\n" +
+"   Memory: 335.3M\n" +
+"   CGroup: /system.slice/service-web-ui.service\n" +
+"           ├─29476 /bin/bash /home/root/services/service-web-ui/start.sh\n" +
+"           └─29477 /usr/bin/java -Xmx50m -jar /home/root/services/service-web-ui/bin/service-web-ui-1.0-SNAPSHOT.jar\n" +
+"\n" +
+"Sep 05 20:39:20 exolin.org bash[29476]: Starting";
+        
+    
+    @Test
+    public void testGetLine()
+    {
+        assertEquals("29477 /usr/bin/java -Xmx50m -jar /home/root/services/service-web-ui/bin/service-web-ui-1.0-SNAPSHOT.jar", LinuxStatusInfo.getLine(txt));
+    }
+    
+    @Test
+    public void testGetJavaPID()
+    {
+        assertEquals((Long)29477l, LinuxStatusInfo.getJavaPID(txt));
+    }
+    
+    @Test
+    public void testGetJavaCMD()
+    {
+        assertEquals("/usr/bin/java -Xmx50m -jar /home/root/services/service-web-ui/bin/service-web-ui-1.0-SNAPSHOT.jar", LinuxStatusInfo.getJavaCMD(txt));
+    }
 }

@@ -10,6 +10,9 @@ public interface StatusInfo
     String getInfo();
     UnknowableBoolean isStartAtBootEnabled();
     public String getMemory();
+    public Long getJavaPID();
+    public String getJavaCMD();
+    public String getJavaOptions();
     
     enum UnknowableBoolean
     {

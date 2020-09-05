@@ -44,4 +44,22 @@ public class SimpleStatusInfo implements StatusInfo
     {
         return null;
     }
+
+    @Override
+    public Long getJavaPID()
+    {
+        return (long)hashCode();
+    }
+
+    @Override
+    public String getJavaCMD()
+    {
+        return "java -jar [...]";
+    }
+
+    @Override
+    public String getJavaOptions()
+    {
+        return null;
+    }
 }
