@@ -110,7 +110,7 @@ public class ProcessServlet extends HttpServlet
                 out.append("<td><a href=\"").append(ListServicesServlet.getUrl(process.getService())).append("\">").append(process.getService()).append("</a></td>");
             
             out.append("<td>").append(process.getName()).append("</td>");
-            out.append("<td class=\"initiator\">").append(Optional.ofNullable(process.getInitiator()).map(ProcessServlet::displayInitiator).orElse("<em>unknown</em>")).append("</td>");
+            out.append("<td class=\"initiator\">").append(Optional.ofNullable(process.getInitiator()).map(InitiatorFormatter::displayInitiator).orElse("<em>unknown</em>")).append("</td>");
             
             if(details)
             {
@@ -129,38 +129,5 @@ public class ProcessServlet extends HttpServlet
 
         out.append("</table>");
         out.append("</div>");
-    }
-    
-    static String displayInitiator(String initiator)
-    {
-        Initiator i;
-        try{
-            i = Initiator.parse(initiator);
-        }catch(IllegalArgumentException e){
-            LOGGER.error("Couldn't parse", e);
-            return initiator;
-        }
-        
-        if(i.type.equals("github-webhook"))
-        {
-            String repo = i.args.get("repo");
-            String sha1 = i.args.get("sha1");
-            if(repo != null && sha1 != null)
-                return "<a href=\""+repo+"/commit/"+sha1+"\">Github Webhook "+sha1.substring(0, 7)+"</a>";
-            else if(repo != null && sha1 == null)
-                return "<a href=\""+repo+"\">Github Webhook</a>";
-            else
-                return "Github Webhook";
-        }
-        if(i.type.equals("service-web-ui"))
-        {
-            String user = i.args.get("user");
-            if(user != null)
-                return "Service Web UI by "+user;
-            else
-                return "Service Web UI";
-        }
-        else
-            return initiator;
     }
 }
