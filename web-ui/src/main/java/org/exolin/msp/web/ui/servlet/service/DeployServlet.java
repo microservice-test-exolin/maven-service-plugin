@@ -104,7 +104,7 @@ public class DeployServlet extends HttpServlet
         String user = (String)req.getAttribute(AuthFilter.USER);
         String initiator = "service-web-ui";
         if(user != null)
-            initiator += "[user"+user+"]";
+            initiator += "[user="+user+"]";
         
         switch(action)
         {
