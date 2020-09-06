@@ -134,6 +134,7 @@ public class LogFileShowServlet extends HttpServlet
     private static final String CLASS_WARNING = "warning";
     private static final String CLASS_ERROR = "error";
     private static final String CLASS_SUCCESS = "success";
+    private static final String CLASS_GRAY = "gray";
     
     private String formatLogLine(String line)
     {
@@ -160,6 +161,8 @@ public class LogFileShowServlet extends HttpServlet
             cssClass = CLASS_ERROR;
             line = line.substring(ERROR.length());
         }
+        else if(line.startsWith("--- ") && line.endsWith(" ---"))
+            cssClass = CLASS_GRAY;
         //----------------------------------------------------------------------
         // Logback
         //----------------------------------------------------------------------
