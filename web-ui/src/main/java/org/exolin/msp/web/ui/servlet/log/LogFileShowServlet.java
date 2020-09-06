@@ -137,15 +137,15 @@ public class LogFileShowServlet extends HttpServlet
     
     private String formatLogLine(String line)
     {
-        LOGGER.info("Line='{}'", line);
-        
         line = line.replace("<", "&lt;").replace(">", "&gt;");
         String cssClass;
         
         //----------------------------------------------------------------------
         // Maven
         //----------------------------------------------------------------------
-        if(line.startsWith(INFO))
+        if(line.equals("[INFO] BUILD SUCCESS"))
+            cssClass = CLASS_SUCCESS;
+        else if(line.startsWith(INFO))
         {
             cssClass = CLASS_INFO;
             line = line.substring(INFO.length());
@@ -160,8 +160,6 @@ public class LogFileShowServlet extends HttpServlet
             cssClass = CLASS_ERROR;
             line = line.substring(ERROR.length());
         }
-        else if(line.equals("BUILD SUCCESS"))
-            cssClass = CLASS_SUCCESS;
         //----------------------------------------------------------------------
         // Logback
         //----------------------------------------------------------------------
