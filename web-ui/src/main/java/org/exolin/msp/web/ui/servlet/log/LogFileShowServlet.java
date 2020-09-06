@@ -145,7 +145,10 @@ public class LogFileShowServlet extends HttpServlet
         // Maven
         //----------------------------------------------------------------------
         if(line.equals("[INFO] BUILD SUCCESS"))
+        {
             cssClass = CLASS_SUCCESS;
+            line = "BUILD SUCCESS";
+        }
         else if(line.startsWith(INFO))
         {
             cssClass = CLASS_INFO;
