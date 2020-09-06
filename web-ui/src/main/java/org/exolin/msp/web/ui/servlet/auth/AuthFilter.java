@@ -21,6 +21,8 @@ import org.slf4j.LoggerFactory;
  */
 public class AuthFilter implements Filter
 {
+    static final String AUTH_BACK_URL = AuthFilter.class.getPackage().getName()+".backUrl";
+    
     private static final Logger LOGGER = LoggerFactory.getLogger(AuthFilter.class);
     
     private final GithubOAuth githubOAuth;
@@ -58,7 +60,15 @@ public class AuthFilter implements Filter
             HttpSession session = request.getSession(true);
             String token = (String)session.getAttribute(GithubOAuthServlet.GITHUB_TOKEN);
             if(token == null)
+            {
+                String uri = request.getRequestURI();
+                String query = request.getQueryString();
+                if(query != null)
+                    uri += "?"+query;
+                
+                request.getSession(true).setAttribute(AUTH_BACK_URL, uri);
                 response.sendRedirect(githubOAuth.getLoginUrl());
+            }
             
             String user = githubOAuth.getUser(token).getLogin();
             request.setAttribute(USER, user);

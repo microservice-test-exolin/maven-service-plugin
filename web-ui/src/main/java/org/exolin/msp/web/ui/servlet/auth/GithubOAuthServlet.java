@@ -5,6 +5,7 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -39,9 +40,13 @@ public class GithubOAuthServlet extends HttpServlet
                 return;
             }
 
-            request.getSession(true).setAttribute(GITHUB_TOKEN, githubOAuth.getToken(code));
+            HttpSession session = request.getSession(true);
             
-            response.sendRedirect("/");
+            session.setAttribute(GITHUB_TOKEN, githubOAuth.getToken(code));
+            
+            String url = (String)session.getAttribute(AuthFilter.AUTH_BACK_URL);
+            
+            response.sendRedirect(url != null ? url : "/");
         }catch(GithubAuthException e){
             LOGGER.error("Github auth error", e);
             response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
