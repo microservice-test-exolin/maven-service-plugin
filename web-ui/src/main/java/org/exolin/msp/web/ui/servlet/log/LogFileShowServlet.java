@@ -116,7 +116,7 @@ public class LogFileShowServlet extends HttpServlet
             
             List<String> logfileContent = Arrays.asList(arr.toString(StandardCharsets.UTF_8.name()).split("\r\n|\r|\n"));
             
-            logfileContent.replaceAll(this::formatMavenLogLine);
+            logfileContent.replaceAll(this::formatLogLine);
             
             logfileContent.forEach(out::println);
             
@@ -130,32 +130,47 @@ public class LogFileShowServlet extends HttpServlet
     private static final String WARNING = "[WARNING] ";
     private static final String ERROR = "[ERROR] ";
     
-    private String formatMavenLogLine(String line)
+    private static final String CLASS_INFO = "info";
+    private static final String CLASS_WARNING = "warning";
+    private static final String CLASS_ERROR = "error";
+    private static final String CLASS_SUCCESS = "success";
+    
+    private String formatLogLine(String line)
     {
         LOGGER.info("Line='{}'", line);
         
         line = line.replace("<", "&lt;").replace(">", "&gt;");
         String cssClass;
         
+        //----------------------------------------------------------------------
+        // Maven
+        //----------------------------------------------------------------------
         if(line.startsWith(INFO))
         {
-            cssClass = "info";
+            cssClass = CLASS_INFO;
             line = line.substring(INFO.length());
         }
         else if(line.startsWith(WARNING))
         {
-            cssClass = "warning";
+            cssClass = CLASS_WARNING;
             line = line.substring(WARNING.length());
         }
         else if(line.startsWith(ERROR))
         {
-            cssClass = "error";
+            cssClass = CLASS_ERROR;
             line = line.substring(ERROR.length());
         }
         else if(line.equals("BUILD SUCCESS"))
-        {
-            cssClass = "success";
-        }
+            cssClass = CLASS_SUCCESS;
+        //----------------------------------------------------------------------
+        // Logback
+        //----------------------------------------------------------------------
+        else if(line.contains(" ERROR "))
+            cssClass = CLASS_ERROR;
+        else if(line.contains(" WARN  "))
+            cssClass = CLASS_WARNING;
+        else if(line.contains(" INFO  "))
+            cssClass = CLASS_INFO;
         else
             cssClass = null;
         
