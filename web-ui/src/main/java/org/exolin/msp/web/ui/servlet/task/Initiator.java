@@ -33,13 +33,22 @@ public class Initiator
             int i = initiator.indexOf('[');
             type = initiator.substring(0, i);
             String mapString = initiator.substring(i+1, initiator.length()-1);
-            String[] pairs = mapString.split(",");
-            for(String pair: pairs)
+            
+            //Workaround um zuvor falsch geschriebene Einträge zu parsen
+            if(mapString.startsWith("user") && !mapString.contains("="))
             {
-                int eq = pair.indexOf('=');
-                if(eq == -1)
-                    throw new IllegalArgumentException(initiator);
-                map.put(pair.substring(0, eq), pair.substring(eq+1));
+                map.put("user", mapString.substring("user".length()));
+            }
+            else
+            {
+                String[] pairs = mapString.split(",");
+                for(String pair: pairs)
+                {
+                    int eq = pair.indexOf('=');
+                    if(eq == -1)
+                        throw new IllegalArgumentException(initiator);
+                    map.put(pair.substring(0, eq), pair.substring(eq+1));
+                }
             }
         }
 

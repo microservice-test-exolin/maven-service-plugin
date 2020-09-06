@@ -39,4 +39,12 @@ public class InitiatorTest
         map.put("b", "2");
         assertEquals(map, i.args);
     }
+    
+    @Test
+    public void testParse_IncorrectWebUI()
+    {
+        Initiator i = Initiator.parse("service-web-ui[usertomgk]");
+        assertEquals("service-web-ui", i.type);
+        assertEquals(Collections.singletonMap("user", "tomgk"), i.args);
+    }
 }
