@@ -50,6 +50,7 @@ public class LocalMain
         
         List<String> lines = Arrays.asList(
                 "Log Entry",
+                "[INFO] --- maven-jar-plugin:2.4:jar (default-jar) @ web-ui-api-linux ---",
                 "[INFO] Log Info",
                 "[WARNING] Log Warning",
                 "[ERROR] Log Error",

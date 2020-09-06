@@ -149,6 +149,11 @@ public class LogFileShowServlet extends HttpServlet
             cssClass = CLASS_SUCCESS;
             line = "BUILD SUCCESS";
         }
+        else if(line.startsWith(INFO+"--- ") && line.endsWith(" ---"))
+        {
+            cssClass = CLASS_GRAY;
+            line = line.substring(INFO.length());
+        }
         else if(line.startsWith(INFO))
         {
             cssClass = CLASS_INFO;
@@ -164,8 +169,6 @@ public class LogFileShowServlet extends HttpServlet
             cssClass = CLASS_ERROR;
             line = line.substring(ERROR.length());
         }
-        else if(line.startsWith("--- ") && line.endsWith(" ---"))
-            cssClass = CLASS_GRAY;
         //----------------------------------------------------------------------
         // Logback
         //----------------------------------------------------------------------
