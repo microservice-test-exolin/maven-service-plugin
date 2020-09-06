@@ -140,12 +140,18 @@ public class ServiceConfigServlet extends HttpServlet
             
             out.append("<h1>").append(serviceName+"/"+getDisplayName(name)).append("</h1>");
             
-            out.append("<div class=\"alert alert-warning\" role=\"alert\">");
+            out.append("<div class=\"alert alert-warning alert-dismissible fade show\" role=\"alert\">");
             out.append("Changing configuration might require the service to be restarted to take effect");
+            out.append("<button type=\"button\" class=\"close\" data-dismiss=\"alert\" aria-label=\"Close\">");
+            out.append("<span aria-hidden=\"true\">&times;</span>");
+            out.append("</button>");
             out.append("</div>");
             
-            out.append("<div class=\"alert alert-warning\" role=\"alert\">");
+            out.append("<div class=\"alert alert-warning alert-dismissible fade show\" role=\"alert\">");
             out.append("The values aren't validated and changing them to something invalid might make the service fail to operate");
+            out.append("<button type=\"button\" class=\"close\" data-dismiss=\"alert\" aria-label=\"Close\">");
+            out.append("<span aria-hidden=\"true\">&times;</span>");
+            out.append("</button>");
             out.append("</div>");
             
             ConfigFile file = service.getConfigFile(name);
