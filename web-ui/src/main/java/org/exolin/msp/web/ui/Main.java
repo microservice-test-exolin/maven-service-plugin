@@ -119,6 +119,8 @@ public class Main
             }
             throw e;
         }
+        
+        System.out.println("Started");
     }
     
     public static Server create(ProcessManager pm, SystemAbstraction sys, Services services, Config config, Path configDir, int port, boolean localhost) throws Exception
@@ -174,6 +176,7 @@ public class Main
         ResourceServlet.addFile(servletHandler, "favicon.png", "image/png");
         ResourceServlet.addFile(servletHandler, "favicon.ico", "image/x-icon");
         ResourceServlet.addFile(servletHandler, "dashboard.css", "text/css");
+        ResourceServlet.addFile(servletHandler, "log.css", "text/css");
         ResourceServlet.addFile(servletHandler, "GitHub_Logo_small.png", "image/png");
         
         servletHandler.addServletWithMapping(ServiceServlet.class, ServiceServlet.URL).setServlet(new ServiceServlet(services, pm));

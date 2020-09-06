@@ -169,6 +169,7 @@ public class Layout
         out.append("<title>").append(title).append("</title>");
         out.append("<link rel=\"stylesheet\" href=\"https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css\" integrity=\"sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm\" crossorigin=\"anonymous\">");
         out.append("<link rel=\"stylesheet\" href=\"/dashboard.css\">");
+        out.append("<link rel=\"stylesheet\" href=\"/log.css\">");
         out.append("<link rel=\"icon\" type=\"image/png\" href=\"/favicon.png\"/>");
         out.append("<meta name=\"viewport\" content=\"width=device-width, initial-scale=1, shrink-to-fit=no\">");
         out.append("</head>");

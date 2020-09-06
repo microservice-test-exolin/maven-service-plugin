@@ -1,0 +1,25 @@
+.logfile
+{
+    border: 1px solid #ccc;
+    padding:0.5em;
+}
+
+.logfile .info
+{
+    
+}
+
+.logfile .warning
+{
+    color: #ec0;
+}
+
+.logfile .error
+{
+    color: red;
+}
+
+.logfile .success
+{
+    color: #2BAE66;
+}

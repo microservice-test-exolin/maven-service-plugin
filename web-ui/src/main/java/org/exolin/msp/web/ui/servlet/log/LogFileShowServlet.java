@@ -3,7 +3,9 @@ package org.exolin.msp.web.ui.servlet.log;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.PrintWriter;
-import java.nio.file.Files;
+import java.nio.charset.StandardCharsets;
+import java.util.Arrays;
+import java.util.List;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -103,15 +105,57 @@ public class LogFileShowServlet extends HttpServlet
             Icon.CODE.writeTo(out);
             out.append("Raw").append("</a>");
             
-            out.append("<pre style=\"border: 1px solid #ccc;padding:0.5em\">");
+            out.append("<pre class=\"logfile\">");
             
             ByteArrayOutputStream arr = new ByteArrayOutputStream();
             lf.writeTo(arr);
-            out.append(arr.toString().replace("<", "&lt;").replace(">", "&gt;"));
+            
+            List<String> logfileContent = Arrays.asList(arr.toString(StandardCharsets.UTF_8.name()).split("\r\n|\r|\n"));
+            
+            logfileContent.replaceAll(this::formatMavenLogLine);
+            
+            logfileContent.forEach(out::println);
             
             out.append("</pre>");
             
             Layout.end(out);
         }
+    }
+    
+    private static final String INFO = "[INFO] ";
+    private static final String WARNING = "[WARNING] ";
+    private static final String ERROR = "[ERROR] ";
+    
+    private String formatMavenLogLine(String line)
+    {
+        line = line.replace("<", "&lt;").replace(">", "&gt;");
+        String cssClass;
+        
+        if(line.startsWith(INFO))
+        {
+            cssClass = "info";
+            line = line.substring(INFO.length());
+        }
+        else if(line.startsWith(WARNING))
+        {
+            cssClass = "warning";
+            line = line.substring(WARNING.length());
+        }
+        else if(line.startsWith(ERROR))
+        {
+            cssClass = "error";
+            line = line.substring(ERROR.length());
+        }
+        else if(line.equals("BUILD SUCCESS"))
+        {
+            cssClass = "success";
+        }
+        else
+            cssClass = null;
+        
+        if(cssClass != null)
+            line = "<span class=\""+cssClass+"\">"+line+"</span>";
+        
+        return line;
     }
 }

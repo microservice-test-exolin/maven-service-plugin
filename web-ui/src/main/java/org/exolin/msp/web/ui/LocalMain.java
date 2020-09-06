@@ -7,6 +7,7 @@ import java.nio.file.Paths;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import org.exolin.msp.core.PseudoAbstraction;
@@ -47,9 +48,19 @@ public class LocalMain
         
         Map<String, LogFile> logFiles = new HashMap<>();
         
-        Files.write(logDirectory.resolve("service.log"), Arrays.asList("Log Entry"));
-        Files.write(logDirectory.resolve("task-build-"+TS+".log"), Arrays.asList("Log Entry"));
-        Files.write(logDirectory.resolve("task-deploy-"+TS+".log"), Arrays.asList("Log Entry"));
+        List<String> lines = Arrays.asList(
+                "Log Entry",
+                "[INFO] Log Info",
+                "[WARNING] Log Warning",
+                "[ERROR] Log Error",
+                "------------------------------------------------------------------------",
+                "BUILD SUCCESS",
+                "------------------------------------------------------------------------"
+        );
+        
+        Files.write(logDirectory.resolve("service.log"), lines);
+        Files.write(logDirectory.resolve("task-build-"+TS+".log"), lines);
+        Files.write(logDirectory.resolve("task-deploy-"+TS+".log"), lines);
         
         try(DirectoryStream<Path> dir = Files.newDirectoryStream(logDirectory))
         {
