@@ -45,4 +45,13 @@ public class Initiator
 
         return new Initiator(type, map);
     }
+
+    @Override
+    public String toString()
+    {
+        if(args.isEmpty())
+            return type;
+        
+        return type+args;
+    }
 }
