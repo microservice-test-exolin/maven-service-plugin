@@ -14,6 +14,7 @@ import org.exolin.msp.web.ui.servlet.Icon;
 import org.exolin.msp.web.ui.servlet.Layout;
 import org.javacord.api.DiscordApi;
 import org.javacord.api.DiscordApiBuilder;
+import org.javacord.api.entity.user.User;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -174,7 +175,18 @@ public class ServiceConfigServlet extends HttpServlet
                 out.append(">");
                 
                 if(e.getKey().equals("discord.apiKey"))
-                    out.append(" Bot: ").append(getDiscordBotName(e.getValue()));
+                {
+                    User bot = getDiscordBot(e.getValue());
+                    
+                    out.append(" Bot: ");
+                    if(bot != null)
+                    {
+                        out.append(bot.getDiscriminatedName());
+                        out.append("<br><img style=\"max-width: 100px; max-height: 100px\" src=\"").append(bot.getAvatar().getUrl().toString()).append("\">");
+                    }
+                    else
+                        out.append("<em>unknown</em>");
+                }
                 
                 out.append("<br>");
 
@@ -244,7 +256,7 @@ public class ServiceConfigServlet extends HttpServlet
 
     private static final Logger LOGGER = LoggerFactory.getLogger(ServiceConfigServlet.class);
     
-    private String getDiscordBotName(String token)
+    private User getDiscordBot(String token)
     {
         try{
             DiscordApi api = new DiscordApiBuilder()
@@ -253,11 +265,10 @@ public class ServiceConfigServlet extends HttpServlet
                     .get();
             
             return api
-                    .getYourself()
-                    .getDiscriminatedName();
+                    .getYourself();
         }catch(Exception e){
             LOGGER.error("Error while retriving bot name", e);
-            return "<em>unknown</em>";
+            return null;
         }
     }
 }
