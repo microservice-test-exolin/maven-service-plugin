@@ -16,6 +16,8 @@ import org.exolin.msp.service.Services;
 import org.exolin.msp.web.ui.LognameGenerator;
 import org.exolin.msp.web.ui.servlet.Icon;
 import org.exolin.msp.web.ui.servlet.Layout;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  *
@@ -23,6 +25,8 @@ import org.exolin.msp.web.ui.servlet.Layout;
  */
 public class LogFileShowServlet extends HttpServlet
 {
+    private static final Logger LOGGER = LoggerFactory.getLogger(LogFileShowServlet.class);
+    
     public static final String URL = "/logfile";
     
     private static final String SERVICE = "service";
@@ -128,6 +132,8 @@ public class LogFileShowServlet extends HttpServlet
     
     private String formatMavenLogLine(String line)
     {
+        LOGGER.info("Line='{}'", line);
+        
         line = line.replace("<", "&lt;").replace(">", "&gt;");
         String cssClass;
         
