@@ -13,6 +13,7 @@ import javax.servlet.http.HttpServletResponse;
 import org.exolin.msp.service.LogFile;
 import org.exolin.msp.service.Service;
 import org.exolin.msp.service.Services;
+import org.exolin.msp.web.ui.HttpUtils;
 import org.exolin.msp.web.ui.LognameGenerator;
 import org.exolin.msp.web.ui.servlet.Icon;
 import org.exolin.msp.web.ui.servlet.Layout;
@@ -54,25 +55,24 @@ public class LogFileShowServlet extends HttpServlet
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException
     {
-        String serviceName = req.getParameter(SERVICE);
-        if(serviceName == null)
-        {
-            resp.sendError(HttpServletResponse.SC_BAD_REQUEST, "Missing "+SERVICE+" parameter");
-            return;
-        }
+        try{
+            String serviceName = HttpUtils.getRequiredParameter(req, SERVICE);
 
-        Service service = services.getService(serviceName);
-        if(service == null)
-        {
-            resp.sendError(HttpServletResponse.SC_NOT_FOUND, "Service "+serviceName+" not found");
-            return;
-        }
+            Service service = services.getService(serviceName);
+            if(service == null)
+            {
+                resp.sendError(HttpServletResponse.SC_NOT_FOUND, "Service "+serviceName+" not found");
+                return;
+            }
 
-        String logFile = req.getParameter(LOGFILE);
-        if(TYPE_RAW.equals(req.getParameter(TYPE)))
-            showLogFileRaw(service, logFile, req, resp);
-        else
-            showLogFile(service, logFile, req, resp);
+            String logFile = req.getParameter(LOGFILE);
+            if(TYPE_RAW.equals(req.getParameter(TYPE)))
+                showLogFileRaw(service, logFile, req, resp);
+            else
+                showLogFile(service, logFile, req, resp);
+        }catch(HttpUtils.BadRequestMessage e){
+            resp.sendError(HttpServletResponse.SC_BAD_REQUEST, e.getMessage());
+        }
     }
     
     private void showLogFileRaw(Service service, String logFile, HttpServletRequest req, HttpServletResponse resp) throws IOException

@@ -6,6 +6,7 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
+import org.exolin.msp.web.ui.HttpUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -32,13 +33,8 @@ public class GithubOAuthServlet extends HttpServlet
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException
     {
         try{
-            String code = request.getParameter("code");
+            String code = HttpUtils.getRequiredParameter(request, "code");
             LOGGER.info("Code={}", code);
-            if(code == null)
-            {
-                response.sendError(HttpServletResponse.SC_BAD_REQUEST);
-                return;
-            }
 
             HttpSession session = request.getSession(true);
             
@@ -54,6 +50,8 @@ public class GithubOAuthServlet extends HttpServlet
         }catch(IOException|RuntimeException e){
             LOGGER.error("Error", e);
             throw e;
+        }catch(HttpUtils.BadRequestMessage e){
+            response.sendError(HttpServletResponse.SC_BAD_REQUEST, e.getMessage());
         }
     }
 }

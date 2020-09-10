@@ -9,6 +9,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import org.exolin.msp.service.Service;
 import org.exolin.msp.service.Services;
+import org.exolin.msp.web.ui.HttpUtils;
 import org.exolin.msp.web.ui.servlet.Icon;
 import org.exolin.msp.web.ui.servlet.Layout;
 import org.exolin.msp.web.ui.servlet.log.LogLister;
@@ -58,14 +59,11 @@ public class TaskLogServlet extends HttpServlet
                 return;
             }
 
-            String task = req.getParameter(TASK);
-            if(task == null)
-            {
-                resp.sendError(HttpServletResponse.SC_BAD_REQUEST, "Missing parameter task");
-                return;
-            }
+            String task = HttpUtils.getRequiredParameter(req, TASK);
             
             LogLister.listServiceFiles(service, Optional.of(task), req, resp);
+        }catch(HttpUtils.BadRequestMessage e){
+            resp.sendError(HttpServletResponse.SC_BAD_REQUEST, e.getMessage());
         }catch(IOException|RuntimeException e){
             LOGGER.error("Error", e);
             throw e;

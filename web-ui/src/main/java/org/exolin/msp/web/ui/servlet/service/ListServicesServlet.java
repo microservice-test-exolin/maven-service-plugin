@@ -11,6 +11,7 @@ import org.exolin.msp.core.StatusInfo;
 import org.exolin.msp.core.StatusType;
 import org.exolin.msp.service.Service;
 import org.exolin.msp.service.Services;
+import org.exolin.msp.web.ui.HttpUtils;
 import org.exolin.msp.web.ui.servlet.Icon;
 import org.exolin.msp.web.ui.servlet.Layout;
 import org.exolin.msp.web.ui.servlet.task.TaskLogServlet;
@@ -172,44 +173,37 @@ public class ListServicesServlet extends HttpServlet
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException
     {
-        String serviceName = req.getParameter("service");
-        if(serviceName == null)
-        {
-            resp.sendError(HttpServletResponse.SC_BAD_REQUEST, "Missing parameter service");
-            return;
-        }
-        
-        String action = req.getParameter("action");
-        if(action == null)
-        {
-            resp.sendError(HttpServletResponse.SC_BAD_REQUEST, "Missing parameter action");
-            return;
-        }
-        
-        Service service;
         try{
-            service = services.getService(serviceName);
-        }catch(IOException e){
-            throw new ServletException(e);
-        }
-        if(service == null)
-        {
-            resp.sendError(HttpServletResponse.SC_NOT_FOUND, "Service "+serviceName+" not found");
-            return;
-        }
-        
-        switch(action)
-        {
-            case ACTION_START: service.start(); break;
-            case ACTION_STOP: service.stop(); break;
-            case ACTION_RESTART: service.restart(); break;
-            case ACTION_ENABLE: service.setStartAtBoot(true); break;
-            case ACTION_DISABLE: service.setStartAtBoot(false); break;
-            default:
-                resp.sendError(HttpServletResponse.SC_BAD_REQUEST);
+            String serviceName = HttpUtils.getRequiredParameter(req, "service");
+            String action = HttpUtils.getRequiredParameter(req, "action");
+
+            Service service;
+            try{
+                service = services.getService(serviceName);
+            }catch(IOException e){
+                throw new ServletException(e);
+            }
+            if(service == null)
+            {
+                resp.sendError(HttpServletResponse.SC_NOT_FOUND, "Service "+serviceName+" not found");
                 return;
+            }
+
+            switch(action)
+            {
+                case ACTION_START: service.start(); break;
+                case ACTION_STOP: service.stop(); break;
+                case ACTION_RESTART: service.restart(); break;
+                case ACTION_ENABLE: service.setStartAtBoot(true); break;
+                case ACTION_DISABLE: service.setStartAtBoot(false); break;
+                default:
+                    resp.sendError(HttpServletResponse.SC_BAD_REQUEST);
+                    return;
+            }
+
+            resp.sendRedirect(req.getRequestURI());  //back to GET
+        }catch(HttpUtils.BadRequestMessage e){
+            resp.sendError(HttpServletResponse.SC_BAD_REQUEST, e.getMessage());
         }
-        
-        resp.sendRedirect(req.getRequestURI());  //back to GET
     }
 }

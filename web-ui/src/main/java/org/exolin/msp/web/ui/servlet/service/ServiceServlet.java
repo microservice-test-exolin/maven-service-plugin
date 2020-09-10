@@ -13,6 +13,7 @@ import org.exolin.msp.core.StatusType;
 import org.exolin.msp.service.Service;
 import org.exolin.msp.service.Services;
 import org.exolin.msp.service.pm.ProcessManager;
+import org.exolin.msp.web.ui.HttpUtils;
 import org.exolin.msp.web.ui.servlet.Icon;
 import org.exolin.msp.web.ui.servlet.Layout;
 import org.exolin.msp.web.ui.servlet.ReverseList;
@@ -44,17 +45,12 @@ public class ServiceServlet extends HttpServlet
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException
     {
-        String serviceName = req.getParameter("service");
-        if(serviceName == null)
-        {
-            resp.sendError(HttpServletResponse.SC_BAD_REQUEST, "Missing parameter service");
-            return;
-        }
-        
         resp.setContentType("text/html;charset=UTF-8");
         
         try(PrintWriter out = resp.getWriter())
         {
+            String serviceName = HttpUtils.getRequiredParameter(req, "service");
+            
             Service service = services.getService(serviceName);
             if(service == null)
             {
@@ -79,6 +75,8 @@ public class ServiceServlet extends HttpServlet
             
             //out.append("</div>");
             Layout.end(out);
+        }catch(HttpUtils.BadRequestMessage e){
+            resp.sendError(HttpServletResponse.SC_BAD_REQUEST, e.getMessage());
         }
     }
 

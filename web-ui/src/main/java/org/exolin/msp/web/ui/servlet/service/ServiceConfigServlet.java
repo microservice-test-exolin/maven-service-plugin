@@ -10,6 +10,7 @@ import javax.servlet.http.HttpServletResponse;
 import org.exolin.msp.service.ConfigFile;
 import org.exolin.msp.service.Service;
 import org.exolin.msp.service.Services;
+import org.exolin.msp.web.ui.HttpUtils;
 import org.exolin.msp.web.ui.servlet.Icon;
 import org.exolin.msp.web.ui.servlet.Layout;
 import org.javacord.api.DiscordApi;
@@ -203,46 +204,35 @@ public class ServiceConfigServlet extends HttpServlet
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException
     {
-        String serviceName = req.getParameter("service");
-        if(serviceName == null)
-        {
-            resp.sendError(HttpServletResponse.SC_BAD_REQUEST, "missing parameter service");
-            return;
-        }
-        String file = req.getParameter("file");
-        if(file == null)
-        {
-            resp.sendError(HttpServletResponse.SC_BAD_REQUEST, "missing parameter file");
-            return;
-        }
-        
-        Service service = services.getService(serviceName);
-        if(service == null)
-        {
-            resp.sendError(HttpServletResponse.SC_NOT_FOUND, "Service not found");
-            return;
-        }
-        
-        ConfigFile configFile = service.getConfigFile(file);
-        for(String key: configFile.get().keySet())
-        {
-            if(key.equals("service") || key.equals("file"))  //könnte in query sein
-                throw new UnsupportedOperationException("ambiguity");
-            
-            String val = req.getParameter(key);
-            if(val == null)
+        try{
+            String serviceName = HttpUtils.getRequiredParameter(req, "service");
+            String file = HttpUtils.getRequiredParameter(req, "file");
+
+            Service service = services.getService(serviceName);
+            if(service == null)
             {
-                resp.sendError(HttpServletResponse.SC_BAD_REQUEST, "missing form field "+key);
+                resp.sendError(HttpServletResponse.SC_NOT_FOUND, "Service not found");
                 return;
             }
-            
-            if(!isSecret(key) || !val.equals(UNCHANGED_SECRET))
-                configFile.set(key, val);
+
+            ConfigFile configFile = service.getConfigFile(file);
+            for(String key: configFile.get().keySet())
+            {
+                if(key.equals("service") || key.equals("file"))  //könnte in query sein
+                    throw new UnsupportedOperationException("ambiguity");
+
+                String val = HttpUtils.getRequiredFormField(req, key);
+
+                if(!isSecret(key) || !val.equals(UNCHANGED_SECRET))
+                    configFile.set(key, val);
+            }
+
+            configFile.save();
+            //Zurück zur Liste
+            resp.sendRedirect(URL+"?service="+serviceName);//+"&file="+file);
+        }catch(HttpUtils.BadRequestMessage e){
+            resp.sendError(HttpServletResponse.SC_BAD_REQUEST, e.getMessage());
         }
-        
-        configFile.save();
-        //Zurück zur Liste
-        resp.sendRedirect(URL+"?service="+serviceName);//+"&file="+file);
     }
     
     private String getDisplayName(String file)
