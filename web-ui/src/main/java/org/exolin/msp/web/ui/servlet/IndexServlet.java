@@ -47,6 +47,16 @@ public class IndexServlet extends HttpServlet
         super.service(req, resp);
     }
     
+    private StatusType getStatusType(Service s)
+    {
+        try{
+            return s.getStatus().getStatus();
+        }catch(IOException|UnsupportedOperationException e){
+            LOGGER.error("Couldn't determine status", e);
+            return StatusType.UNKNOWN;
+        }
+    }
+    
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException
     {
@@ -59,14 +69,9 @@ public class IndexServlet extends HttpServlet
             out.append("<h1>Service Web UI</h1>");
             
             List<Service> serviceList = services.getServices();
-            Map<StatusType, Long> counts = serviceList.stream().map(s -> {
-                try{
-                    return s.getStatus().getStatus();
-                }catch(IOException|UnsupportedOperationException e){
-                    LOGGER.error("Couldn't determine status", e);
-                    return null;
-                }
-            }).collect(Collectors.groupingBy(Function.identity(), () -> new EnumMap<>(StatusType.class), Collectors.counting()));
+            Map<StatusType, Long> counts = serviceList.stream()
+                    .map(this::getStatusType)
+                    .collect(Collectors.groupingBy(Function.identity(), () -> new EnumMap<>(StatusType.class), Collectors.counting()));
             
             out.append("<p>Service status:</p>");
             
