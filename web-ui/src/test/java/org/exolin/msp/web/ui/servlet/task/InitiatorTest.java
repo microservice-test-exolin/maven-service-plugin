@@ -3,8 +3,8 @@ package org.exolin.msp.web.ui.servlet.task;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
-import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.*;
+import org.junit.jupiter.api.Test;
 
 /**
  * Tests für {@link Initiator}

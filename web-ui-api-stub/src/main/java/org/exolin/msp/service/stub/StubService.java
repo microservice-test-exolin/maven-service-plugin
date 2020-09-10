@@ -1,9 +1,6 @@
 package org.exolin.msp.service.stub;
 
-import java.io.BufferedReader;
 import java.io.IOException;
-import java.io.InputStream;
-import java.nio.file.Files;
 import java.nio.file.NoSuchFileException;
 import java.nio.file.Path;
 import java.util.Arrays;
@@ -12,7 +9,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
-import java.util.Properties;
 import org.exolin.msp.core.SystemAbstraction;
 import org.exolin.msp.service.AbstractService;
 import org.exolin.msp.service.ConfigFile;

@@ -15,7 +15,6 @@ import org.exolin.msp.core.StatusType;
 import org.exolin.msp.service.Service;
 import org.exolin.msp.service.Services;
 import org.exolin.msp.service.pm.ProcessManager;
-import org.exolin.msp.web.ui.servlet.service.ServiceServlet;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
