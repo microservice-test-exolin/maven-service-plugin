@@ -73,7 +73,6 @@ public class ServiceServlet extends HttpServlet
             out.append("<h2>Builds/deploys</h2>");
             ProcessServlet.list(out, new ReverseList<>(pm.getProcessesIncludingHistory(service.getName())), false, false, "No processes run yet");
             
-            //out.append("</div>");
             Layout.end(out);
         }catch(HttpUtils.BadRequestMessage e){
             resp.sendError(HttpServletResponse.SC_BAD_REQUEST, e.getMessage());
