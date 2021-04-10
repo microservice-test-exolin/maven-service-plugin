@@ -18,5 +18,6 @@
         <module>web-ui-api</module>
         <module>web-ui-api-stub</module>
         <module>web-ui-api-linux</module>
+        <module>multihost</module>
     </modules>
 </project>
