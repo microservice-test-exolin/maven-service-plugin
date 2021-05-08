@@ -8,6 +8,7 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 import org.exolin.msp.web.ui.Constants;
+import org.exolin.msp.web.ui.HtmlUtils;
 import org.exolin.msp.web.ui.Main;
 import org.exolin.msp.web.ui.servlet.service.ListServicesServlet;
 import org.exolin.msp.web.ui.servlet.service.ServiceConfigServlet;
@@ -166,7 +167,7 @@ public class Layout
     {
         out.append("<html>");
         out.append("<head>");
-        out.append("<title>").append(title).append("</title>");
+        out.append("<title>").append(HtmlUtils.escapeHTML(title)).append("</title>");
         out.append("<link rel=\"stylesheet\" href=\"https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css\" integrity=\"sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm\" crossorigin=\"anonymous\">");
         out.append("<link rel=\"stylesheet\" href=\"/dashboard.css\">");
         out.append("<link rel=\"stylesheet\" href=\"/log.css\">");

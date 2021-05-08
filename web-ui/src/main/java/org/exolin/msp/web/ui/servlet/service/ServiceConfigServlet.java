@@ -2,6 +2,7 @@ package org.exolin.msp.web.ui.servlet.service;
 
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.nio.file.NoSuchFileException;
 import java.util.Map;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
@@ -10,6 +11,7 @@ import javax.servlet.http.HttpServletResponse;
 import org.exolin.msp.service.ConfigFile;
 import org.exolin.msp.service.Service;
 import org.exolin.msp.service.Services;
+import org.exolin.msp.web.ui.HtmlUtils;
 import org.exolin.msp.web.ui.HttpUtils;
 import org.exolin.msp.web.ui.servlet.Icon;
 import org.exolin.msp.web.ui.servlet.Layout;
@@ -37,11 +39,17 @@ public class ServiceConfigServlet extends HttpServlet
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException
     {
-        String serviceName = req.getParameter("service");
-        if(serviceName == null)
-            showServiceList(req, resp);
-        else
-            showConfigOfService(serviceName, req, resp);
+        try{
+            String serviceName = req.getParameter("service");
+            if(serviceName == null)
+                showServiceList(req, resp);
+            else
+                showConfigOfService(serviceName, req, resp);
+        }catch(IOException|ServletException|RuntimeException e){
+            LOGGER.error("Error", e);
+            e.printStackTrace();
+            throw e;
+        }
     }
     
     private void showServiceList(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException
@@ -130,13 +138,31 @@ public class ServiceConfigServlet extends HttpServlet
                name.endsWith("_secret");
     }
     
+    private void writeNonDismissableErrorBox(PrintWriter out, String text)
+    {
+        writeBox(out, "danger", text, false);
+    }
+    
     private void writeWarningBox(PrintWriter out, String text)
     {
-        out.append("<div class=\"alert alert-warning alert-dismissible fade show\" role=\"alert\">");
+        writeBox(out, "warning", text, true);
+    }
+    
+    private void writeInfoBox(PrintWriter out, String text)
+    {
+        writeBox(out, "information", text, true);
+    }
+    
+    private void writeBox(PrintWriter out, String type, String text, boolean dismissable)
+    {
+        out.append("<div class=\"alert alert-"+type+" alert-dismissible fade show\" role=\"alert\">");
         out.append(text);
-        out.append("<button type=\"button\" class=\"close\" data-dismiss=\"alert\" aria-label=\"Close\">");
-        out.append("<span aria-hidden=\"true\">&times;</span>");
-        out.append("</button>");
+        if(dismissable)
+        {
+            out.append("<button type=\"button\" class=\"close\" data-dismiss=\"alert\" aria-label=\"Close\">");
+            out.append("<span aria-hidden=\"true\">&times;</span>");
+            out.append("</button>");
+        }
         out.append("</div>");
     }
     
@@ -144,22 +170,46 @@ public class ServiceConfigServlet extends HttpServlet
     {
         resp.setContentType("text/html;charset=UTF-8");
         
+        ConfigFile file;
+        try{
+            file = service.getConfigFile(name);
+        }catch(NoSuchFileException e){
+            try(PrintWriter out = resp.getWriter())
+            {
+                String serviceName = service.getName();
+                
+                Layout.start(serviceName+"/"+getDisplayName(name), req.getRequestURI(), out);
+
+                out.append("<h1>").append(HtmlUtils.escapeHTML(serviceName+"/"+getDisplayName(name))).append("</h1>");
+            
+                writeNonDismissableErrorBox(out, "File <code>"+HtmlUtils.escapeHTML(name)+"</code> not found");
+                
+                Layout.end(out);
+            }
+            return;
+        }
+
         try(PrintWriter out = resp.getWriter())
         {
             String serviceName = service.getName();
             
             Layout.start(serviceName+"/"+getDisplayName(name), req.getRequestURI(), out);
             
-            out.append("<h1>").append(serviceName+"/"+getDisplayName(name)).append("</h1>");
+            out.append("<h1>").append(HtmlUtils.escapeHTML(serviceName+"/"+getDisplayName(name))).append("</h1>");
             
             writeWarningBox(out, "Changing configuration might require the service to be restarted to take effect");
             writeWarningBox(out, "The values aren't validated and changing them to something invalid might make the service fail to operate");
             
-            ConfigFile file = service.getConfigFile(name);
-
             out.append("<form action=\""+URL+"?service=").append(serviceName).append("&file=").append(name).append("\" method=\"POST\">");
+            
+            Map<String, String> content = file.get();
 
-            for(Map.Entry<String, String> e: file.get().entrySet())
+            out.append(content.toString());
+            
+            if(content.isEmpty())
+                writeInfoBox(out, "The values aren't validated and changing them to something invalid might make the service fail to operate");
+            
+            for(Map.Entry<String, String> e: content.entrySet())
             {
                 out.append("<div class=\"form-group\">");
 

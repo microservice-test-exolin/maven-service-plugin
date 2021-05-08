@@ -14,6 +14,7 @@ import javax.servlet.http.HttpServletResponse;
 import org.exolin.msp.service.LogFile;
 import org.exolin.msp.service.Service;
 import org.exolin.msp.service.Services;
+import org.exolin.msp.web.ui.HtmlUtils;
 import org.exolin.msp.web.ui.HttpUtils;
 import org.exolin.msp.web.ui.LognameGenerator;
 import org.exolin.msp.web.ui.servlet.Icon;
@@ -131,7 +132,7 @@ abstract class LogFileShowServlet extends HttpServlet
     
     private String formatLogLine(String line)
     {
-        line = line.replace("<", "&lt;").replace(">", "&gt;");
+        line = HtmlUtils.escapeHTML(line);
         String cssClass;
         
         //----------------------------------------------------------------------
