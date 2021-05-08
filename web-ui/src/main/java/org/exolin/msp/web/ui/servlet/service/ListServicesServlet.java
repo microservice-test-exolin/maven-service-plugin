@@ -3,14 +3,12 @@ package org.exolin.msp.web.ui.servlet.service;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.io.Writer;
-import java.util.Optional;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import org.exolin.msp.core.StatusInfo;
 import org.exolin.msp.core.StatusType;
-import org.exolin.msp.service.GitRepository;
 import org.exolin.msp.service.Service;
 import org.exolin.msp.service.Services;
 import org.exolin.msp.web.ui.HttpUtils;
@@ -105,6 +103,7 @@ public class ListServicesServlet extends HttpServlet
                 out.append("<td>");
                 out.append("<form action=\"#\" method=\"POST\" style=\"display: inline\">");
                 out.append("<input type=\"hidden\" name=\"service\" value=\"").append(service.getName()).append("\">");
+                
                 if(status != null && status.getStatus() != StatusType.ACTIVE)
                     write(out, ACTION_START, Icon.START, "Start");
                 if(status != null && status.getStatus() != StatusType.INACTIVE)
@@ -127,20 +126,31 @@ public class ListServicesServlet extends HttpServlet
                 if(showBuildOptions)
                 {
                     out.append("<td>");
-                    Optional<GitRepository> repository = service.getGitRepository();
-                    if(repository.isPresent() && repository.get().supportsBuildAndDeployment())
+                    DeployServlet.writeButtons(service, service.getGitRepository(), out);
+                    /*if(repository.isPresent())
                     {
-                        out.append("<form action=\"/deploy\" method=\"POST\" style=\"display: inline\">");
-                        if(!repository.get().isBuildOrDeployProcessRunning())
+                        if(DeployServlet.supportAnyButton(repo))
                         {
-                            out.append("<input type=\"hidden\" name=\"service\" value=\"").append(service.getName()).append("\">");
-                            write(out, "compile", Icon.COMPILE, "Compile");
-                            write(out, "deploy", Icon.DEPLOY, "Deploy");
-                            out.append("</form>");
+                            if(!repo.isTaskRunning())
+                            {
+                                out.append("<form action=\"/deploy\" method=\"POST\" style=\"display: inline\">");
+                                out.append("<input type=\"hidden\" name=\"service\" value=\"").append(service.getName()).append("\">");
+                                
+                                if(repo.supports(GitRepository.Task.BUILD))
+                                    write(out, DeployServlet.ACTION_BUILD, Icon.COMPILE, "Compile");
+                                
+                                if(repo.supports(GitRepository.Task.DEPLOY))
+                                    write(out, DeployServlet.ACTION_DEPLOY, Icon.DEPLOY, "Deploy");
+                                
+                                if(repo.supports(GitRepository.Task.BUILD_AND_DEPLOY))
+                                    write(out, DeployServlet.ACTION_BUILD_AND_DEPLOY, Icon.DEPLOY, "Build & Deploy");
+                                
+                                out.append("</form>");
+                            }
+                            else
+                                out.append("Build/deploy currently running");
                         }
-                        else
-                            out.append("Build/deploy currently running");
-                    }
+                    }*/
                     out.append("</td>");
 
                     out.append("<td>");

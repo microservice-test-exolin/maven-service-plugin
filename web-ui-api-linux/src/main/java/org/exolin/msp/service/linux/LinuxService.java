@@ -40,7 +40,7 @@ public class LinuxService extends AbstractService
     
     private static final Logger LOGGER = LoggerFactory.getLogger(LinuxService.class);
     
-    private Process runningBuildOrDeployProcess;
+    private Process runningTaskProcess;
     
     public LinuxService(
             Path serviceDirectory,
@@ -57,9 +57,9 @@ public class LinuxService extends AbstractService
         this.pm = pm;
     }
 
-    boolean isBuildOrDeployProcessRunning()
+    boolean isTaskRunning()
     {
-        return runningBuildOrDeployProcess != null && runningBuildOrDeployProcess.isAlive();
+        return runningTaskProcess != null && runningTaskProcess.isAlive();
     }
     
     @Override
@@ -136,7 +136,7 @@ public class LinuxService extends AbstractService
         Process p;
         synchronized(this)
         {
-            if(isBuildOrDeployProcessRunning())
+            if(isTaskRunning())
                 throw new BuildOrDeployAlreadyRunningException("There is already a build/deploy running for the service "+getName());
             
             long startTime = System.currentTimeMillis();
@@ -153,7 +153,7 @@ public class LinuxService extends AbstractService
                     .redirectError(ProcessBuilder.Redirect.to(logFile.toFile()))
                     .start();
             pi.setProcess(p);
-            runningBuildOrDeployProcess = p;
+            runningTaskProcess = p;
         }
         
         if(!asynch)

@@ -18,6 +18,7 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import org.exolin.msp.service.GitRepository;
+import org.exolin.msp.service.GitRepository.Task;
 import org.exolin.msp.service.Service;
 import org.exolin.msp.service.Services;
 import org.exolin.msp.web.ui.servlet.github.api.GithubDeployerImpl;
@@ -100,14 +101,24 @@ public class GithubWebhookServlet extends HttpServlet
             {
                 GitRepository repository = service.getGitRepository().get();
                 
-                if(build.add(repository.getLocalGitRoot()))
+                if(repository.supports(Task.BUILD) && repository.supports(Task.DEPLOY))
                 {
-                    LOGGER.info("Building {} (remote {})", repository.getLocalGitRoot(), repository.getRepositoryUrl());
-                    repository.build(false, initiator);
-                }
+                    if(build.add(repository.getLocalGitRoot()))
+                    {
+                        LOGGER.info("Building {} (remote {})", repository.getLocalGitRoot(), repository.getRepositoryUrl());
+                        repository.run(Task.BUILD, false, initiator);
+                    }
 
-                LOGGER.info("Deploying {}", service.getName());
-                repository.deploy(false, initiator);
+                    LOGGER.info("Deploying {}", service.getName());
+                    repository.run(Task.DEPLOY, false, initiator);
+                }
+                else if(repository.supports(Task.BUILD_AND_DEPLOY))
+                {
+                    LOGGER.info("Building and deploying {}", service.getName());
+                    repository.run(Task.BUILD_AND_DEPLOY, false, initiator);
+                }
+                else
+                    throw new UnsupportedOperationException("Neither BUILD+DEPLOY nor BUILD_AND_DEPLOY are supported by "+repository);
 
                 GithubDeployerImpl.Repo.Deployment deployment = deployments.get(service.getName());
                 if(deployment != null)

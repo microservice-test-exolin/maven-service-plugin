@@ -4,7 +4,6 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.net.URL;
 import java.nio.file.Path;
-import java.util.Optional;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -221,12 +220,12 @@ public class ServiceServlet extends HttpServlet
         out.append("<a href=\""+TaskLogServlet.getFilesOfTask(service.getName(), "deploy")+"\">");
         Icon.LOG.writeTo(out);
         out.append("Deploy Logfiles</a><br>");
-        Optional<GitRepository> gitRepository = service.getGitRepository();
-        if(gitRepository.isPresent() && gitRepository.get().supportsBuildAndDeployment())
+        DeployServlet.writeButtons(service, service.getGitRepository(), out);
+        /*if(gitRepository.isPresent() && DeployServlet.supportAnyButton(gitRepository.get()))
         {
-            out.append("<form action=\"/deploy\" method=\"POST\" style=\"display: inline\">");
-            if(!gitRepository.get().isBuildOrDeployProcessRunning())
+            if(!gitRepository.get().isTaskRunning())
             {
+                out.append("<form action=\"/deploy\" method=\"POST\" style=\"display: inline\">");
                 out.append("<input type=\"hidden\" name=\"service\" value=\"").append(service.getName()).append("\">");
                 write(out, "compile", Icon.COMPILE, "Compile");
                 write(out, "deploy", Icon.DEPLOY, "Deploy");
@@ -234,7 +233,7 @@ public class ServiceServlet extends HttpServlet
             }
             else
                 out.append("Build/deploy currently running");
-        }
+        }*/
         out.append("</div></div>");
     }
 

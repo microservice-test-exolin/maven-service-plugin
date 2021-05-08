@@ -61,16 +61,70 @@ public class DeployServlet extends HttpServlet
                 Layout.start("Build/Deploy", req.getRequestURI(), out);
 
                 out.append("<h1>Services</h1>");
-                out.append("<form action=\"#\" method=\"POST\">");
-                out.append("<input type=\"hidden\" name=\"service\" value=\"").append(service.getName()).append("\">");
-                write(out, "compile", Icon.COMPILE, "Compile");
-                write(out, "deploy", Icon.DEPLOY, "Deploy");
-                out.append("</form>");
+                
+                writeButtons(service, service.getGitRepository(), out);
 
                 Layout.end(out);
             }
         }catch(HttpUtils.BadRequestMessage e){
             resp.sendError(HttpServletResponse.SC_BAD_REQUEST, e.getMessage());
+        }
+    }
+    
+    static boolean supportAnyButton(GitRepository repo) throws IOException
+    {
+        return repo.supports(GitRepository.Task.BUILD) &&
+               repo.supports(GitRepository.Task.DEPLOY) &&
+               repo.supports(GitRepository.Task.BUILD_AND_DEPLOY);
+    }
+    
+    static void writeButtons(Service service, Optional<GitRepository> gitRepository, PrintWriter out) throws IOException
+    {
+        if(gitRepository.isPresent() && supportAnyButton(gitRepository.get()))
+            writeButtons(service, gitRepository.get(), out);
+    }
+    
+    static void writeButtons(Service service, GitRepository gitRepository, PrintWriter out) throws IOException
+    {
+        if(gitRepository.isTaskRunning())
+        {
+            out.append("<form action=\"/deploy\" method=\"POST\" style=\"display: inline\">");
+            out.append("<input type=\"hidden\" name=\"service\" value=\"").append(service.getName()).append("\">");
+
+            if(gitRepository.supports(GitRepository.Task.BUILD))
+                write(out, ACTION_BUILD, Icon.COMPILE, "Compile");
+
+            if(gitRepository.supports(GitRepository.Task.DEPLOY))
+                write(out, ACTION_DEPLOY, Icon.DEPLOY, "Deploy");
+
+            if(gitRepository.supports(GitRepository.Task.BUILD_AND_DEPLOY))
+                write(out, ACTION_BUILD_AND_DEPLOY, Icon.DEPLOY, "Build & Deploy");
+
+            out.append("</form>");
+        } else {
+            out.append("Build/deploy currently running");
+        }
+    }
+    
+    public static final String ACTION_BUILD = "compile";
+    public static final String ACTION_DEPLOY = "deploy";
+    public static final String ACTION_BUILD_AND_DEPLOY = "buildAndDeploy";
+    
+    private boolean runTask(Service service, GitRepository.Task task, String initiator, HttpServletResponse resp) throws HttpUtils.BadRequestMessage, IOException
+    {
+        try{
+            Optional<GitRepository> gitRepository = service.getGitRepository();
+            if(!gitRepository.isPresent())
+                throw new HttpUtils.BadRequestMessage("Service has no repository");
+
+            gitRepository.get().run(task, true, initiator);
+            return true;
+        }catch(BuildOrDeployAlreadyRunningException e){
+            throw new HttpUtils.BadRequestMessage("A task is already running for the service "+service.getName());
+        }catch(IOException|InterruptedException|RuntimeException e){
+            LOGGER.error("Error while deploying", e);
+            resp.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+            return false;
         }
     }
 
@@ -102,37 +156,22 @@ public class DeployServlet extends HttpServlet
             {
                 case "compile":
                 {
-                    try{
-                        Optional<GitRepository> gitRepository = service.getGitRepository();
-                        if(!gitRepository.isPresent())
-                            throw new HttpUtils.BadRequestMessage("Service has no repository");
-                        
-                        gitRepository.get().build(true, initiator);
-                    }catch(BuildOrDeployAlreadyRunningException e){
-                        throw new HttpUtils.BadRequestMessage("Build or deploy already running");
-                    }catch(IOException|InterruptedException|RuntimeException e){
-                        LOGGER.error("Error while deploying", e);
-                        resp.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+                    if(runTask(service, GitRepository.Task.BUILD, initiator, resp))
                         return;
-                    }
 
                     break;
                 }
                 case "deploy":
                 {
-                    try{
-                        Optional<GitRepository> gitRepository = service.getGitRepository();
-                        if(!gitRepository.isPresent())
-                            throw new HttpUtils.BadRequestMessage("Service has no repository");
-                        
-                        gitRepository.get().deploy(true, initiator);
-                    }catch(BuildOrDeployAlreadyRunningException e){
-                        throw new HttpUtils.BadRequestMessage("Build or deploy already running");
-                    }catch(IOException|InterruptedException|RuntimeException e){
-                        LOGGER.error("Error while deploying", e);
-                        resp.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+                    if(runTask(service, GitRepository.Task.DEPLOY, initiator, resp))
                         return;
-                    }
+
+                    break;
+                }
+                case "buildAndDeploy":
+                {
+                    if(runTask(service, GitRepository.Task.BUILD_AND_DEPLOY, initiator, resp))
+                        return;
 
                     break;
                 }

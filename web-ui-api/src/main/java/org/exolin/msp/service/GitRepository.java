@@ -13,8 +13,14 @@ public interface GitRepository
     public Path getLocalServiceMavenProject() throws IOException;
     public String getRepositoryUrl() throws IOException;
     
-    public boolean supportsBuildAndDeployment() throws IOException;
-    public void build(boolean async, String initiator) throws IOException, InterruptedException;
-    public void deploy(boolean async, String initiator) throws IOException, InterruptedException;
-    public boolean isBuildOrDeployProcessRunning();
+    enum Task
+    {
+        BUILD,
+        DEPLOY,
+        BUILD_AND_DEPLOY
+    }
+    
+    public boolean supports(Task task) throws IOException;
+    public void run(Task task, boolean async, String initiator) throws IOException, InterruptedException;
+    public boolean isTaskRunning();
 }

@@ -28,13 +28,13 @@ public class StubGitRepository implements GitRepository
     }
 
     @Override
-    public boolean supportsBuildAndDeployment() throws IOException
+    public boolean supports(Task task) throws IOException
     {
         return true;
     }
 
     @Override
-    public boolean isBuildOrDeployProcessRunning()
+    public boolean isTaskRunning()
     {
         return stubService.isBuildOrDeployProcessRunning();
     }
@@ -58,13 +58,7 @@ public class StubGitRepository implements GitRepository
     }
     
     @Override
-    public void build(boolean asynch, String initiator) throws IOException, InterruptedException
-    {
-        stubService.startProcess(asynch);
-    }
-    
-    @Override
-    public void deploy(boolean asynch, String initiator) throws IOException, InterruptedException
+    public void run(Task task, boolean asynch, String initiator) throws IOException, InterruptedException
     {
         stubService.startProcess(asynch);
     }
