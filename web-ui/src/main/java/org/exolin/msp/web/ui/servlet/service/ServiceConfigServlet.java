@@ -204,8 +204,6 @@ public class ServiceConfigServlet extends HttpServlet
             
             Map<String, String> content = file.get();
 
-            out.append(content.toString());
-            
             if(content.isEmpty())
                 writeInfoBox(out, "The values aren't validated and changing them to something invalid might make the service fail to operate");
             
