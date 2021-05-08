@@ -1,7 +1,6 @@
 package org.exolin.msp.service.linux;
 
 import java.io.IOException;
-import java.nio.file.Files;
 import java.nio.file.Path;
 
 /**
@@ -85,7 +84,7 @@ public class DeployableJavaMavenGitRepository extends AbstractGitRepository
     {
         Path serviceSrcDirectory = getLocalServiceMavenProject();
         
-        String[] cmd = {"/bin/bash", "-c", "/root/repos/deploy.sh"};
+        String[] cmd = Deployer.getDeployer().deployMaven();
         
         linuxService.start(serviceSrcDirectory, LinuxService.TASK_DEPLOY, cmd, asynch, initiator);
     }

@@ -52,7 +52,7 @@ public class DeployableGoGitRepository extends AbstractGitRepository
     {
         Path serviceSrcDirectory = getLocalServiceMavenProject();
         
-        String[] cmd = {"/bin/bash", "-c", "/root/repos/go-deploy/setup.sh -s "+gitRoot+" -o /root/apps/"+serviceName+"/"+serviceName+" -a "+serviceName+" -f"};
+        String[] cmd = Deployer.getDeployer().buildAndDeployGo(gitRoot, serviceName);
         
         linuxService.start(serviceSrcDirectory, LinuxService.TASK_DEPLOY, cmd, async, initiator);
     }
