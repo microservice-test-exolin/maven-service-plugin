@@ -11,7 +11,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- *
+ * Manages all created processes for their life time
+ * 
  * @author tomgk
  */
 public class ProcessManager
