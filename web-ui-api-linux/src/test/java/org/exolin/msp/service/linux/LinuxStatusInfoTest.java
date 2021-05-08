@@ -1,5 +1,7 @@
-package org.exolin.msp.core;
+package org.exolin.msp.service.linux;
 
+import org.exolin.msp.core.StatusInfo;
+import org.exolin.msp.core.StatusType;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeEach;

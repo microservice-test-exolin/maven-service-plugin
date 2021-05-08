@@ -1,4 +1,4 @@
-package org.exolin.msp.core;
+package org.exolin.msp.service.linux;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -11,6 +11,9 @@ import java.nio.file.LinkOption;
 import java.nio.file.Path;
 import java.nio.file.attribute.PosixFileAttributeView;
 import java.nio.file.attribute.UserPrincipalLookupService;
+import org.exolin.msp.core.Log;
+import org.exolin.msp.core.SystemAbstraction;
+import org.exolin.msp.service.ApplicationInstance;
 
 /**
  *
@@ -23,6 +26,12 @@ public class LinuxAbstraction implements SystemAbstraction
     public LinuxAbstraction(Log log)
     {
         this.log = log;
+    }
+
+    @Override
+    public ApplicationInstance getNativeService(String name)
+    {
+        return new LinuxServiceApplicationInstance(name);
     }
     
     @Override
@@ -37,40 +46,10 @@ public class LinuxAbstraction implements SystemAbstraction
     @Override
     public void reloadDeamon() throws IOException
     {
-        system("systemctl", "daemon-reload");
+        system(log, "systemctl", "daemon-reload");
     }
 
-    @Override
-    public void start(String name) throws IOException
-    {
-        system("systemctl", "start", name);
-    }
-
-    @Override
-    public void stop(String name) throws IOException
-    {
-        system("systemctl", "stop", name);
-    }
-
-    @Override
-    public void restart(String name) throws IOException
-    {
-        system("systemctl", "restart", name);
-    }
-
-    @Override
-    public void setStartAtBoot(String name, boolean b) throws IOException
-    {
-        system("systemctl", b ? "enable" : "disable", name);
-    }
-    
-    @Override
-    public StatusInfo getStatus(String name) throws IOException
-    {
-        return new LinuxStatusInfo(system2("systemctl", "status", name));
-    }
-    
-    private void system(String...cmd) throws IOException
+    public static void system(Log log, String...cmd) throws IOException
     {
         log.info("$>"+String.join(" ", cmd));
         
@@ -85,7 +64,7 @@ public class LinuxAbstraction implements SystemAbstraction
         }
     }
     
-    protected String system2(String...cmd) throws IOException
+    public static String system2(Log log, String...cmd) throws IOException
     {
         log.info("$>"+String.join(" ", cmd));
         

@@ -15,7 +15,7 @@ import java.util.stream.Stream;
 import javax.servlet.http.HttpServletResponse;
 import org.eclipse.jetty.server.Server;
 import org.eclipse.jetty.server.ServerConnector;
-import org.exolin.msp.core.PseudoAbstraction;
+import org.exolin.msp.service.stub.PseudoAbstraction;
 import org.exolin.msp.core.SystemAbstraction;
 import org.exolin.msp.service.Services;
 import org.exolin.msp.service.pm.ProcessDataStorage;
@@ -48,7 +48,7 @@ public class AuthFilterTest
     {
         ProcessManager pm = new ProcessManager(new ProcessDataStorage(Paths.get(".")));
         
-        SystemAbstraction sys = new PseudoAbstraction(new LogAdapter(PseudoAbstraction.class));
+        //SystemAbstraction sys = new PseudoAbstraction(new LogAdapter(PseudoAbstraction.class));
         
         List<String> names = Arrays.asList(
                 "test-mittens-discord",
@@ -63,7 +63,6 @@ public class AuthFilterTest
                 root.resolve(name),
                 root.resolve(name).resolve("x"),
                 prefix+name,
-                sys,
                 Collections.emptyMap()
         )).collect(Collectors.toList()));
         
@@ -72,7 +71,7 @@ public class AuthFilterTest
         properties.setProperty(Config.KEY_GITHUB_CLIENT_ID, "fake");
         properties.setProperty(Config.KEY_GITHUB_CLIENT_SECRET, "fake");
         properties.setProperty(Config.ALLOWED_USERS, "someone");
-        server = Main.create(pm, sys, services, new Config(properties), Paths.get("invalid"), 0, true);
+        server = Main.create(pm, services, new Config(properties), Paths.get("invalid"), 0, true);
         server.start();
         
         port = ((ServerConnector)server.getConnectors()[0]).getLocalPort();

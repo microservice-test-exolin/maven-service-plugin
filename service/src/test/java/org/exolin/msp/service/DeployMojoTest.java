@@ -17,7 +17,7 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.testing.MojoRule;
-import org.exolin.msp.core.PseudoAbstraction;
+import org.exolin.msp.service.stub.PseudoAbstraction;
 import org.ini4j.Ini;
 import org.junit.After;
 import static org.junit.Assert.*;

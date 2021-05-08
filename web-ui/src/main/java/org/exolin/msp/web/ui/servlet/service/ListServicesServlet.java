@@ -9,6 +9,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import org.exolin.msp.core.StatusInfo;
 import org.exolin.msp.core.StatusType;
+import org.exolin.msp.service.ApplicationInstance;
 import org.exolin.msp.service.Service;
 import org.exolin.msp.service.Services;
 import org.exolin.msp.web.ui.HttpUtils;
@@ -74,7 +75,7 @@ public class ListServicesServlet extends HttpServlet
                 
                 StatusInfo status;
                 try{
-                    status = service.getStatus();
+                    status = service.getApplicationInstance().getStatus();
                 }catch(IOException e){
                     status = null;
                     LOGGER.error("Couldn't be determined", e);
@@ -83,7 +84,7 @@ public class ListServicesServlet extends HttpServlet
                 out.append("<td>");
                 
                 if(status != null)
-                    ServiceServlet.writeStatus(out, service.getStatus());
+                    ServiceServlet.writeStatus(out, status);
                 else
                     out.append("Couldn't be determined");
                 
@@ -201,14 +202,16 @@ public class ListServicesServlet extends HttpServlet
                 resp.sendError(HttpServletResponse.SC_NOT_FOUND, "Service "+serviceName+" not found");
                 return;
             }
+            
+            ApplicationInstance instance = service.getApplicationInstance();
 
             switch(action)
             {
-                case ACTION_START: service.start(); break;
-                case ACTION_STOP: service.stop(); break;
-                case ACTION_RESTART: service.restart(); break;
-                case ACTION_ENABLE: service.setStartAtBoot(true); break;
-                case ACTION_DISABLE: service.setStartAtBoot(false); break;
+                case ACTION_START: instance.start(); break;
+                case ACTION_STOP: instance.stop(); break;
+                case ACTION_RESTART: instance.restart(); break;
+                case ACTION_ENABLE: instance.setStartAtBoot(true); break;
+                case ACTION_DISABLE: instance.setStartAtBoot(false); break;
                 default:
                     resp.sendError(HttpServletResponse.SC_BAD_REQUEST);
                     return;

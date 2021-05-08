@@ -11,9 +11,11 @@ import java.util.Collections;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugins.annotations.LifecyclePhase;
 import org.apache.maven.plugins.annotations.Mojo;
-import org.exolin.msp.core.LinuxAbstraction;
+import org.exolin.msp.service.linux.LinuxAbstraction;
 import org.exolin.msp.core.StatusType;
 import org.exolin.msp.core.SystemAbstraction;
+import org.exolin.msp.service.linux.LinuxService;
+import org.exolin.msp.service.linux.LinuxServiceApplicationInstance;
 
 /**
  * Goal which touches a timestamp file.
@@ -114,8 +116,11 @@ public class DeployMojo extends BaseMojo
 
         getLog().info("Installed");
 
-        sys.restart(name);
-        StatusType status = sys.getStatus(name).getStatus();
+        ApplicationInstance ai = sys.getNativeService(name);
+        
+        ai.restart();
+        
+        StatusType status = ai.getStatus().getStatus();
         if(status != StatusType.ACTIVE)
             throw new IllegalStateException(name+" not "+StatusType.ACTIVE+" "+name+" but "+status);
     }

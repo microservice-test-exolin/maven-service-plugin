@@ -7,32 +7,40 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
-import org.exolin.msp.core.SystemAbstraction;
-import org.exolin.msp.service.AbstractService;
+import org.exolin.msp.core.SimpleStatusInfo;
+import org.exolin.msp.core.StatusInfo;
+import org.exolin.msp.core.StatusType;
+import org.exolin.msp.service.ApplicationInstance;
 import org.exolin.msp.service.ConfigFile;
 import org.exolin.msp.service.GitRepository;
 import org.exolin.msp.service.LogFile;
+import org.exolin.msp.service.Service;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  *
  * @author tomgk
  */
-public class StubService extends AbstractService
+public class StubService implements Service
 {
+    private static final Logger LOGGER = LoggerFactory.getLogger(StubService.class);
+    
+    private final String name;
     private final GitRepository gitRepository;
     private final Map<String, LogFile> logFiles;
+    private final StubApplicationInstance applicationInstance;
     
-    public StubService(String name, Path gitRootPath, Path localServiceMavenProject, String repositoryUrl, SystemAbstraction sys, Map<String, LogFile> logFiles)
+    public StubService(String name, Path gitRootPath, Path localServiceMavenProject, String repositoryUrl, Map<String, LogFile> logFiles)
     {
-        super(name, sys);
-        
+        this.name = name;
         this.gitRepository = new StubGitRepository(this, gitRootPath, localServiceMavenProject, repositoryUrl);
         this.logFiles = logFiles;
+        this.applicationInstance = new StubApplicationInstance(name);
     }
     
     private long processStart;
@@ -40,6 +48,18 @@ public class StubService extends AbstractService
     
     static final String BUILD = "build";
     static final String DEPLOY = "deploy";
+
+    @Override
+    public String getName()
+    {
+        return name;
+    }
+    
+    @Override
+    public StubApplicationInstance getApplicationInstance()
+    {
+        return applicationInstance;
+    }
     
     @Override
     public Iterable<String> getTasks()

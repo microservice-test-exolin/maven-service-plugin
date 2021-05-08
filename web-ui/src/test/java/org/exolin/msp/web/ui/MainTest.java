@@ -16,7 +16,7 @@ import java.util.Properties;
 import java.util.stream.Collectors;
 import org.eclipse.jetty.server.Server;
 import org.eclipse.jetty.server.ServerConnector;
-import org.exolin.msp.core.PseudoAbstraction;
+import org.exolin.msp.service.stub.PseudoAbstraction;
 import org.exolin.msp.core.SystemAbstraction;
 import org.exolin.msp.service.Services;
 import org.exolin.msp.service.pm.ProcessDataStorage;
@@ -42,7 +42,7 @@ public class MainTest
     {
         ProcessManager pm = new ProcessManager(new ProcessDataStorage(Paths.get(".")));
         
-        SystemAbstraction sys = new PseudoAbstraction(new LogAdapter(PseudoAbstraction.class));
+        //SystemAbstraction sys = new PseudoAbstraction(new LogAdapter(PseudoAbstraction.class));
         
         List<String> names = Arrays.asList(
                 "test-mittens-discord",
@@ -57,13 +57,12 @@ public class MainTest
                 root.resolve(name),
                 root.resolve(name).resolve("x"),
                 prefix+name,
-                sys,
                 Collections.emptyMap()
         )).collect(Collectors.toList()));
         
         Properties properties = new Properties();
         properties.setProperty(Config.KEY_AUTH_TYPE, Config.AuthType.none.name());
-        server = Main.create(pm, sys, services, new Config(properties), Paths.get("invalid"), 0, true);
+        server = Main.create(pm, services, new Config(properties), Paths.get("invalid"), 0, true);
         server.start();
         
         port = ((ServerConnector)server.getConnectors()[0]).getLocalPort();

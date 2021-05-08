@@ -50,7 +50,7 @@ public class IndexServlet extends HttpServlet
     private StatusType getStatusType(Service s)
     {
         try{
-            return s.getStatus().getStatus();
+            return s.getApplicationInstance().getStatus().getStatus();
         }catch(IOException|UnsupportedOperationException e){
             LOGGER.error("Couldn't determine status", e);
             return StatusType.UNKNOWN;

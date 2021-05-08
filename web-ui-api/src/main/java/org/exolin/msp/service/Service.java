@@ -14,12 +14,7 @@ import org.exolin.msp.core.StatusInfo;
 public interface Service
 {
     public String getName();
-    public StatusInfo getStatus() throws IOException;
-    
-    public void start() throws IOException;
-    public void stop() throws IOException;
-    public void restart() throws IOException;
-    public void setStartAtBoot(boolean b) throws IOException;
+    public ApplicationInstance getApplicationInstance();
     
     /**
      * Returns all log files of the service itself

@@ -1,6 +1,8 @@
-package org.exolin.msp.core;
+package org.exolin.msp.service.linux;
 
 import java.util.Optional;
+import org.exolin.msp.core.StatusInfo;
+import org.exolin.msp.core.StatusType;
 
 /**
  *

@@ -10,7 +10,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
-import org.exolin.msp.core.PseudoAbstraction;
+import org.exolin.msp.service.stub.PseudoAbstraction;
 import org.exolin.msp.service.LogFile;
 import org.exolin.msp.service.Services;
 import org.exolin.msp.service.linux.RegularLogFile;
@@ -76,22 +76,22 @@ public class LocalMain
         Path gitRoot = Paths.get("repos").toAbsolutePath();
         String prefix = "http://github.com/a/";
         
-        PseudoAbstraction sys = new PseudoAbstraction(new LogAdapter(PseudoAbstraction.class));
+        //PseudoAbstraction sys = new PseudoAbstraction(new LogAdapter(PseudoAbstraction.class));
         
-        Services services = new StubServices(Arrays.asList(
-                    new StubService("test-mittens-discord", gitRoot.resolve("test-mittens-discord"), gitRoot.resolve("test-mittens-discord"), prefix+"test-mittens-discord", sys, logFiles),
-                    new StubService("test-milkboi-discord", gitRoot.resolve("test-milkboi"), gitRoot.resolve("test-milkboi/discord"), prefix+"test-milkboi-discord", sys, Collections.emptyMap()),
-                    new StubService("test-milkboi-telegram", gitRoot.resolve("test-milkboi"), gitRoot.resolve("test-milkboi/telegram"), prefix+"test-milkboi-telegram", sys, Collections.emptyMap())
-            ));
+        StubService s1 = new StubService("test-mittens-discord", gitRoot.resolve("test-mittens-discord"), gitRoot.resolve("test-mittens-discord"), prefix+"test-mittens-discord", logFiles);
+        StubService s2 = new StubService("test-milkboi-discord", gitRoot.resolve("test-milkboi"), gitRoot.resolve("test-milkboi/discord"), prefix+"test-milkboi-discord", Collections.emptyMap());
+        StubService s3 = new StubService("test-milkboi-telegram", gitRoot.resolve("test-milkboi"), gitRoot.resolve("test-milkboi/telegram"), prefix+"test-milkboi-telegram", Collections.emptyMap());
         
-        sys.start("test-mittens-discord");
-        sys.setFailed("test-milkboi-discord");
+        Services services = new StubServices(Arrays.asList(s1, s2, s3));
+        
+        s1.getApplicationInstance().start();
+        s2.getApplicationInstance().setFailed();
         
         Process process = new ProcessBuilder("cmd", "/c", "echo x").start();
         
         pm.register(services.getServices().get(0).getName(), "build", Arrays.asList("mvn", "build"), Paths.get("."), System.currentTimeMillis(), "testcode").setProcess(process);
         pm.register(services.getServices().get(1).getName(), "build", Arrays.asList("mvn", "build"), Paths.get("."), System.currentTimeMillis(), "testcode").setProcess(process);
         
-        run(pm, sys, services, Config.read(Paths.get("../config/config")), Paths.get("../config"), false);
+        run(pm, services, Config.read(Paths.get("../config/config")), Paths.get("../config"), false);
     }
 }

@@ -12,9 +12,9 @@ public class DeployableGoGitRepository extends AbstractGitRepository
 {
     private final String serviceName;
     private final Path gitRoot;
-    private final LinuxService linuxService;
+    private final AbstractLinuxService linuxService;
 
-    public DeployableGoGitRepository(String serviceName, Path gitRoot, LinuxService linuxService)
+    public DeployableGoGitRepository(String serviceName, Path gitRoot, AbstractLinuxService linuxService)
     {
         this.serviceName = serviceName;
         this.gitRoot = gitRoot;

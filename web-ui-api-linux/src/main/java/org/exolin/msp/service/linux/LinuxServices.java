@@ -10,7 +10,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
-import org.exolin.msp.core.SystemAbstraction;
 import org.exolin.msp.service.GitRepository;
 import org.exolin.msp.service.Service;
 import org.exolin.msp.service.Services;
@@ -27,14 +26,12 @@ public class LinuxServices implements Services
     private static final Logger LOGGER = LoggerFactory.getLogger(LinuxServices.class);
     
     private final Path servicesDirectory;
-    private final SystemAbstraction sys;
     private final ProcessManager pm;
     private final Map<String, LinuxService> serviceCache = new HashMap<>();
 
-    public LinuxServices(Path servicesDirectory, SystemAbstraction sys, ProcessManager pm) throws IOException
+    public LinuxServices(Path servicesDirectory, ProcessManager pm) throws IOException
     {
         this.servicesDirectory = servicesDirectory;
-        this.sys = sys;
         this.pm = pm;
     }
 
@@ -77,7 +74,8 @@ public class LinuxServices implements Services
                     serviceDirectory,
                     serviceDirectory.resolve("log"),
                     serviceDirectory.resolve("cfg"),
-                    serviceName, sys, pm)
+                    new LinuxServiceApplicationInstance(serviceName),
+                    serviceName, pm)
         );
     }
 

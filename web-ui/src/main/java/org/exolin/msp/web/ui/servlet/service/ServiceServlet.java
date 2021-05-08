@@ -137,7 +137,7 @@ public class ServiceServlet extends HttpServlet
         
         StatusInfo status = null;
         try{
-            status = service.getStatus();
+            status = service.getApplicationInstance().getStatus();
         }catch(IOException e){
             LOGGER.error("Couldn't be determined", e);
             out.append("Couldn't be determined");

@@ -61,7 +61,7 @@ public class ServiceStatusServlet extends HttpServlet
             StatusInfo status;
             
             try{
-                status = service.getStatus();
+                status = service.getApplicationInstance().getStatus();
             }catch(IOException e){
                 out.append("Couldn't read status");
                 LOGGER.error("Couldn't read status", e);

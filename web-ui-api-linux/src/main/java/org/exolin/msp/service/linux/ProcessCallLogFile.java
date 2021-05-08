@@ -7,26 +7,39 @@ import java.util.Optional;
 import org.exolin.msp.service.LogFile;
 
 /**
- *
+ * Log file who's content is retrived by calling a command
+ * 
  * @author tomgk
  */
-public class Journalctl extends LogFile
+public class ProcessCallLogFile extends LogFile
 {
-    public Journalctl(String serviceName)
+    private final String fileName;
+    private final String title;
+    private final String[] cmd;
+    
+    private ProcessCallLogFile(String serviceName, String filename, String title, String...cmd)
     {
         super(serviceName, Optional.empty());
+        this.cmd = cmd;
+        this.fileName = filename;
+        this.title = title;
+    }
+    
+    public static ProcessCallLogFile Journalctl(String serviceName)
+    {
+        return new ProcessCallLogFile(serviceName, "journalctl", "Standard Output", "journalctl", "-u", serviceName);
     }
 
     @Override
     public String getFileName()
     {
-        return "journalctl";
+        return fileName;
     }
 
     @Override
     public String getTitle()
     {
-        return "Standard Output";
+        return title;
     }
     
     private void copy(InputStream in, OutputStream out) throws IOException
@@ -40,8 +53,7 @@ public class Journalctl extends LogFile
     @Override
     public void writeTo(OutputStream out) throws IOException
     {
-        Process process = new ProcessBuilder("journalctl", "-u", getServiceName())
-                .start();
+        Process process = new ProcessBuilder(cmd).start();
         
         try(InputStream in = process.getInputStream())
         {

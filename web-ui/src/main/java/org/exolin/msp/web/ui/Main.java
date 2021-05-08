@@ -23,7 +23,7 @@ import org.eclipse.jetty.server.SessionIdManager;
 import org.eclipse.jetty.server.session.DefaultSessionIdManager;
 import org.eclipse.jetty.server.session.SessionHandler;
 import org.eclipse.jetty.servlet.ServletHandler;
-import org.exolin.msp.core.LinuxAbstraction;
+import org.exolin.msp.service.linux.LinuxAbstraction;
 import org.exolin.msp.core.Log;
 import org.exolin.msp.core.SystemAbstraction;
 import org.exolin.msp.service.Services;
@@ -78,26 +78,20 @@ public class Main
         try{
             ProcessManager pm = new ProcessManager(new ProcessDataStorage(Paths.get("../data")));
 
-            SystemAbstraction sys = new LinuxAbstraction(new Log()
-            {
-                @Override
-                public void warn(String string){}
-                @Override
-                public void info(String string){}
-            });//new LogAdapter(LinuxAbstraction.class));
+            //SystemAbstraction sys = new LinuxAbstraction(new LogAdapter(LinuxAbstraction.class));
 
             LinuxServices services = new LinuxServices(
                     Paths.get("/home/exolin/services"),
-                    sys, pm);
+                    pm);
 
-            run(pm, sys, services, Config.read(Paths.get(configDir, "config")), Paths.get(configDir), true);
+            run(pm, services, Config.read(Paths.get(configDir, "config")), Paths.get(configDir), true);
         }catch(Exception e){
             LOGGER.error("Error starting", e);
             throw e;
         }
     }
     
-    public static void run(ProcessManager pm, SystemAbstraction sys, Services services, Config config, Path configDir, boolean localhost) throws Exception
+    public static void run(ProcessManager pm, Services services, Config config, Path configDir, boolean localhost) throws Exception
     {
         ScheduledExecutorService deamonScheduler = Executors.newScheduledThreadPool(1, (Runnable r) -> {
             Thread t = new Thread(r);
@@ -108,7 +102,7 @@ public class Main
         deamonScheduler.scheduleWithFixedDelay(pm::clean, 1, 1, TimeUnit.SECONDS);
         
         int port = 8090;
-        Server server = create(pm, sys, services, config, configDir, port, localhost);
+        Server server = create(pm, services, config, configDir, port, localhost);
         
         try{
             server.start();
@@ -124,7 +118,7 @@ public class Main
         System.out.println("Started on port "+port);
     }
     
-    public static Server create(ProcessManager pm, SystemAbstraction sys, Services services, Config config, Path configDir, int port, boolean localhost) throws Exception
+    public static Server create(ProcessManager pm, Services services, Config config, Path configDir, int port, boolean localhost) throws Exception
     {
         ExecutorService executorService = Executors.newCachedThreadPool();
         Path githubTokenFile = configDir.resolve("github.token");

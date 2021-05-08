@@ -10,7 +10,7 @@ import javax.servlet.http.HttpServletResponse;
 import org.exolin.msp.service.GitRepository;
 import org.exolin.msp.service.Service;
 import org.exolin.msp.service.Services;
-import org.exolin.msp.service.pm.BuildOrDeployAlreadyRunningException;
+import org.exolin.msp.service.pm.TaskAlreadyRunningException;
 import org.exolin.msp.web.ui.HttpUtils;
 import org.exolin.msp.web.ui.servlet.Icon;
 import org.exolin.msp.web.ui.servlet.Layout;
@@ -119,7 +119,7 @@ public class DeployServlet extends HttpServlet
 
             gitRepository.get().run(task, true, initiator);
             return true;
-        }catch(BuildOrDeployAlreadyRunningException e){
+        }catch(TaskAlreadyRunningException e){
             throw new HttpUtils.BadRequestMessage("A task is already running for the service "+service.getName());
         }catch(IOException|InterruptedException|RuntimeException e){
             LOGGER.error("Error while deploying", e);
