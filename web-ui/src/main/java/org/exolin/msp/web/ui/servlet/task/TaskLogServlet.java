@@ -61,7 +61,7 @@ public class TaskLogServlet extends HttpServlet
 
             String task = HttpUtils.getRequiredParameter(req, TASK);
             
-            LogLister.listServiceFiles(service, Optional.of(task), req, resp);
+            LogLister.listServiceFiles(service, Optional.of(task), service.getTaskLogFiles(task), req, resp);
         }catch(HttpUtils.BadRequestMessage e){
             resp.sendError(HttpServletResponse.SC_BAD_REQUEST, e.getMessage());
         }catch(IOException|RuntimeException e){

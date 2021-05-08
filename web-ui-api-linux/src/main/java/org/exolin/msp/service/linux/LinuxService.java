@@ -18,6 +18,7 @@ import java.util.stream.Collectors;
 import org.exolin.msp.core.SystemAbstraction;
 import org.exolin.msp.service.AbstractService;
 import org.exolin.msp.service.ConfigFile;
+import org.exolin.msp.service.GitRepository;
 import org.exolin.msp.service.LogFile;
 import org.exolin.msp.service.pm.BuildOrDeployAlreadyRunningException;
 import org.exolin.msp.service.pm.ProcessInfo;
@@ -56,35 +57,26 @@ public class LinuxService extends AbstractService
         this.pm = pm;
     }
 
-    @Override
-    public boolean isBuildOrDeployProcessRunning()
+    boolean isBuildOrDeployProcessRunning()
     {
         return runningBuildOrDeployProcess != null && runningBuildOrDeployProcess.isAlive();
     }
     
     @Override
-    public boolean supportsBuildAndDeployment() throws IOException
-    {
-        try{
-            getLocalServiceMavenProject();
-            return true;
-        }catch(UnsupportedOperationException e){
-            LOGGER.info("Couldn't determine original path", e);
-            return false;
-        }
-    }
-
-    @Override
-    public Path getLocalServiceMavenProject() throws IOException
+    public Optional<GitRepository> getGitRepository() throws IOException
     {
         Path originalPathFile = serviceDirectory.resolve("original.path");
+        Path localServiceMavenProject;
         try{
-            return Paths.get(new String(Files.readAllBytes(originalPathFile), StandardCharsets.UTF_8));
+            localServiceMavenProject = Paths.get(new String(Files.readAllBytes(originalPathFile), StandardCharsets.UTF_8));
         }catch(NoSuchFileException e){
-            throw new UnsupportedOperationException("Can't determine original path of "+getName(), e);
+            LOGGER.warn("Can't determine original path of "+getName(), e);
+            return Optional.empty();
         }
+        
+        return Optional.of(new DeployableJavaMavenGitRepository(this, localServiceMavenProject));
     }
-    
+
     public static String getLogicalLogFileName(String processName, long timestamp)
     {
         return "task/"+processName+"/"+timestamp+".log";
@@ -101,49 +93,37 @@ public class LinuxService extends AbstractService
             LOGGER.warn("Directory doesn't exist: {}", dir);
         }
     }
-    
+
     @Override
-    public final Map<String, LogFile> getLogFiles(Optional<String> taskName) throws IOException
+    public Map<String, LogFile> getServiceLogFiles() throws IOException
     {
-        //LOGGER.info("Retriving log files");
-        
         Map<String, LogFile> files = new TreeMap<>();
         
-        if(taskName == null || !taskName.isPresent())
-        {
-            files.put("journalctl", new Journalctl(getName()));
-            
-            readLogFiles(Optional.empty(), logDirectory, files);
-        }
-        
-        for(Map.Entry<String, Path> e: pm.getProcessLogDirectories(getName()).entrySet())
-        {
-            if(taskName == null || taskName.equals(Optional.of(e.getKey())))
-                readLogFiles(Optional.of(e.getKey()), e.getValue(), files);
-        }
+        files.put("journalctl", new Journalctl(getName()));
+
+        readLogFiles(Optional.empty(), logDirectory, files);
         
         return files;
     }
     
     @Override
-    public Path getLocalGitRoot() throws IOException
+    public final Map<String, LogFile> getTaskLogFiles(String taskName) throws IOException
     {
-        return getGitRoot(getLocalServiceMavenProject());
-    }
-    
-    static Path getGitRoot(Path path)
-    {
-        for(Path p=path;p!=null;p=p.getParent())
-        {
-            if(Files.exists(p.resolve(".git")))
-                return p;
-        }
+        //LOGGER.info("Retriving log files");
         
-        throw new IllegalArgumentException("Not a git repository: "+path);
+        Map<String, LogFile> files = new TreeMap<>();
+        
+        Path dir = pm.getProcessLogDirectory(getName(), taskName);
+        if(dir != null)
+            readLogFiles(Optional.of(taskName), dir, files);
+        else
+            LOGGER.info("No log directory for service{} task {}", getName(), taskName);
+        
+        return files;
     }
     
-    private static final String TASK_BUILD = "build";
-    private static final String TASK_DEPLOY = "deploy";
+    static final String TASK_BUILD = "build";
+    static final String TASK_DEPLOY = "deploy";
 
     @Override
     public Iterable<String> getTasks()
@@ -151,27 +131,7 @@ public class LinuxService extends AbstractService
         return Arrays.asList(TASK_BUILD, TASK_DEPLOY);
     }
     
-    @Override
-    public void build(boolean asynch, String initiator) throws IOException, InterruptedException
-    {
-        Path gitRoot = getLocalGitRoot();
-        
-        String[] cmd = {"/bin/bash", "-c", "git pull && mvn package"};
-        
-        start(gitRoot, TASK_BUILD, cmd, asynch, initiator);
-    }
-    
-    @Override
-    public void deploy(boolean asynch, String initiator) throws IOException, InterruptedException
-    {
-        Path serviceSrcDirectory = getLocalServiceMavenProject();
-        
-        String[] cmd = {"/bin/bash", "-c", "/root/repos/deploy.sh"};
-        
-        start(serviceSrcDirectory, TASK_DEPLOY, cmd, asynch, initiator);
-    }
-    
-    private void start(Path workingDirectory, String name, String[] cmd, boolean asynch, String initiator) throws IOException, InterruptedException
+    void start(Path workingDirectory, String name, String[] cmd, boolean asynch, String initiator) throws IOException, InterruptedException
     {
         Process p;
         synchronized(this)
@@ -207,54 +167,6 @@ public class LinuxService extends AbstractService
     }
     
     @Override
-    public String getRepositoryUrl() throws IOException
-    {
-        return getRepositoryUrl(getLocalGitRoot());
-    }
-    
-    private static int findFirstStartingWith(List<String> list, String startString, int start, int end)
-    {
-        for(int i=start;i<end;++i)
-            if(list.get(i).trim().startsWith(startString))
-                return i;
-        
-        return -1;
-    }
-    
-    public static String getRepositoryUrl(Path gitRepository) throws IOException
-    {
-        /*
-        [remote "origin"]
-        url = $URL
-        */
-        
-        List<String> lines = Files.readAllLines(gitRepository.resolve(".git/config"));
-        
-        String URL = "url = ";
-        
-        int sectionLine = lines.indexOf("[remote \"origin\"]");
-        if(sectionLine == -1)
-            throw new IOException("No section remote origin");
-        
-        int nextSectionLine = findFirstStartingWith(lines, "[", sectionLine+1, lines.size());
-        if(nextSectionLine == -1) nextSectionLine = lines.size();
-        
-        int urlLine = findFirstStartingWith(lines, URL, sectionLine+1, lines.size());
-        if(urlLine == -1 || urlLine > nextSectionLine)  //nicht in (richtiger) section gefundne
-            throw new IOException("no remote origin url\n"+
-                    "sectionLine:"+sectionLine+"\n"+
-                    "URlLine:"+urlLine+"\n"+
-                    "nextSectionLine:"+nextSectionLine+"\n"+
-                    String.join("\n", lines));
-        
-        String repo = lines.get(urlLine).trim().substring(URL.length());
-        if(repo.endsWith(".git"))
-            repo = repo.substring(0, repo.length()-4);
-        
-        return repo;
-    }
-
-    @Override
     public List<String> getConfigFiles() throws IOException
     {
         try{
@@ -273,7 +185,7 @@ public class LinuxService extends AbstractService
     {
         Path config = configDirectory.resolve(name);
         if(!config.normalize().startsWith(configDirectory))
-            throw new IllegalArgumentException(name);
+            throw new IllegalArgumentException("Not in config directory: "+name);
         
         if(name.endsWith(".token"))
             return new TokenConfigFile(config, new String(Files.readAllBytes(config), StandardCharsets.UTF_8));

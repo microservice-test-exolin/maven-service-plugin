@@ -17,6 +17,7 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import org.exolin.msp.service.GitRepository;
 import org.exolin.msp.service.Service;
 import org.exolin.msp.service.Services;
 import org.exolin.msp.web.ui.servlet.github.api.GithubDeployerImpl;
@@ -72,7 +73,7 @@ public class GithubWebhookServlet extends HttpServlet
 
             Map<String, GithubDeployerImpl.Repo.Deployment> deployments = new HashMap<>();
             for(Service service: serviceList)
-                deployments.put(service.getName(), githubDeployer.fromRepoUrl(service.getRepositoryUrl()).createDeployment(payload.getLatest().getId(), "service "+service.getName()));
+                deployments.put(service.getName(), githubDeployer.fromRepoUrl(service.getGitRepository().get().getRepositoryUrl()).createDeployment(payload.getLatest().getId(), "service "+service.getName()));
             
             map.put("status", "queued");
             executorService.execute(() -> execute(serviceList, payload, deployments));
@@ -97,14 +98,16 @@ public class GithubWebhookServlet extends HttpServlet
         try{
             for(Service service: serviceList)
             {
-                if(build.add(service.getLocalGitRoot()))
+                GitRepository repository = service.getGitRepository().get();
+                
+                if(build.add(repository.getLocalGitRoot()))
                 {
-                    LOGGER.info("Building {} (remote {})", service.getLocalGitRoot(), service.getRepositoryUrl());
-                    service.build(false, initiator);
+                    LOGGER.info("Building {} (remote {})", repository.getLocalGitRoot(), repository.getRepositoryUrl());
+                    repository.build(false, initiator);
                 }
 
                 LOGGER.info("Deploying {}", service.getName());
-                service.deploy(false, initiator);
+                repository.deploy(false, initiator);
 
                 GithubDeployerImpl.Repo.Deployment deployment = deployments.get(service.getName());
                 if(deployment != null)

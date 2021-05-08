@@ -57,7 +57,7 @@ public class ServiceLogServlet extends HttpServlet
                 return;
             }
 
-            LogLister.listServiceFiles(service, Optional.empty(), req, resp);
+            LogLister.listServiceFiles(service, Optional.empty(), service.getServiceLogFiles(), req, resp);
         }catch(IOException|RuntimeException e){
             LOGGER.error("Error", e);
             throw e;

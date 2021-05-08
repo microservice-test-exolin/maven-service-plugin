@@ -12,6 +12,7 @@ import java.util.Optional;
 import org.exolin.msp.core.SystemAbstraction;
 import org.exolin.msp.service.AbstractService;
 import org.exolin.msp.service.ConfigFile;
+import org.exolin.msp.service.GitRepository;
 import org.exolin.msp.service.LogFile;
 
 /**
@@ -20,83 +21,65 @@ import org.exolin.msp.service.LogFile;
  */
 public class StubService extends AbstractService
 {
-    private final Path localGitRootPath;
-    private final Path localServiceMavenProject;
-    private final String repositoryUrl;
+    private final GitRepository gitRepository;
     private final Map<String, LogFile> logFiles;
     
     public StubService(String name, Path gitRootPath, Path localServiceMavenProject, String repositoryUrl, SystemAbstraction sys, Map<String, LogFile> logFiles)
     {
         super(name, sys);
         
-        if(!localServiceMavenProject.startsWith(gitRootPath))
-            throw new IllegalArgumentException(localServiceMavenProject+" is not in "+gitRootPath);
-        
-        this.localGitRootPath = gitRootPath;
-        this.localServiceMavenProject = localServiceMavenProject;
-        this.repositoryUrl = repositoryUrl;
+        this.gitRepository = new StubGitRepository(this, gitRootPath, localServiceMavenProject, repositoryUrl);
         this.logFiles = logFiles;
     }
     
-    @Override
-    public boolean supportsBuildAndDeployment() throws IOException
-    {
-        return true;
-    }
-    
     private long processStart;
+    private static final long PROCESS_DURATION = 3000;  //3 s simulierter Lauf
     
-    @Override
-    public void build(boolean asynch, String initiator) throws IOException, InterruptedException
-    {
-        processStart = System.currentTimeMillis();
-    }
+    static final String BUILD = "build";
+    static final String DEPLOY = "deploy";
     
-    @Override
-    public void deploy(boolean asynch, String initiator) throws IOException, InterruptedException
-    {
-        processStart = System.currentTimeMillis();
-    }
-
     @Override
     public Iterable<String> getTasks()
     {
-        return Arrays.asList("build", "deploy");
+        return Arrays.asList(BUILD, DEPLOY);
     }
 
-    @Override
-    public boolean isBuildOrDeployProcessRunning()
+    boolean isBuildOrDeployProcessRunning()
     {
         if(processStart == 0)
             return false;
         
-        return System.currentTimeMillis() - processStart < 3000;  //3 s simulierter Lauf
-    }
-
-    @Override
-    public Path getLocalServiceMavenProject()
-    {
-        return localServiceMavenProject;
+        return System.currentTimeMillis() - processStart < PROCESS_DURATION;
     }
     
-    @Override
-    public Path getLocalGitRoot() throws IOException
+    void startProcess(boolean asynch) throws InterruptedException
     {
-        return localGitRootPath;
-    }
-    
-    @Override
-    public String getRepositoryUrl() throws IOException
-    {
-        return repositoryUrl;
-    }
-
-    @Override
-    public Map<String, LogFile> getLogFiles(Optional<String> taskName) throws IOException
-    {
-        if(taskName == null)
-            return logFiles;
+        processStart = System.currentTimeMillis();
         
+        if(!asynch)
+            Thread.sleep(PROCESS_DURATION);
+    }
+
+    @Override
+    public Optional<GitRepository> getGitRepository() throws IOException
+    {
+        return Optional.of(gitRepository);
+    }
+
+    @Override
+    public Map<String, LogFile> getServiceLogFiles() throws IOException
+    {
+        return getLogFiles(Optional.empty());
+    }
+
+    @Override
+    public Map<String, LogFile> getTaskLogFiles(String taskName) throws IOException
+    {
+        return getLogFiles(Optional.of(taskName));
+    }
+    
+    private Map<String, LogFile> getLogFiles(Optional<String> taskName) throws IOException
+    {
         Map<String, LogFile> filtered = new HashMap<>(logFiles);
         filtered.values().removeIf(l -> !l.getProcessName().equals(taskName));
         return filtered;

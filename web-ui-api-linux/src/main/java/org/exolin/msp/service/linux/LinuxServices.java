@@ -9,7 +9,9 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import org.exolin.msp.core.SystemAbstraction;
+import org.exolin.msp.service.GitRepository;
 import org.exolin.msp.service.Service;
 import org.exolin.msp.service.Services;
 import org.exolin.msp.service.pm.ProcessManager;
@@ -88,7 +90,14 @@ public class LinuxServices implements Services
         
         for(LinuxService s: getLinuxServices())
         {
-            String repoUrl = s.getRepositoryUrl();
+            Optional<GitRepository> gitRepository = s.getGitRepository();
+            if(!gitRepository.isPresent())
+            {
+                LOGGER.info("  {} => (no repository)", s.getName());
+                continue;
+            }
+            
+            String repoUrl = gitRepository.get().getRepositoryUrl();
             LOGGER.info("  {} => {}", s.getName(), repoUrl);
             
             //info: getRepositoryUrl() kann null zurück geben

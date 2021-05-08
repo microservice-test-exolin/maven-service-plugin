@@ -40,7 +40,8 @@ import org.exolin.msp.web.ui.servlet.auth.GithubOAuth;
 import org.exolin.msp.web.ui.servlet.auth.GithubOAuthServlet;
 import org.exolin.msp.web.ui.servlet.github.GithubWebhookServlet;
 import org.exolin.msp.web.ui.servlet.github.api.GithubDeployerImpl;
-import org.exolin.msp.web.ui.servlet.log.LogFileShowServlet;
+import org.exolin.msp.web.ui.servlet.log.ServiceLogFileShowServlet;
+import org.exolin.msp.web.ui.servlet.log.TaskLogFileShowServlet;
 import org.exolin.msp.web.ui.servlet.serverinfo.ServerInfoServlet;
 import org.exolin.msp.web.ui.servlet.serverinfo.SystemEnvironmentServlet;
 import org.exolin.msp.web.ui.servlet.serverinfo.SystemPropertiesServlet;
@@ -106,7 +107,8 @@ public class Main
     
         deamonScheduler.scheduleWithFixedDelay(pm::clean, 1, 1, TimeUnit.SECONDS);
         
-        Server server = create(pm, sys, services, config, configDir, 8090, localhost);
+        int port = 8090;
+        Server server = create(pm, sys, services, config, configDir, port, localhost);
         
         try{
             server.start();
@@ -119,7 +121,7 @@ public class Main
             throw e;
         }
         
-        System.out.println("Started");
+        System.out.println("Started on port "+port);
     }
     
     public static Server create(ProcessManager pm, SystemAbstraction sys, Services services, Config config, Path configDir, int port, boolean localhost) throws Exception
@@ -184,7 +186,8 @@ public class Main
         servletHandler.addServletWithMapping(DeployServlet.class, DeployServlet.URL).setServlet(new DeployServlet(services));
         servletHandler.addServletWithMapping(ServiceLogServlet.class, ServiceLogServlet.URL).setServlet(new ServiceLogServlet(services));
         servletHandler.addServletWithMapping(TaskLogServlet.class, TaskLogServlet.URL).setServlet(new TaskLogServlet(services));
-        servletHandler.addServletWithMapping(LogFileShowServlet.class, LogFileShowServlet.URL).setServlet(new LogFileShowServlet(services));
+        servletHandler.addServletWithMapping(ServiceLogFileShowServlet.class, ServiceLogFileShowServlet.URL).setServlet(new ServiceLogFileShowServlet(services));
+        servletHandler.addServletWithMapping(TaskLogFileShowServlet.class, TaskLogFileShowServlet.URL).setServlet(new TaskLogFileShowServlet(services));
         servletHandler.addServletWithMapping(ProcessServlet.class, ProcessServlet.URL).setServlet(new ProcessServlet(pm));
         servletHandler.addServletWithMapping(ProcessHistoryServlet.class, ProcessHistoryServlet.URL).setServlet(new ProcessHistoryServlet(pm));
         servletHandler.addServletWithMapping(ServiceStatusServlet.class, ServiceStatusServlet.URL).setServlet(new ServiceStatusServlet(services));

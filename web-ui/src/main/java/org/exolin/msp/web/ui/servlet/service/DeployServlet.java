@@ -2,10 +2,12 @@ package org.exolin.msp.web.ui.servlet.service;
 
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.util.Optional;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import org.exolin.msp.service.GitRepository;
 import org.exolin.msp.service.Service;
 import org.exolin.msp.service.Services;
 import org.exolin.msp.service.pm.BuildOrDeployAlreadyRunningException;
@@ -101,7 +103,11 @@ public class DeployServlet extends HttpServlet
                 case "compile":
                 {
                     try{
-                        service.build(true, initiator);
+                        Optional<GitRepository> gitRepository = service.getGitRepository();
+                        if(!gitRepository.isPresent())
+                            throw new HttpUtils.BadRequestMessage("Service has no repository");
+                        
+                        gitRepository.get().build(true, initiator);
                     }catch(BuildOrDeployAlreadyRunningException e){
                         throw new HttpUtils.BadRequestMessage("Build or deploy already running");
                     }catch(IOException|InterruptedException|RuntimeException e){
@@ -115,7 +121,11 @@ public class DeployServlet extends HttpServlet
                 case "deploy":
                 {
                     try{
-                        service.deploy(true, initiator);
+                        Optional<GitRepository> gitRepository = service.getGitRepository();
+                        if(!gitRepository.isPresent())
+                            throw new HttpUtils.BadRequestMessage("Service has no repository");
+                        
+                        gitRepository.get().deploy(true, initiator);
                     }catch(BuildOrDeployAlreadyRunningException e){
                         throw new HttpUtils.BadRequestMessage("Build or deploy already running");
                     }catch(IOException|InterruptedException|RuntimeException e){

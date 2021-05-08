@@ -17,7 +17,7 @@ import org.exolin.msp.web.ui.servlet.Layout;
  */
 public class LogLister
 {
-    public static void listServiceFiles(Service service, Optional<String> taskName, HttpServletRequest req, HttpServletResponse resp) throws IOException
+    public static void listServiceFiles(Service service, Optional<String> taskName, Map<String, LogFile> files, HttpServletRequest req, HttpServletResponse resp) throws IOException
     {
         resp.setContentType("text/html;charset=UTF-8");
         
@@ -27,9 +27,8 @@ public class LogLister
             
             out.append("<h1>Logfiles"+taskName.map(t -> " "+t).orElse("")+" of "+service.getName()+"</h1>");
             
-            Map<String, LogFile> files = service.getLogFiles(taskName);
             files.forEach((name, lf) -> {
-                out.append("<a href=\""+LogFileShowServlet.getFileUrl(service.getName(), name)+"\">");
+                out.append("<a href=\""+LogFileShowServlet.getFileUrl(service.getName(), taskName, name, false)+"\">");
                 Icon.LOG.writeTo(out);
                 out.append(lf.getTitle()).append("</a><br>");
             });

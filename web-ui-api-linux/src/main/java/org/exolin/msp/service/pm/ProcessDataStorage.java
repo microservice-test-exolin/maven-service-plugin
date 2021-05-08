@@ -84,6 +84,17 @@ public class ProcessDataStorage
         return dirs;
     }
     
+    public Path getProcessLogDirectory(String service, String task) throws IOException
+    {
+        Path taskDir = directory.resolve(service).resolve(task);
+        if(!Files.exists(taskDir))
+        {
+            LOGGER.warn("Directory doesn't exist: {}", taskDir);
+            return null;
+        }
+        return taskDir;
+    }
+    
     private Path processDir(String service, String process) throws IOException
     {
         if(!Files.exists(directory))

@@ -105,6 +105,11 @@ public class ProcessManager
         return store.getProcessLogDirectories(service);
     }
     
+    public Path getProcessLogDirectory(String service, String task) throws IOException
+    {
+        return store.getProcessLogDirectory(service, task);
+    }
+    
     public synchronized void notifyProcessFinished()
     {
         if(!clean())

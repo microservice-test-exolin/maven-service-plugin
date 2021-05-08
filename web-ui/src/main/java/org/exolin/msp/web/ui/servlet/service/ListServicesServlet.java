@@ -3,12 +3,14 @@ package org.exolin.msp.web.ui.servlet.service;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.io.Writer;
+import java.util.Optional;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import org.exolin.msp.core.StatusInfo;
 import org.exolin.msp.core.StatusType;
+import org.exolin.msp.service.GitRepository;
 import org.exolin.msp.service.Service;
 import org.exolin.msp.service.Services;
 import org.exolin.msp.web.ui.HttpUtils;
@@ -125,10 +127,11 @@ public class ListServicesServlet extends HttpServlet
                 if(showBuildOptions)
                 {
                     out.append("<td>");
-                    if(service.supportsBuildAndDeployment())
+                    Optional<GitRepository> repository = service.getGitRepository();
+                    if(repository.isPresent() && repository.get().supportsBuildAndDeployment())
                     {
                         out.append("<form action=\"/deploy\" method=\"POST\" style=\"display: inline\">");
-                        if(!service.isBuildOrDeployProcessRunning())
+                        if(!repository.get().isBuildOrDeployProcessRunning())
                         {
                             out.append("<input type=\"hidden\" name=\"service\" value=\"").append(service.getName()).append("\">");
                             write(out, "compile", Icon.COMPILE, "Compile");

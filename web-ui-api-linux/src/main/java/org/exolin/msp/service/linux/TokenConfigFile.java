@@ -10,14 +10,23 @@ import java.util.Objects;
 import org.exolin.msp.service.ConfigFile;
 
 /**
- *
+ * A config file that only contains a token.
+ * The token is published over a single key/value entry with a fixed key.
+ * 
  * @author tomgk
  */
 public class TokenConfigFile implements ConfigFile
 {
     private static final String KEY = "token";
     
+    /**
+     * the file containing the value
+     */
     private final Path path;
+    
+    /**
+     * the loaded value
+     */
     private String value;
 
     public TokenConfigFile(Path path, String value)

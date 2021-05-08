@@ -21,19 +21,42 @@ public interface Service
     public void restart() throws IOException;
     public void setStartAtBoot(boolean b) throws IOException;
     
-    public boolean supportsBuildAndDeployment() throws IOException;
-    public void build(boolean async, String initiator) throws IOException, InterruptedException;
-    public void deploy(boolean async, String initiator) throws IOException, InterruptedException;
-    public boolean isBuildOrDeployProcessRunning();
+    /**
+     * Returns all log files of the service itself
+     * 
+     * @return all log files of the service excluding task log files
+     * @throws IOException 
+     */
+    public Map<String, LogFile> getServiceLogFiles() throws IOException;
     
-    public Map<String, LogFile> getLogFiles(Optional<String> taskName) throws IOException;
+    /**
+     * Returns all log files of the task to the service
+     * 
+     * @param taskName the task
+     * @return the log files to the task
+     * @throws IOException 
+     */
+    public Map<String, LogFile> getTaskLogFiles(String taskName) throws IOException;
 
-    public Path getLocalGitRoot() throws IOException;
-    public Path getLocalServiceMavenProject() throws IOException;
-    public String getRepositoryUrl() throws IOException;
+    public Optional<GitRepository> getGitRepository() throws IOException;
 
     public Iterable<String> getTasks();
     
+    /**
+     * Returns the names of the config files of the service.
+     * The names are service specific and there might not be any.
+     * 
+     * @return the names of the config files
+     * @throws IOException in case of an I/O error
+     */
     public List<String> getConfigFiles() throws IOException;
+    
+    /**
+     * Returns the config file of the service with the name.
+     * 
+     * @param name the name of the config file
+     * @return the config file
+     * @throws IOException in case of an I/O error
+     */
     public ConfigFile getConfigFile(String name) throws IOException;
 }

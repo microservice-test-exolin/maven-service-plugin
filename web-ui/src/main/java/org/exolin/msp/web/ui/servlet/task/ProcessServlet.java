@@ -14,7 +14,7 @@ import org.exolin.msp.service.linux.LinuxService;
 import org.exolin.msp.service.pm.ProcessInfo;
 import org.exolin.msp.service.pm.ProcessManager;
 import org.exolin.msp.web.ui.servlet.Layout;
-import org.exolin.msp.web.ui.servlet.log.LogFileShowServlet;
+import org.exolin.msp.web.ui.servlet.log.TaskLogFileShowServlet;
 import org.exolin.msp.web.ui.servlet.service.ListServicesServlet;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -120,7 +120,7 @@ public class ProcessServlet extends HttpServlet
             
             out.append("<td>").append(format(process.getStartedAt())).append("</td>");
             out.append("<td style=\"text-align: right\">").append(runtime != -1 ? runtime/1000.+" s" : "<em>N/A</em>").append("</td>");
-            out.append("<td><a href=\"").append(LogFileShowServlet.getFileUrl(process.getService(), logFileName)).append("\">Logfile</a></td>");
+            out.append("<td><a href=\"").append(TaskLogFileShowServlet.getFileUrl(process.getService(), process.getName(), logFileName)).append("\">Logfile</a></td>");
             out.append("<td>");
             writeExitCode(out, process.getExitCode());
             out.append("</td>");

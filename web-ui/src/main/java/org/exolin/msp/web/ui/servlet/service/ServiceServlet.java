@@ -4,12 +4,14 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.net.URL;
 import java.nio.file.Path;
+import java.util.Optional;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import org.exolin.msp.core.StatusInfo;
 import org.exolin.msp.core.StatusType;
+import org.exolin.msp.service.GitRepository;
 import org.exolin.msp.service.Service;
 import org.exolin.msp.service.Services;
 import org.exolin.msp.service.pm.ProcessManager;
@@ -66,7 +68,7 @@ public class ServiceServlet extends HttpServlet
             out.append("<div class=\"card-row\">");
             writeServiceCard(service, out);
             writeBuildDeployCard(service, out);
-            writeGitCard(service, out);
+            writeGitCard(service.getGitRepository().get(), out);
             out.append("<div style=\"clear:both\"></div>");
             out.append("</div>");
             
@@ -219,10 +221,11 @@ public class ServiceServlet extends HttpServlet
         out.append("<a href=\""+TaskLogServlet.getFilesOfTask(service.getName(), "deploy")+"\">");
         Icon.LOG.writeTo(out);
         out.append("Deploy Logfiles</a><br>");
-        if(service.supportsBuildAndDeployment())
+        Optional<GitRepository> gitRepository = service.getGitRepository();
+        if(gitRepository.isPresent() && gitRepository.get().supportsBuildAndDeployment())
         {
             out.append("<form action=\"/deploy\" method=\"POST\" style=\"display: inline\">");
-            if(!service.isBuildOrDeployProcessRunning())
+            if(!gitRepository.get().isBuildOrDeployProcessRunning())
             {
                 out.append("<input type=\"hidden\" name=\"service\" value=\"").append(service.getName()).append("\">");
                 write(out, "compile", Icon.COMPILE, "Compile");
@@ -235,18 +238,18 @@ public class ServiceServlet extends HttpServlet
         out.append("</div></div>");
     }
 
-    private void writeGitCard(Service service, PrintWriter out) throws IOException
+    private void writeGitCard(GitRepository repo, PrintWriter out) throws IOException
     {
         out.append("<div class=\"card\">");
         out.append("<div class=\"card-header\">Git</div>\n");
         out.append("<div class=\"card-body\">");
         
-        String repoUrl = service.getRepositoryUrl();
+        String repoUrl = repo.getRepositoryUrl();
         String host = new URL(repoUrl).getHost();
         String name = host;
         
-        Path localMavenProject = service.getLocalServiceMavenProject();
-        Path localGitRepo = service.getLocalGitRoot();
+        Path localMavenProject = repo.getLocalServiceMavenProject();
+        Path localGitRepo = repo.getLocalGitRoot();
         
         out.append("<p>");
         out.append("<a href=\"").append(repoUrl).append("\"");

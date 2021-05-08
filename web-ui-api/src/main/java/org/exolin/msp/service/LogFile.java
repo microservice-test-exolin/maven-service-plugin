@@ -2,7 +2,6 @@ package org.exolin.msp.service;
 
 import java.io.IOException;
 import java.io.OutputStream;
-import java.nio.file.Path;
 import java.util.Optional;
 
 /**
@@ -34,9 +33,4 @@ public abstract class LogFile
     public abstract String getTitle();
     
     public abstract void writeTo(OutputStream out) throws IOException;
-
-    /*public Path getPath()
-    {
-        return path;
-    }*/
 }
