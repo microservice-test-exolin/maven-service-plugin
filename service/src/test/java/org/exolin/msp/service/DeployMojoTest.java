@@ -182,6 +182,7 @@ public class DeployMojoTest
         assertNotNull(deploy);
         try{
             deploy.execute(simDir, new PseudoAbstraction(new LogAdapter(deploy.getLog())));
+            fail();
         }catch(MojoExecutionException e){
             assertNotNull(e.getCause());
             assertEquals(NoSuchFileException.class, e.getCause().getClass());
