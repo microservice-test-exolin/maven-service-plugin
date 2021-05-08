@@ -13,7 +13,7 @@ import java.util.Optional;
 import org.exolin.msp.core.PseudoAbstraction;
 import org.exolin.msp.service.LogFile;
 import org.exolin.msp.service.Services;
-import org.exolin.msp.service.linux.LinuxFSLogFile;
+import org.exolin.msp.service.linux.RegularLogFile;
 import org.exolin.msp.service.pm.ProcessDataStorage;
 import org.exolin.msp.service.pm.ProcessManager;
 import org.exolin.msp.service.stub.StubService;
@@ -65,7 +65,10 @@ public class LocalMain
         
         try(DirectoryStream<Path> dir = Files.newDirectoryStream(logDirectory))
         {
-            dir.forEach(d -> logFiles.put(d.getFileName().toString(), new LinuxFSLogFile("test-mittens-discord", getTaskName(d.getFileName().toString()), d)));
+            dir.forEach(d -> {
+                System.out.println("Found log file "+d);
+                logFiles.put(d.getFileName().toString(), new RegularLogFile("test-mittens-discord", getTaskName(d.getFileName().toString()), d));
+            });
         }
         
         ProcessManager pm = new ProcessManager(new ProcessDataStorage(logDirectory));
