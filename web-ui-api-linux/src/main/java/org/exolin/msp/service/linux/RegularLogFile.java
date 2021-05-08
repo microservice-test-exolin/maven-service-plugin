@@ -12,11 +12,11 @@ import org.exolin.msp.web.ui.LognameGenerator;
  *
  * @author tomgk
  */
-public class LinuxFSLogFile extends LogFile
+public class RegularLogFile extends LogFile
 {
     private final Path path;
 
-    public LinuxFSLogFile(String serviceName, Optional<String> processName, Path path)
+    public RegularLogFile(String serviceName, Optional<String> processName, Path path)
     {
         super(serviceName, processName);
         this.path = path;

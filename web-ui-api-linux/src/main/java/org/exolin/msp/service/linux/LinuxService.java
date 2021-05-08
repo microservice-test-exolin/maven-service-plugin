@@ -88,7 +88,7 @@ public class LinuxService extends AbstractService
         
         try{
             for(Path p: Files.newDirectoryStream(dir, "*.log"))
-                files.put(prefix+p.getFileName().toString(), new LinuxFSLogFile(getName(), processName, p));
+                files.put(prefix+p.getFileName().toString(), new RegularLogFile(getName(), processName, p));
         }catch(NoSuchFileException e){
             LOGGER.warn("Directory doesn't exist: {}", dir);
         }
