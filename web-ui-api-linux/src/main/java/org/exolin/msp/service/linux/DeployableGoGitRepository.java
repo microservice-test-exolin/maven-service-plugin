@@ -10,11 +10,13 @@ import java.nio.file.Path;
  */
 public class DeployableGoGitRepository extends AbstractGitRepository
 {
+    private final String serviceName;
     private final Path gitRoot;
     private final LinuxService linuxService;
 
-    public DeployableGoGitRepository(Path gitRoot, LinuxService linuxService)
+    public DeployableGoGitRepository(String serviceName, Path gitRoot, LinuxService linuxService)
     {
+        this.serviceName = serviceName;
         this.gitRoot = gitRoot;
         this.linuxService = linuxService;
     }
@@ -50,7 +52,7 @@ public class DeployableGoGitRepository extends AbstractGitRepository
     {
         Path serviceSrcDirectory = getLocalServiceMavenProject();
         
-        String[] cmd = {"/bin/bash", "-c", "/root/repos/go-deploy/setup.sh -s /root/repos/go-e621-tg-bot -o /root/apps/go-e621-tg-bot/go-e621-tg-bot -a go-e621-tg-bot -f"};
+        String[] cmd = {"/bin/bash", "-c", "/root/repos/go-deploy/setup.sh -s "+gitRoot+" -o /root/apps/"+serviceName+"/"+serviceName+" -a "+serviceName+" -f"};
         
         linuxService.start(serviceSrcDirectory, LinuxService.TASK_DEPLOY, cmd, async, initiator);
     }
