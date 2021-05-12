@@ -82,6 +82,8 @@ public class Main
 
             LinuxServices services = new LinuxServices(
                     Paths.get("/home/exolin/services"),
+                    Paths.get("/root/apps"),
+                    Paths.get("/root/repos"),
                     pm);
 
             run(pm, services, Config.read(Paths.get(configDir, "config")), Paths.get(configDir), true);

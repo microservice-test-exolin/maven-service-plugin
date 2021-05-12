@@ -13,6 +13,8 @@ import java.util.Optional;
 import org.exolin.msp.service.GitRepository;
 import org.exolin.msp.service.Service;
 import org.exolin.msp.service.Services;
+import org.exolin.msp.service.linux.supervisord.SupervisordApplicationInstance;
+import org.exolin.msp.service.linux.supervisord.SupervisordService;
 import org.exolin.msp.service.pm.ProcessManager;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -26,12 +28,16 @@ public class LinuxServices implements Services
     private static final Logger LOGGER = LoggerFactory.getLogger(LinuxServices.class);
     
     private final Path servicesDirectory;
+    private final Path appDirectory;
+    private final Path repoCollectionDirectory;
     private final ProcessManager pm;
     private final Map<String, LinuxService> serviceCache = new HashMap<>();
 
-    public LinuxServices(Path servicesDirectory, ProcessManager pm) throws IOException
+    public LinuxServices(Path servicesDirectory, Path appDirectory, Path repoCollectionDirectory, ProcessManager pm) throws IOException
     {
         this.servicesDirectory = servicesDirectory;
+        this.appDirectory = appDirectory;
+        this.repoCollectionDirectory = repoCollectionDirectory;
         this.pm = pm;
     }
 
@@ -41,17 +47,23 @@ public class LinuxServices implements Services
         return Collections.unmodifiableList(getLinuxServices());
     }
     
-    public List<LinuxService> getLinuxServices() throws IOException
+    public List<AbstractLinuxService> getLinuxServices() throws IOException
     {
+        List<AbstractLinuxService> services = new ArrayList<>();
+        
         try(DirectoryStream<Path> dir = Files.newDirectoryStream(servicesDirectory))
         {
-            List<LinuxService> services = new ArrayList<>();
-            
             for(Path p : dir)
-                services.add(service(p));
-            
-            return services;
+                services.add(linuxService(p));
         }
+        
+        try(DirectoryStream<Path> dir = Files.newDirectoryStream(appDirectory))
+        {
+            for(Path p : dir)
+                services.add(supervisordService(p));
+        }
+        
+        return services;
     }
 
     @Override
@@ -64,10 +76,10 @@ public class LinuxServices implements Services
         if(!Files.exists(serviceDirectory))
             return null;
         
-        return service(serviceDirectory);
+        return linuxService(serviceDirectory);
     }
     
-    private LinuxService service(Path serviceDirectory)
+    private LinuxService linuxService(Path serviceDirectory)
     {
         return serviceCache.computeIfAbsent(serviceDirectory.getFileName().toString(), serviceName -> 
             new LinuxService(
@@ -78,6 +90,18 @@ public class LinuxServices implements Services
                     serviceName, pm)
         );
     }
+    
+    private SupervisordService supervisordService(Path appDirectory)
+    {
+        String serviceName = appDirectory.getFileName().toString();
+        
+        return new SupervisordService(
+                serviceName,
+                repoCollectionDirectory.resolve(serviceName),
+                pm,
+                new SupervisordApplicationInstance(serviceName)
+        );
+    }
 
     @Override
     public List<Service> getServicesFromRepositoryUrl(String url) throws IOException
@@ -86,7 +110,7 @@ public class LinuxServices implements Services
         
         List<Service> services = new ArrayList<>();
         
-        for(LinuxService s: getLinuxServices())
+        for(AbstractLinuxService s: getLinuxServices())
         {
             Optional<GitRepository> gitRepository = s.getGitRepository();
             if(!gitRepository.isPresent())
