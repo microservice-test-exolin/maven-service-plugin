@@ -1,4 +1,4 @@
-package org.exolin.msp.service.linux;
+package org.exolin.msp.service.linux.supervisord;
 
 import java.io.IOException;
 import java.nio.file.NoSuchFileException;
@@ -11,6 +11,8 @@ import org.exolin.msp.service.ApplicationInstance;
 import org.exolin.msp.service.ConfigFile;
 import org.exolin.msp.service.GitRepository;
 import org.exolin.msp.service.LogFile;
+import org.exolin.msp.service.linux.AbstractLinuxService;
+import org.exolin.msp.service.linux.DeployableGoGitRepository;
 import org.exolin.msp.service.pm.ProcessManager;
 
 /**

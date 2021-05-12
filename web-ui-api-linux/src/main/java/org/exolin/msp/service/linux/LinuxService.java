@@ -1,5 +1,8 @@
 package org.exolin.msp.service.linux;
 
+import org.exolin.msp.service.linux.config.TokenConfigFile;
+import org.exolin.msp.service.linux.config.PropertiesConfigFile;
+import org.exolin.msp.service.log.ProcessCallLogFile;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
@@ -76,13 +79,18 @@ public class LinuxService extends AbstractLinuxService
     {
         return "task/"+processName+"/"+timestamp+".log";
     }
+    
+    public static ProcessCallLogFile Journalctl(String serviceName)
+    {
+        return new ProcessCallLogFile(serviceName, "journalctl", "Standard Output", new String[]{"journalctl", "-u", serviceName});
+    }
 
     @Override
     public Map<String, LogFile> getServiceLogFiles() throws IOException
     {
         Map<String, LogFile> files = new TreeMap<>();
         
-        files.put("journalctl", ProcessCallLogFile.Journalctl(getName()));
+        files.put("journalctl", Journalctl(getName()));
 
         readLogFiles(Optional.empty(), logDirectory, files);
         

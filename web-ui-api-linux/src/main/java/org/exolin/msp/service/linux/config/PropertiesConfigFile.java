@@ -1,4 +1,4 @@
-package org.exolin.msp.service.linux;
+package org.exolin.msp.service.linux.config;
 
 import java.io.BufferedWriter;
 import java.io.IOException;

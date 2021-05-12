@@ -1,5 +1,6 @@
 package org.exolin.msp.service.linux;
 
+import org.exolin.msp.service.log.RegularLogFile;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.NoSuchFileException;

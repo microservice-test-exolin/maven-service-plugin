@@ -1,4 +1,4 @@
-package org.exolin.msp.service.linux;
+package org.exolin.msp.service.log;
 
 import java.io.IOException;
 import java.io.OutputStream;

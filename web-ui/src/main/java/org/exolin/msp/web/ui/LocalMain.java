@@ -13,7 +13,7 @@ import java.util.Optional;
 import org.exolin.msp.service.stub.PseudoAbstraction;
 import org.exolin.msp.service.LogFile;
 import org.exolin.msp.service.Services;
-import org.exolin.msp.service.linux.RegularLogFile;
+import org.exolin.msp.service.log.RegularLogFile;
 import org.exolin.msp.service.pm.ProcessDataStorage;
 import org.exolin.msp.service.pm.ProcessManager;
 import org.exolin.msp.service.stub.StubService;

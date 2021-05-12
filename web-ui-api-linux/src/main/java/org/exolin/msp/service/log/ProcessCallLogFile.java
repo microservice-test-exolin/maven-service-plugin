@@ -1,4 +1,4 @@
-package org.exolin.msp.service.linux;
+package org.exolin.msp.service.log;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -17,7 +17,7 @@ public class ProcessCallLogFile extends LogFile
     private final String title;
     private final String[] cmd;
     
-    private ProcessCallLogFile(String serviceName, String filename, String title, String...cmd)
+    public ProcessCallLogFile(String serviceName, String filename, String title, String []cmd)
     {
         super(serviceName, Optional.empty());
         this.cmd = cmd;
@@ -25,11 +25,6 @@ public class ProcessCallLogFile extends LogFile
         this.title = title;
     }
     
-    public static ProcessCallLogFile Journalctl(String serviceName)
-    {
-        return new ProcessCallLogFile(serviceName, "journalctl", "Standard Output", "journalctl", "-u", serviceName);
-    }
-
     @Override
     public String getFileName()
     {
