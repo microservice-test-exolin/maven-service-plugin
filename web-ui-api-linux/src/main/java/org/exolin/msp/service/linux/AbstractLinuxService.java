@@ -9,7 +9,6 @@ import java.util.Arrays;
 import java.util.Map;
 import java.util.Optional;
 import java.util.TreeMap;
-import org.exolin.msp.core.SystemAbstraction;
 import org.exolin.msp.service.LogFile;
 import org.exolin.msp.service.Service;
 import org.exolin.msp.service.pm.TaskAlreadyRunningException;
