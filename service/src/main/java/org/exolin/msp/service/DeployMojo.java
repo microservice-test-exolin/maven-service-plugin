@@ -62,8 +62,11 @@ public class DeployMojo extends BaseMojo
     /**
      * 
      * @param sys
-     * @param name
-     * @param jar
+     * @param files
+     * @param simDir root or simulated root
+     * @param name name of service
+     * @param jar path to JAR to be deployed
+     * @param libDir directory containing library JARs
      * @param serviceUser User under which the service is executed
      * @param startScript Script used to start service
      * @throws IOException 
@@ -79,7 +82,6 @@ public class DeployMojo extends BaseMojo
         Path serviceBinDir = serviceDir.resolve("bin");
         Path serviceCfgDir = serviceDir.resolve("cfg");
         Path serviceLogDir = serviceDir.resolve("log");
-        Path jarDest = serviceBinDir.resolve(jar.getFileName());
 
         getLog().info("Stopping service...");
         //service $NAME stop || echo Service was not running
@@ -99,10 +101,17 @@ public class DeployMojo extends BaseMojo
         sys.setOwner(originalPath, serviceUser);
         
         //Copy JAR and dependencies
+        deployJARs(files, serviceBinDir, jar, libDir);
+        files.copy(startScript, serviceDir.resolve(ServiceInfo.START_SH));
+        //getLog().info("Copied jar file to "+jarDest);
+        getLog().info("Copied files to "+serviceBinDir);
+    }
+    
+    private static void deployJARs(FileUtils files, Path serviceBinDir, Path jar, Path libDir) throws IOException
+    {
+        Path jarDest = serviceBinDir.resolve(jar.getFileName());
         files.copy(jar, jarDest);
         files.replaceDirectoryContent(libDir, serviceBinDir, Collections.singleton(jarDest));
-        files.copy(startScript, serviceDir.resolve(ServiceInfo.START_SH));
-        getLog().info("Copied jar file to "+jarDest);
     }
     
     private void setupService(SystemAbstraction sys, FileUtils files, Path simDir, String name, Path localServiceFile) throws IOException
