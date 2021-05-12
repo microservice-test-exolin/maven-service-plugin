@@ -73,8 +73,8 @@ public class DeployServlet extends HttpServlet
     
     static boolean supportAnyButton(GitRepository repo) throws IOException
     {
-        return repo.supports(GitRepository.Task.BUILD) &&
-               repo.supports(GitRepository.Task.DEPLOY) &&
+        return repo.supports(GitRepository.Task.BUILD) ||
+               repo.supports(GitRepository.Task.DEPLOY) ||
                repo.supports(GitRepository.Task.BUILD_AND_DEPLOY);
     }
     
