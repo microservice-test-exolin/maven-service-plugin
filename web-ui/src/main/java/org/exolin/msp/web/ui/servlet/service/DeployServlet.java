@@ -82,6 +82,8 @@ public class DeployServlet extends HttpServlet
     {
         if(gitRepository.isPresent() && supportAnyButton(gitRepository.get()))
             writeButtons(service, gitRepository.get(), out);
+        else
+            out.append("Build/deploy not supported");
     }
     
     static void writeButtons(Service service, GitRepository gitRepository, PrintWriter out) throws IOException
