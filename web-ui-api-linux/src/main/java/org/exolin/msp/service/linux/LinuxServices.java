@@ -28,7 +28,7 @@ public class LinuxServices implements Services
     private static final Logger LOGGER = LoggerFactory.getLogger(LinuxServices.class);
     
     private final Path servicesDirectory;
-    private final Path appDirectory;
+    private final Path appsDirectory;
     private final Path repoCollectionDirectory;
     private final ProcessManager pm;
     private final Map<String, LinuxService> serviceCache = new HashMap<>();
@@ -36,7 +36,7 @@ public class LinuxServices implements Services
     public LinuxServices(Path servicesDirectory, Path appDirectory, Path repoCollectionDirectory, ProcessManager pm) throws IOException
     {
         this.servicesDirectory = servicesDirectory;
-        this.appDirectory = appDirectory;
+        this.appsDirectory = appDirectory;
         this.repoCollectionDirectory = repoCollectionDirectory;
         this.pm = pm;
     }
@@ -57,7 +57,7 @@ public class LinuxServices implements Services
                 services.add(linuxService(p));
         }
         
-        try(DirectoryStream<Path> dir = Files.newDirectoryStream(appDirectory))
+        try(DirectoryStream<Path> dir = Files.newDirectoryStream(appsDirectory))
         {
             for(Path p : dir)
                 services.add(supervisordService(p));
@@ -73,10 +73,16 @@ public class LinuxServices implements Services
         if(!serviceDirectory.getParent().equals(servicesDirectory))
             throw new IllegalArgumentException("Invalid service name: "+serviceName);
         
-        if(!Files.exists(serviceDirectory))
-            return null;
+        Path appDirectory = appsDirectory.resolve(serviceName);
+        if(!appDirectory.getParent().equals(appsDirectory))
+            throw new IllegalArgumentException("Invalid app name: "+serviceName);
         
-        return linuxService(serviceDirectory);
+        if(Files.exists(serviceDirectory))
+            return linuxService(serviceDirectory);
+        else if(Files.exists(appDirectory))
+            return supervisordService(appDirectory);
+        else
+            return null;
     }
     
     private LinuxService linuxService(Path serviceDirectory)
