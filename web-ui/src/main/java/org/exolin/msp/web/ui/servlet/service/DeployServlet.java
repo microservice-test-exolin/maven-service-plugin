@@ -88,7 +88,7 @@ public class DeployServlet extends HttpServlet
     
     static void writeButtons(Service service, GitRepository gitRepository, PrintWriter out) throws IOException
     {
-        if(gitRepository.isTaskRunning())
+        if(!gitRepository.isTaskRunning())
         {
             out.append("<form action=\"/deploy\" method=\"POST\" style=\"display: inline\">");
             out.append("<input type=\"hidden\" name=\"service\" value=\"").append(service.getName()).append("\">");
