@@ -77,6 +77,9 @@ public class ServiceServlet extends HttpServlet
             Layout.end(out);
         }catch(HttpUtils.BadRequestMessage e){
             resp.sendError(HttpServletResponse.SC_BAD_REQUEST, e.getMessage());
+        }catch(IOException|RuntimeException e){
+            LOGGER.error("Failed", e);
+            throw e;
         }
     }
 
