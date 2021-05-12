@@ -46,7 +46,7 @@ public class SupervisordStatus implements StatusInfo
     @Override
     public String getMemory()
     {
-        throw new UnsupportedOperationException("Not supported yet.");
+        return null;//TODO throw new UnsupportedOperationException("Not supported yet.");
     }
 
     @Override
@@ -70,12 +70,12 @@ public class SupervisordStatus implements StatusInfo
     @Override
     public String getJavaCMD()
     {
-        throw new UnsupportedOperationException("Not supported");
+        return "";//TODO throw new UnsupportedOperationException("Not supported");
     }
 
     @Override
     public String getJavaOptions()
     {
-        throw new UnsupportedOperationException("Not supported");
+        return "";//TODO throw new UnsupportedOperationException("Not supported");
     }
 }
