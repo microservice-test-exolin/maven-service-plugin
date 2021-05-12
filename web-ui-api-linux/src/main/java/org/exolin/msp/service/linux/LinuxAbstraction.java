@@ -81,6 +81,11 @@ public class LinuxAbstraction implements SystemAbstraction
         }
     }
     
+    public static String[] createBashExecutionCmd(String line)
+    {
+        return new String[]{"/bin/bash", "-c", line};
+    }
+    
     public static String read(Process p) throws IOException, InterruptedException
     {
         byte[] b = new byte[1024*8];
