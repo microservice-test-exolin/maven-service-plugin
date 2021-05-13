@@ -12,6 +12,7 @@ import org.exolin.msp.core.StatusType;
 import org.exolin.msp.service.ApplicationInstance;
 import org.exolin.msp.service.Service;
 import org.exolin.msp.service.Services;
+import org.exolin.msp.web.ui.HtmlUtils;
 import org.exolin.msp.web.ui.HttpUtils;
 import org.exolin.msp.web.ui.servlet.Icon;
 import org.exolin.msp.web.ui.servlet.Layout;
@@ -102,22 +103,22 @@ public class ListServicesServlet extends HttpServlet
                 out.append("</td>");
                 
                 out.append("<td>");
-                out.append("<form action=\"#\" method=\"POST\" style=\"display: inline\">");
-                out.append("<input type=\"hidden\" name=\"service\" value=\"").append(service.getName()).append("\">");
+                HtmlUtils.startInlineForm(out, "#");
+                HtmlUtils.writeHiddenInput(out, "service", service.getName());
                 
                 if(status != null && status.getStatus() != StatusType.ACTIVE)
-                    write(out, ACTION_START, Icon.START, "Start");
+                    HtmlUtils.writeActionButton(out, ACTION_START, Icon.START, "Start");
                 if(status != null && status.getStatus() != StatusType.INACTIVE)
-                    write(out, ACTION_STOP, Icon.STOP, "Stop");
+                    HtmlUtils.writeActionButton(out, ACTION_STOP, Icon.STOP, "Stop");
                 if(status != null && status.getStatus() != StatusType.INACTIVE)
-                    write(out, ACTION_RESTART, Icon.RESTART, "Restart");
+                    HtmlUtils.writeActionButton(out, ACTION_RESTART, Icon.RESTART, "Restart");
                 
                 if(status != null && status.isStartAtBootEnabled() != StatusInfo.UnknowableBoolean.TRUE)
-                    write(out, ACTION_ENABLE, null, "Enable");
+                    HtmlUtils.writeActionButton(out, ACTION_ENABLE, null, "Enable");
                 if(status != null && status.isStartAtBootEnabled() != StatusInfo.UnknowableBoolean.FALSE)
-                    write(out, ACTION_DISABLE, null, "Disable");
+                    HtmlUtils.writeActionButton(out, ACTION_DISABLE, null, "Disable");
                 
-                out.append("</form>");
+                HtmlUtils.endInlineForm(out);
                 
                 out.append("<a href=\""+ServiceStatusServlet.getUrl(service.getName())+"\">Status</a> ");
                 out.append("<a href=\""+ServiceLogServlet.getFilesOfService(service.getName())+"\">Logfiles</a><br>");
@@ -176,14 +177,6 @@ public class ListServicesServlet extends HttpServlet
         return "/service?service="+service;
     }
     
-    static void write(Writer out, String action, Icon icon, String title) throws IOException
-    {
-        out.append("<button name=\"action\" value=\""+action+"\" class=\"btn btn-secondary btn-sm\">");
-        if(icon != null)
-            icon.writeTo(out);
-        out.append(title).append("</button> ");
-    }
-
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException
     {

@@ -11,11 +11,11 @@ import org.exolin.msp.service.GitRepository;
 import org.exolin.msp.service.Service;
 import org.exolin.msp.service.Services;
 import org.exolin.msp.service.pm.TaskAlreadyRunningException;
+import org.exolin.msp.web.ui.HtmlUtils;
 import org.exolin.msp.web.ui.HttpUtils;
 import org.exolin.msp.web.ui.servlet.Icon;
 import org.exolin.msp.web.ui.servlet.Layout;
 import org.exolin.msp.web.ui.servlet.auth.AuthFilter;
-import static org.exolin.msp.web.ui.servlet.service.ListServicesServlet.write;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -90,19 +90,19 @@ public class DeployServlet extends HttpServlet
     {
         if(!gitRepository.isTaskRunning())
         {
-            out.append("<form action=\"/deploy\" method=\"POST\" style=\"display: inline\">");
-            out.append("<input type=\"hidden\" name=\"service\" value=\"").append(service.getName()).append("\">");
+            HtmlUtils.startInlineForm(out, URL);
+            HtmlUtils.writeHiddenInput(out, "service", service.getName());
 
             if(gitRepository.supports(GitRepository.Task.BUILD))
-                write(out, ACTION_BUILD, Icon.COMPILE, "Compile");
+                HtmlUtils.writeActionButton(out, ACTION_BUILD, Icon.COMPILE, "Compile");
 
             if(gitRepository.supports(GitRepository.Task.DEPLOY))
-                write(out, ACTION_DEPLOY, Icon.DEPLOY, "Deploy");
+                HtmlUtils.writeActionButton(out, ACTION_DEPLOY, Icon.DEPLOY, "Deploy");
 
             if(gitRepository.supports(GitRepository.Task.BUILD_AND_DEPLOY))
-                write(out, ACTION_BUILD_AND_DEPLOY, Icon.DEPLOY, "Build & Deploy");
+                HtmlUtils.writeActionButton(out, ACTION_BUILD_AND_DEPLOY, Icon.DEPLOY, "Build & Deploy");
 
-            out.append("</form>");
+            HtmlUtils.endInlineForm(out);
         } else {
             out.append("Build/deploy currently running");
         }

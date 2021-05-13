@@ -14,11 +14,11 @@ import org.exolin.msp.service.GitRepository;
 import org.exolin.msp.service.Service;
 import org.exolin.msp.service.Services;
 import org.exolin.msp.service.pm.ProcessManager;
+import org.exolin.msp.web.ui.HtmlUtils;
 import org.exolin.msp.web.ui.HttpUtils;
 import org.exolin.msp.web.ui.servlet.Icon;
 import org.exolin.msp.web.ui.servlet.Layout;
 import org.exolin.msp.web.ui.servlet.ReverseList;
-import static org.exolin.msp.web.ui.servlet.service.ListServicesServlet.write;
 import org.exolin.msp.web.ui.servlet.task.ProcessServlet;
 import org.exolin.msp.web.ui.servlet.task.TaskLogServlet;
 import org.slf4j.Logger;
@@ -202,12 +202,12 @@ public class ServiceServlet extends HttpServlet
         out.append("</table>");
 
         out.append("<div class=\"card-body\">");
-        out.append("<form action=\""+ListServicesServlet.URL+"\" method=\"POST\" style=\"display: inline\">");
-        out.append("<input type=\"hidden\" name=\"service\" value=\"").append(service.getName()).append("\">");
-        write(out, "start", Icon.START, "Start");
-        write(out, "stop", Icon.STOP, "Stop");
-        write(out, "restart", Icon.RESTART, "Restart");
-        out.append("</form>");
+        HtmlUtils.startInlineForm(out, ListServicesServlet.URL);
+        HtmlUtils.writeHiddenInput(out, "service", service.getName());
+        HtmlUtils.writeActionButton(out, "start", Icon.START, "Start");
+        HtmlUtils.writeActionButton(out, "stop", Icon.STOP, "Stop");
+        HtmlUtils.writeActionButton(out, "restart", Icon.RESTART, "Restart");
+        HtmlUtils.endInlineForm(out);
 
         out.append("</div></div>");
     }
