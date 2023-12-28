@@ -10,6 +10,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.Scanner;
 import org.exolin.msp.service.LogFile;
 import org.exolin.msp.service.Services;
 import org.exolin.msp.service.log.RegularLogFile;
@@ -18,6 +19,8 @@ import org.exolin.msp.service.pm.ProcessManager;
 import org.exolin.msp.service.stub.StubService;
 import org.exolin.msp.service.stub.StubServices;
 import static org.exolin.msp.web.ui.Main.run;
+import org.exolin.msp.web.ui.servlet.github.GithubWebhookServlet;
+import org.exolin.msp.web.ui.servlet.service.DeployServlet;
 
 /**
  *
@@ -88,8 +91,11 @@ public class LocalMain
         
         Process process = new ProcessBuilder("cmd", "/c", "echo x").start();
         
-        pm.register(services.getServices().get(0).getName(), "build", Arrays.asList("mvn", "build"), Paths.get("."), System.currentTimeMillis(), "testcode").setProcess(process);
-        pm.register(services.getServices().get(1).getName(), "build", Arrays.asList("mvn", "build"), Paths.get("."), System.currentTimeMillis(), "testcode").setProcess(process);
+        String initiator1 = GithubWebhookServlet.INITIATER_PREFIX+"["+GithubWebhookServlet.NAME_REPO+"=https://github.com/tomgk/mittens]";
+        String initiator2 = DeployServlet.INITIATOR_WEB_UI+"["+DeployServlet.NAME_USER+"=testuser]";
+        
+        pm.register(services.getServices().get(0).getName(), "build", Arrays.asList("mvn", "build"), Paths.get("."), System.currentTimeMillis(), initiator1).setProcess(process);
+        pm.register(services.getServices().get(1).getName(), "build", Arrays.asList("mvn", "build"), Paths.get("."), System.currentTimeMillis(), initiator2).setProcess(process);
         
         run(pm, services, Config.read(Paths.get("../config/config")), Paths.get("../config"), false);
     }

@@ -1,5 +1,7 @@
 package org.exolin.msp.web.ui.servlet.task;
 
+import org.exolin.msp.web.ui.servlet.github.GithubWebhookServlet;
+import org.exolin.msp.web.ui.servlet.service.DeployServlet;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -21,10 +23,10 @@ public class InitiatorFormatter
             return initiator;
         }
         
-        if(i.type.equals("github-webhook"))
+        if(i.type.equals(GithubWebhookServlet.INITIATER_PREFIX))
         {
-            String repo = i.args.get("repo");
-            String sha1 = i.args.get("sha1");
+            String repo = i.args.get(GithubWebhookServlet.NAME_REPO);
+            String sha1 = i.args.get(GithubWebhookServlet.NAME_SHA1);
             if(repo != null && sha1 != null)
             {
                 String shortHash = sha1.substring(0, 7);
@@ -36,9 +38,9 @@ public class InitiatorFormatter
             else
                 return "Github Webhook";
         }
-        if(i.type.equals("service-web-ui"))
+        else if(i.type.equals(DeployServlet.INITIATOR_WEB_UI))
         {
-            String user = i.args.get("user");
+            String user = i.args.get(DeployServlet.NAME_USER);
             if(user != null)
                 return "Service Web UI by "+user;
             else

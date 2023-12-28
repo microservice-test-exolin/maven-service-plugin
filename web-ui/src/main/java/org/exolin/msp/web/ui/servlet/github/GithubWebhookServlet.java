@@ -87,11 +87,15 @@ public class GithubWebhookServlet extends HttpServlet
         }
     }
     
+    public static final String INITIATER_PREFIX = "github-webhook";
+    public static final String NAME_REPO = "repo";
+    public static final String NAME_SHA1 = "sha1";
+    
     private void execute(List<Service> serviceList, GithubPayload payload, Map<String, GithubDeployerImpl.Repo.Deployment> deployments)
     {
-        String initiator = "github-webhook[repo="+payload.getRepository().getHtml_url();
+        String initiator = INITIATER_PREFIX+"["+NAME_REPO+"="+payload.getRepository().getHtml_url();
         if(payload.getLatest() != null)
-            initiator += ",sha1=" + payload.getLatest().getId();
+            initiator += ","+NAME_SHA1+"=" + payload.getLatest().getId();
         initiator += "]";
 
         Set<Path> build = new HashSet<>();

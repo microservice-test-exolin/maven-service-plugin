@@ -129,6 +129,9 @@ public class DeployServlet extends HttpServlet
             return false;
         }
     }
+    
+    public static final String INITIATOR_WEB_UI = "service-web-ui";
+    public static final String NAME_USER = "user";
 
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException
@@ -150,9 +153,9 @@ public class DeployServlet extends HttpServlet
             }
 
             String user = (String)req.getAttribute(AuthFilter.USER);
-            String initiator = "service-web-ui";
+            String initiator = INITIATOR_WEB_UI;
             if(user != null)
-                initiator += "[user="+user+"]";
+                initiator += "["+NAME_USER+"="+user+"]";
 
             switch(action)
             {
