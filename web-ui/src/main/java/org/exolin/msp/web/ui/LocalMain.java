@@ -98,5 +98,22 @@ public class LocalMain
         pm.register(services.getServices().get(1).getName(), "build", Arrays.asList("mvn", "build"), Paths.get("."), System.currentTimeMillis(), initiator2).setProcess(process);
         
         run(pm, services, Config.read(Paths.get("../config/config")), Paths.get("../config"), false);
+        
+        Scanner s = new Scanner(System.in);
+        while(s.hasNext())
+        {
+            if(s.next().equals("x"))
+            {
+                System.out.println("Exiting...");
+                System.exit(0);
+            }
+            else
+            {
+                if(System.in.available() > 0)
+                    continue;
+                
+                System.out.println("Unknown input\nEnter x to stop program");
+            }
+        }
     }
 }
