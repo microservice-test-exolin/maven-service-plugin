@@ -158,21 +158,21 @@ public class DeployServlet extends HttpServlet
             {
                 case "compile":
                 {
-                    if(runTask(service, GitRepository.Task.BUILD, initiator, resp))
+                    if(!runTask(service, GitRepository.Task.BUILD, initiator, resp))
                         return;
 
                     break;
                 }
                 case "deploy":
                 {
-                    if(runTask(service, GitRepository.Task.DEPLOY, initiator, resp))
+                    if(!runTask(service, GitRepository.Task.DEPLOY, initiator, resp))
                         return;
 
                     break;
                 }
                 case "buildAndDeploy":
                 {
-                    if(runTask(service, GitRepository.Task.BUILD_AND_DEPLOY, initiator, resp))
+                    if(!runTask(service, GitRepository.Task.BUILD_AND_DEPLOY, initiator, resp))
                         return;
 
                     break;
