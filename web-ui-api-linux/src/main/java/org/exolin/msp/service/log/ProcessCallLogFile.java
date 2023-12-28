@@ -7,7 +7,7 @@ import java.util.Optional;
 import org.exolin.msp.service.LogFile;
 
 /**
- * Log file who's content is retrived by calling a command
+ * Log file which content is retrived by calling a command
  * 
  * @author tomgk
  */
