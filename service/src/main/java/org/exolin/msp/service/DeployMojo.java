@@ -14,8 +14,6 @@ import org.apache.maven.plugins.annotations.Mojo;
 import org.exolin.msp.service.linux.LinuxAbstraction;
 import org.exolin.msp.core.StatusType;
 import org.exolin.msp.core.SystemAbstraction;
-import org.exolin.msp.service.linux.LinuxService;
-import org.exolin.msp.service.linux.LinuxServiceApplicationInstance;
 
 /**
  * Goal which touches a timestamp file.
