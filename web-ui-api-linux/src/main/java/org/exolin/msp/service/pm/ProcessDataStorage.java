@@ -112,7 +112,7 @@ public class ProcessDataStorage
         return processDir(pi.getService(), pi.getName()).resolve(pi.getStartTime()+".log");
     }
     
-    public void store(ProcessInfo pi) throws IOException
+    private void store(ProcessInfo pi) throws IOException
     {
         Path destDir = processDir(pi.getService(), pi.getName());
         
@@ -138,7 +138,7 @@ public class ProcessDataStorage
         }
     }
     
-    public List<ProcessInfo> getProcessInfos()
+    public List<ProcessInfo> readProcessInfos()
     {
         List<ProcessInfo> processInfos = new ArrayList<>();
         
@@ -183,7 +183,12 @@ public class ProcessDataStorage
         return processInfos;
     }
 
-    public void save(ProcessInfo processInfo)
+    /**
+     * Adds or updates
+     * 
+     * @param processInfo 
+     */
+    public void saveProcessInfo(ProcessInfo processInfo)
     {
         try{
             store(processInfo);

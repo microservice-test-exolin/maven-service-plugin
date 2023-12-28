@@ -25,7 +25,7 @@ public class ProcessManager
     public ProcessManager(ProcessDataStorage store)
     {
         this.store = store;
-        this.processesHistory = store.getProcessInfos();
+        this.processesHistory = store.readProcessInfos();
     }
 
     public synchronized ProcessInfo register(String service, String name, List<String> cmd, Path workingDirectory, long startTime, String initiator)
@@ -33,7 +33,7 @@ public class ProcessManager
         clean();
         ProcessInfo pi = new ProcessInfo(service, name, startTime, workingDirectory.toAbsolutePath().normalize(), cmd, initiator, null, null);
         processes.add(pi);
-        store.save(pi);
+        store.saveProcessInfo(pi);
         return pi;
     }
     
@@ -81,7 +81,7 @@ public class ProcessManager
                 foundAny = true;
                 try{
                     o.updateExitCode();
-                    store.save(o);
+                    store.saveProcessInfo(o);
                 }catch(RuntimeException e){
                     LOGGER.error("Error updating process info", e);
                 }
